@@ -309,8 +309,9 @@ function renderCompanyGrid(cat='all') {
       `<div class="cc-sig cs-${s.type}"><span class="dot" style="background:${s.type==='g'?'var(--green)':s.type==='a'?'var(--amber)':'var(--red)'}"></span>${s.label}</div>`
     ).join('');
 
-    const isComingSoon = !['RACE','MSFT','META'].includes(c.ticker); // solo estas tienen página
-    const href = isComingSoon ? '#' : `${c.ticker === 'RACE' ? 'ferrari_v4' : c.ticker.toLowerCase()}.html`;
+    const ACTIVE = ['RACE','MSFT','META'];
+    const isComingSoon = !ACTIVE.includes(c.ticker);
+    const href = isComingSoon ? '#' : (c.ticker === 'RACE' ? 'ferrari_v4.html' : `${c.ticker.toLowerCase()}.html`);
     const soonBadge = isComingSoon ? `<span class="cc-soon-badge">Próximamente</span>` : '';
     const cardClass = `company-card${isComingSoon ? ' cc-soon' : ''}`;
     
