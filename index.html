@@ -146,12 +146,17 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
   .stat-item:last-child{border-bottom:none}
 }
 </style>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <a class="brand" href="#">tes<em>inversión</em></a>
+  <a class="brand" href="index.html" style="display:flex;align-items:center;gap:9px;text-decoration:none">
+    <img src="logo.png" alt="tesinversión" style="width:28px;height:28px;border-radius:50%;flex-shrink:0">
+    <span style="font-family:'Lora',serif;font-size:16px;color:var(--ink)">tes<em style="font-style:italic;color:var(--ink3)">inversión</em></span>
+  </a>
   <div class="nav-links">
     <button class="nav-link">Empresas</button>
     <button class="nav-link" onclick="window.location.href='comparador.html'">Comparar</button>
