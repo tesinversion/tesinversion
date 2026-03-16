@@ -13,12 +13,12 @@
   --cream:#faf9f6;--cream2:#f4f3ef;--cream3:#ece9e0;
   --ink:#1a1a18;--ink2:#4a4a44;--ink3:#9a9a90;--ink4:#c8c8c0;
   --rule:rgba(26,26,24,0.09);--rule2:rgba(26,26,24,0.05);
-  --green:#2d6a4f;--gbg:#f0f7f4;--gborder:rgba(45,106,79,0.18);
-  --amber:#92400e;--abg:#fef9f0;--aborder:rgba(146,64,14,0.18);
-  --red:#991b1b;--rbg:#fdf5f5;--rborder:rgba(153,27,27,0.15);
-  --blue:#1e3a5f;--bbg:#f0f4f9;--bborder:rgba(30,58,95,0.15);
+  --green:#16a34a;--gbg:#f0fdf4;--gborder:rgba(22,163,74,0.25);
+  --amber:#d97706;--abg:#fffbeb;--aborder:rgba(217,119,6,0.25);
+  --red:#dc2626;--rbg:#fef2f2;--rborder:rgba(220,38,38,0.2);
+  --blue:#2563eb;--bbg:#eff6ff;--bborder:rgba(37,99,235,0.2);
   /* Chart palette — distinguishable, not garish */
-  --ch1:#2c5282;--ch2:#276749;--ch3:#975a16;--ch4:#742a2a;--ch5:#4a5568;
+  --ch1:#3b82f6;--ch2:#10b981;--ch3:#f59e0b;--ch4:#ef4444;--ch5:#8b5cf6;
   --sidebar:230px;--col:700px;
 }
 html{font-size:15.5px;scroll-behavior:smooth}
@@ -57,8 +57,8 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .sb-ticker{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);letter-spacing:0.05em;margin-bottom:3px}
 .sb-name{font-family:'Lora',serif;font-size:14px;color:var(--ink);margin-bottom:4px}
 .sb-price{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink2)}
-.sb-price .up{color:var(--green)}
-.sb-qs{display:inline-flex;align-items:center;gap:5px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:5px;padding:3px 8px;margin-top:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--green)}
+.sb-price .up{color:#16a34a}
+.sb-qs{display:inline-flex;align-items:center;gap:5px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:5px;padding:3px 8px;margin-top:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:#16a34a}
 .sb-qs strong{font-family:'DM Mono',monospace;font-size:13px}
 .sb-section-lbl{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink4);padding:0 20px;margin-bottom:5px}
 .sb-item{display:flex;align-items:center;gap:8px;padding:6px 20px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);cursor:pointer;border-left:2px solid transparent;transition:all 0.12s;text-decoration:none}
@@ -91,10 +91,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .cover-chg{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--green);font-weight:500}
 .cover-pills{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
 .cpill{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:5px;background:var(--cream2);border:0.5px solid var(--rule);color:var(--ink2)}
-.cpill-green{background:var(--gbg);border-color:var(--gborder);color:var(--green)}
-.cpill-amber{background:var(--abg);border-color:var(--aborder);color:var(--amber)}
+.cpill-green{background:var(--gbg);border-color:var(--gborder);color:#16a34a}
+.cpill-amber{background:var(--abg);border-color:var(--aborder);color:#d97706}
 .cover-score-badge{display:flex;align-items:center;gap:8px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:8px;padding:8px 14px}
-.csb-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--green)}
+.csb-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:#16a34a}
 .csb-info{font-family:'DM Sans',sans-serif}
 .csb-label{font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--green);margin-bottom:1px}
 .csb-sub{font-size:10px;color:rgba(45,106,79,0.6)}
@@ -124,7 +124,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .dt{display:inline-flex;align-items:baseline;gap:4px;font-family:'DM Mono',monospace;font-size:13px;background:var(--cream2);border:0.5px solid var(--rule);border-radius:4px;padding:1px 6px;vertical-align:baseline;white-space:nowrap;cursor:help;transition:background 0.1s}
 .dt:hover{background:var(--cream3)}
 .dt-lbl{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink3);margin-right:1px}
-.dt-pos{color:var(--green)}.dt-neg{color:var(--red)}.dt-warn{color:var(--amber)}
+.dt-pos{color:#16a34a}.dt-neg{color:#dc2626}.dt-warn{color:#d97706}
 
 /* PULLQUOTE */
 .pullquote{border-left:2px solid var(--ink);margin:28px 0 28px -4px;padding:2px 0 2px 20px;font-family:'Lora',serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.55}
@@ -136,12 +136,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .ms-lbl{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
 .ms-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--ink);letter-spacing:-0.01em}
 .ms-sub{font-family:'DM Sans',sans-serif;font-size:11px;margin-top:2px}
-.ms-up{color:var(--green)}.ms-dn{color:var(--red)}.ms-nu{color:var(--ink3)}
+.ms-up{color:#16a34a}.ms-dn{color:#dc2626}.ms-nu{color:var(--ink3)}
 
 /* STAT CALLOUT */
 .callout{display:flex;gap:20px;align-items:flex-start;background:var(--cream2);border-radius:10px;padding:20px 22px;margin:24px 0}
 .callout-big{font-family:'DM Mono',monospace;font-size:40px;font-weight:400;letter-spacing:-0.03em;line-height:1;flex-shrink:0}
-.cb-green{color:var(--green)}.cb-amber{color:var(--amber)}.cb-red{color:var(--red)}
+.cb-green{color:#16a34a}.cb-amber{color:#d97706}.cb-red{color:#dc2626}
 .callout-body{}
 .callout-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
 .callout-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.55}
@@ -161,9 +161,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .ev-row{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--rule2)}
 .ev-row:last-child{border-bottom:none}
 .ev-badge{flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;margin-top:1px;white-space:nowrap}
-.ev-strong{background:var(--gbg);color:var(--green)}
-.ev-moderate{background:var(--abg);color:var(--amber)}
-.ev-weak{background:var(--rbg);color:var(--red)}
+.ev-strong{background:var(--gbg);color:#16a34a}
+.ev-moderate{background:var(--abg);color:#d97706}
+.ev-weak{background:var(--rbg);color:#dc2626}
 .ev-na{background:var(--cream2);color:var(--ink3)}
 .ev-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.5;flex:1}
 .ev-text strong{color:var(--ink);font-weight:600}
@@ -178,9 +178,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .dtable tr.bold td{font-weight:500;color:var(--ink)}
 .dtable tr.bold td:first-child{color:var(--ink)}
 .dtable tr.section-row td{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink3);background:var(--cream2);padding:6px 10px}
-.dpos{color:var(--green)}.dneg{color:var(--red)}.dwarn{color:var(--amber)}
+.dpos{color:#16a34a}.dneg{color:#dc2626}.dwarn{color:#d97706}
 .formula-tag{display:inline-flex;align-items:center;font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink3);background:var(--cream2);border:0.5px solid var(--rule);border-radius:3px;padding:1px 5px;cursor:help;margin-left:3px;vertical-align:middle;transition:all 0.1s}
-.formula-tag:hover{background:var(--bbg);color:var(--blue)}
+.formula-tag:hover{background:var(--bbg);color:#2563eb}
 
 /* COMPETITORS */
 .comp-scroll{overflow-x:auto;margin:18px 0}
@@ -191,7 +191,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .comp-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);font-weight:500}
 .comp-table tr.highlight td{background:var(--cream2)}
 .comp-table tr:last-child td{border-bottom:none}
-.comp-best{color:var(--green);font-weight:500}.comp-worst{color:var(--red)}
+.comp-best{color:var(--green);font-weight:500}.comp-worst{color:#dc2626}
 
 /* GAUGE PAIR */
 .gauge-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
@@ -205,7 +205,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .bb-side{padding:18px}
 .bb-bull{background:var(--gbg)}.bb-bear{background:var(--rbg)}
 .bb-head{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px}
-.bb-bull .bb-head{color:var(--green)}.bb-bear .bb-head{color:var(--red)}
+.bb-bull .bb-head{color:#16a34a}.bb-bear .bb-head{color:#dc2626}
 .bb-item{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.55;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);color:var(--ink2)}
 .bb-item:last-child{border-bottom:none}
 @media(max-width:480px){.bull-bear,.gauge-row{grid-template-columns:1fr}}
@@ -220,10 +220,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .score-bar-bg{width:80px;height:3px;background:var(--cream3);border-radius:2px;overflow:hidden;flex-shrink:0;margin-top:8px}
 .score-bar{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
 .score-pts{font-family:'DM Mono',monospace;font-size:12px;min-width:38px;text-align:right;flex-shrink:0;margin-top:4px}
-.sp-hi{color:var(--green)}.sp-mid{color:var(--amber)}.sp-lo{color:var(--red)}
+.sp-hi{color:#16a34a}.sp-mid{color:#d97706}.sp-lo{color:#dc2626}
 .score-total{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;border-top:0.5px solid var(--rule);margin-top:4px}
 .score-total-lbl{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2)}
-.score-total-val{font-family:'DM Mono',monospace;font-size:28px;color:var(--green)}
+.score-total-val{font-family:'DM Mono',monospace;font-size:28px;color:#16a34a}
 
 /* SCENARIOS */
 .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
@@ -232,11 +232,11 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .sc-base{background:var(--bbg);border:0.5px solid var(--bborder)}
 .sc-opt{background:var(--abg);border:0.5px solid var(--aborder)}
 .sc-lbl{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:4px}
-.sc-cons .sc-lbl{color:var(--green)}.sc-base .sc-lbl{color:var(--blue)}.sc-opt .sc-lbl{color:var(--amber)}
+.sc-cons .sc-lbl{color:#16a34a}.sc-base .sc-lbl{color:#2563eb}.sc-opt .sc-lbl{color:#d97706}
 .sc-val{font-family:'DM Mono',monospace;font-size:22px}
-.sc-cons .sc-val{color:var(--green)}.sc-base .sc-val{color:var(--blue)}.sc-opt .sc-val{color:var(--amber)}
+.sc-cons .sc-val{color:#16a34a}.sc-base .sc-val{color:#2563eb}.sc-opt .sc-val{color:#d97706}
 .sc-sub{font-family:'DM Sans',sans-serif;font-size:10px;margin-top:4px}
-.sc-cons .sc-sub{color:var(--green)}.sc-base .sc-sub{color:var(--blue)}.sc-opt .sc-sub{color:var(--amber)}
+.sc-cons .sc-sub{color:#16a34a}.sc-base .sc-sub{color:#2563eb}.sc-opt .sc-sub{color:#d97706}
 @media(max-width:480px){.scenario-grid{grid-template-columns:1fr}}
 
 /* MARGIN SAFETY */
@@ -244,19 +244,19 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .ms-amber{background:var(--abg);border:0.5px solid var(--aborder)}
 .ms-green{background:var(--gbg);border:0.5px solid var(--gborder)}
 .ms-pct{font-family:'DM Mono',monospace;font-size:34px;font-weight:400;letter-spacing:-0.02em;flex-shrink:0}
-.ms-amber .ms-pct{color:var(--amber)}.ms-green .ms-pct{color:var(--green)}
+.ms-amber .ms-pct{color:#d97706}.ms-green .ms-pct{color:#16a34a}
 .ms-info-title{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
-.ms-amber .ms-info-title{color:var(--amber)}.ms-green .ms-info-title{color:var(--green)}
+.ms-amber .ms-info-title{color:#d97706}.ms-green .ms-info-title{color:#16a34a}
 .ms-info-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);line-height:1.5}
 
 /* CMD */
 .cmd-block{background:var(--gbg);border:0.5px solid var(--gborder);border-radius:10px;padding:14px 16px;margin-bottom:10px}
 .cmd-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.cmd-title{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--green)}
+.cmd-title{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:#16a34a}
 .cmd-date{font-family:'DM Mono',monospace;font-size:10px;color:rgba(45,106,79,0.6)}
 .cmd-row{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 0;border-bottom:0.5px solid rgba(45,106,79,0.1)}
 .cmd-row:last-child{border-bottom:none}
-.cmd-k{color:var(--green)}.cmd-v{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--green);font-weight:500}
+.cmd-k{color:#16a34a}.cmd-v{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--green);font-weight:500}
 
 /* GUIDANCE TABLE */
 .gtable{width:100%;border-collapse:collapse;font-size:12px;margin:16px 0}
@@ -264,8 +264,8 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .gtable td{padding:8px 10px;border-bottom:0.5px solid var(--rule2);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink)}
 .gtable tr:last-child td{border-bottom:none}
 .badge{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;display:inline-block}
-.b-green{background:var(--gbg);color:var(--green)}
-.b-red{background:var(--rbg);color:var(--red)}
+.b-green{background:var(--gbg);color:#16a34a}
+.b-red{background:var(--rbg);color:#dc2626}
 .b-gray{background:var(--cream2);color:var(--ink3)}
 
 /* FLAG LIST */
@@ -273,11 +273,11 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .flag-item{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--rule2)}
 .flag-item:last-child{border-bottom:none}
 .flag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.fdg{background:var(--green)}.fdy{background:var(--amber)}.fdr{background:var(--red)}
+.fdg{background:#16a34a}.fdy{background:#d97706}.fdr{background:#dc2626}
 .flag-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
 .flag-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);line-height:1.45}
 .flag-metric{font-family:'DM Mono',monospace;font-size:10.5px;margin-top:3px}
-.fmg{color:var(--green)}.fmy{color:var(--amber)}.fmr{color:var(--red)}
+.fmg{color:#16a34a}.fmy{color:#d97706}.fmr{color:#dc2626}
 
 /* WALL */
 .wall-outer{position:relative;border-radius:12px;overflow:hidden;margin:8px 0}
@@ -307,7 +307,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .source-item:last-child{border-bottom:none}
 .source-tag{width:28px;height:28px;background:var(--cream2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);flex-shrink:0}
 .source-name{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);font-weight:500}
-.source-url{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--blue)}
+.source-url{font-family:'DM Sans',sans-serif;font-size:11px;color:#2563eb}
 .source-date{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-left:auto}
 
 /* NL CTA */
@@ -425,7 +425,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
       <div class="cover-pills">
         <span class="cpill">Market Cap $74.8B</span>
         <span class="cpill-green">Caja neta +€824M</span>
-        <span class="cpill-amber">PER 46.2x — más caro que el 72% de su historia</span>
+        <span class="cpill-amber">PER 46.2x — por encima de media histórica</span>
       </div>
       <div class="cover-score-badge">
         <div class="csb-num">87</div>
@@ -487,10 +487,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     <div class="ch-title-wrap" style="margin-bottom:10px"><div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3)">Fuentes de ingresos</div></div>
     <div class="chart-block">
       <div class="chart-legend">
-        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Vehículos 78%</div>
-        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>Engines 9%</div>
-        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>Sponsoring/F1 8%</div>
-        <div class="leg-i"><div class="leg-line" style="background:#4a5568"></div>Licencias 5%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Vehículos 78%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>Engines 9%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>Sponsoring/F1 8%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#8b5cf6"></div>Licencias 5%</div>
       </div>
       <div class="chart-canvas-wrap" style="height:170px"><canvas id="revDonut"></canvas></div>
     </div>
@@ -566,7 +566,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     </div>
     <div class="chart-block">
       <div class="chart-legend">
-        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Ferrari EBIT margin</div>
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Ferrari EBIT margin</div>
         <div class="leg-i"><div class="leg-line" style="background:transparent;border-top:1.5px dashed #4a5568"></div>Media sector auto (6–7%)</div>
       </div>
       <div class="chart-canvas-wrap" style="height:160px"><canvas id="moatChart"></canvas></div>
@@ -625,10 +625,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     </table>
     <div class="chart-block">
       <div class="chart-legend">
-        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Margen bruto</div>
-        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>EBIT margin</div>
-        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>Margen neto</div>
-        <div class="leg-i"><div class="leg-line" style="background:#742a2a"></div>FCF margin</div>
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Margen bruto</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>EBIT margin</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>Margen neto</div>
+        <div class="leg-i"><div class="leg-line" style="background:#ef4444"></div>FCF margin</div>
       </div>
       <div class="chart-canvas-wrap" style="height:180px"><canvas id="marginsChart"></canvas></div>
       <div class="chart-caption"><strong>Todos los márgenes en expansión 2019–2024.</strong> La pandemia generó una contracción temporal en 2020 que se recuperó completamente en 2021. La tendencia estructural es de expansión. Fuente: Annual Reports Ferrari, cálculos tesinversion.com.</div>
@@ -710,11 +710,11 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     <p class="prose">Cómo una empresa decide qué hacer con el dinero que genera dice todo sobre la calidad y los valores del management. Ferrari en 2024: <span class="dt">€682M</span> en recompras netas, <span class="dt">€341M</span> en dividendos, <span class="dt">€720M</span> en capex de crecimiento, deuda prácticamente amortizada. Un management que compra sus propias acciones sistemáticamente está diciendo que cree que están baratas — o al menos razonablemente valoradas.</p>
     <div class="chart-block">
       <div class="chart-legend">
-        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Dividendos</div>
-        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>Recompras netas</div>
-        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>Capex crecimiento</div>
-        <div class="leg-i"><div class="leg-line" style="background:#742a2a"></div>Pago deuda</div>
-        <div class="leg-i"><div class="leg-line" style="background:#4a5568"></div>Acum. caja</div>
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Dividendos</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>Recompras netas</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>Capex crecimiento</div>
+        <div class="leg-i"><div class="leg-line" style="background:#ef4444"></div>Pago deuda</div>
+        <div class="leg-i"><div class="leg-line" style="background:#8b5cf6"></div>Acum. caja</div>
       </div>
       <div style="display:flex;gap:4px;margin-bottom:8px">
         <button class="btn-sm btn-ghost" id="capBtn1" onclick="switchCap('abs',this)" style="font-size:11px;padding:4px 10px">€ Millones</button>
@@ -816,7 +816,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
       <div class="callout-big cb-amber" style="font-size:30px">!</div>
       <div class="callout-body">
         <div class="callout-label">PER por encima de su media histórica de 38x</div>
-        <div class="callout-text">Ferrari cotiza más cara que en el 72% de los momentos de su historia como empresa cotizada. No es una señal de venta, pero sí indica que el mercado ya descuenta mucho crecimiento futuro. El riesgo asimétrico está más hacia abajo que hacia arriba desde estos niveles.</div>
+        <div class="callout-text">El PER actual de Ferrari está por encima de su media histórica de 38x. No es una señal de venta, pero indica que el precio ya descuenta mucho crecimiento futuro. El riesgo asimétrico está más hacia abajo que hacia arriba desde estos niveles.</div>
       </div>
     </div>
   </div>
@@ -919,9 +919,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     </div>
     <div class="chart-block">
       <div class="chart-legend">
-        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>PER</div>
-        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>EV/EBITDA</div>
-        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>EV/FCF</div>
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>PER</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>EV/EBITDA</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>EV/FCF</div>
       </div>
       <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Múltiplos históricos</div>
       <div class="chart-canvas-wrap" style="height:150px"><canvas id="tMultiplos"></canvas></div>
@@ -948,7 +948,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
       <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">FCF conversion 84% — Alta calidad de earnings</div><div class="flag-desc">El negocio convierte el 84% del beneficio neto en caja real. 0 años con FCF negativo. Earnings de alta calidad.</div><div class="flag-metric fmg">0 años con FCF negativo · Umbral calidad: 80%</div></div></div>
       <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Recompras netas 5 años consecutivos</div><div class="flag-desc">−9.8% en share count en 5 años. Las recompras superan consistentemente la dilución por stock options. Management alineado.</div><div class="flag-metric fmg">5 años consecutivos de reducción neta del share count</div></div></div>
       <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Márgenes en expansión 5 años</div><div class="flag-desc">Gross, EBIT y Net margin todos creciendo. 0 años con compresión de margen operativo en los últimos 5. Poder de fijación de precios intacto.</div><div class="flag-metric fmg">0 años con decrecimiento EBIT margin · Expansión consistente</div></div></div>
-      <div class="flag-item"><div class="flag-dot fdy"></div><div><div class="flag-name">Valoración exigente — PER más alta que el 72% de los momentos de su historia</div><div class="flag-desc">PER 46x está en el percentil 72 de su propio histórico. No es señal de venta pero el margen de seguridad en escenario base es de solo +14%. El precio no perdona decepciones.</div><div class="flag-metric fmy">PER media hist.: 38x · Por encima de la media histórica propia · MS escenario base: +14%</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdy"></div><div><div class="flag-name">Valoración exigente — PER por encima de la media histórica</div><div class="flag-desc">PER 46x está por encima de su media histórica de 38x. No es señal de venta pero el margen de seguridad en escenario base es de solo +14%. El precio no perdona decepciones.</div><div class="flag-metric fmy">PER media hist.: 38x · Por encima de la media histórica propia · MS escenario base: +14%</div></div></div>
     </div>
   </div>
 </div>
@@ -1061,8 +1061,8 @@ const borderOpts={display:false};
 const baseOpts=(yCb,stacked=false)=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked,grid:{display:false},border:borderOpts},y:{stacked,grid:gridOpts,border:borderOpts,ticks:{callback:yCb}}}});
 
 // Chart color palette — distinguishable, not garish
-const C1='#2c5282',C2='#276749',C3='#975a16',C4='#742a2a',C5='#4a5568';
-const C1a='rgba(44,82,130,0.12)',C2a='rgba(39,103,73,0.1)';
+const C1='#3b82f6',C2='#10b981',C3='#f59e0b',C4='#ef4444',C5='#8b5cf6';
+const C1a='rgba(59,130,246,0.1)',C2a='rgba(16,185,129,0.1)';
 
 // Revenue donut
 new Chart(document.getElementById('revDonut'),{type:'doughnut',data:{labels:['Vehículos','Engines','Sponsoring','Otros'],datasets:[{data:[78,9,8,5],backgroundColor:[C1,C2,C3,C5],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
@@ -1118,8 +1118,8 @@ function drawGauge(id,val,mn,mx,segs){
   ctx.beginPath();ctx.moveTo(cx-5*Math.cos(na-Math.PI/2),cy-5*Math.sin(na-Math.PI/2));ctx.lineTo(cx+r*.76*Math.cos(na),cy+r*.76*Math.sin(na));ctx.lineTo(cx+5*Math.cos(na-Math.PI/2),cy+5*Math.sin(na-Math.PI/2));ctx.fillStyle='#1a1a18';ctx.fill();
   ctx.beginPath();ctx.arc(cx,cy,5,0,2*Math.PI);ctx.fillStyle='#1a1a18';ctx.fill();
 }
-drawGauge('gaugeDebt',-0.4,-2,6,[{f:-2,t:2,c:'#2d6a4f'},{f:2,t:4,c:'#92400e'},{f:4,t:6,c:'#991b1b'}]);
-drawGauge('gaugeICR',18.2,0,25,[{f:0,t:3,c:'#991b1b'},{f:3,t:5,c:'#92400e'},{f:5,t:25,c:'#2d6a4f'}]);
+drawGauge('gaugeDebt',-0.4,-2,6,[{f:-2,t:2,c:'#16a34a'},{f:2,t:4,c:'#d97706'},{f:4,t:6,c:'#991b1b'}]);
+drawGauge('gaugeICR',18.2,0,25,[{f:0,t:3,c:'#991b1b'},{f:3,t:5,c:'#d97706'},{f:5,t:25,c:'#16a34a'}]);
 </script>
 </body>
 </html>
