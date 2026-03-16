@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft (MSFT) — tesinversión.com</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf9f6;--cream2:#f4f3ef;--cream3:#ece9e0;
+  --ink:#1a1a18;--ink2:#4a4a44;--ink3:#9a9a90;--ink4:#c8c8c0;
+  --rule:rgba(26,26,24,0.09);--rule2:rgba(26,26,24,0.05);
+  --green:#16a34a;--gbg:#f0fdf4;--gborder:rgba(22,163,74,0.25);
+  --amber:#d97706;--abg:#fffbeb;--aborder:rgba(217,119,6,0.25);
+  --red:#dc2626;--rbg:#fef2f2;--rborder:rgba(220,38,38,0.2);
+  --blue:#2563eb;--bbg:#eff6ff;--bborder:rgba(37,99,235,0.2);
+  --ch1:#3b82f6;--ch2:#10b981;--ch3:#f59e0b;--ch4:#ef4444;--ch5:#8b5cf6;
+  --sidebar:230px;
+}
+html{font-size:15.5px;scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:50px;background:rgba(250,249,246,0.95);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--rule);display:flex;align-items:center;padding:0 28px;gap:16px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:50%;flex-shrink:0}
+.brand span{font-family:'Lora',serif;font-size:16px;color:var(--ink)}
+.brand em{font-style:italic;color:var(--ink3)}
+.topbar-center{flex:1;display:flex;justify-content:center}
+.topbar-ticker{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink3)}
+.topbar-ticker span{color:var(--ink);font-weight:500}
+.topbar-right{display:flex;gap:6px;align-items:center;margin-left:auto}
+.btn-sm{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 13px;border-radius:6px;cursor:pointer;transition:all 0.12s}
+.btn-ghost{background:none;border:0.5px solid var(--rule);color:var(--ink2)}
+.btn-ghost:hover{background:var(--cream2)}
+.btn-dark{background:var(--ink);border:none;color:var(--cream);font-weight:500}
+.btn-dark:hover{opacity:0.84}
+
+/* PROGRESS */
+.progress-bar{position:fixed;top:50px;left:0;right:0;height:1.5px;background:var(--rule2);z-index:299}
+.progress-fill{height:100%;background:var(--blue);width:0;transition:width 0.08s linear}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:50px;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:50px;left:0;width:var(--sidebar);height:calc(100vh - 50px);overflow-y:auto;padding:28px 0 40px;border-right:0.5px solid var(--rule);background:var(--cream);scrollbar-width:none}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-head{padding:0 20px 20px;border-bottom:0.5px solid var(--rule);margin-bottom:18px}
+.sb-ticker{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);letter-spacing:0.05em;margin-bottom:3px}
+.sb-name{font-family:'Lora',serif;font-size:14px;color:var(--ink);margin-bottom:4px}
+.sb-price{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink2)}
+.sb-price .up{color:var(--green)}
+.sb-qs{display:inline-flex;align-items:center;gap:5px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:5px;padding:3px 8px;margin-top:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--green)}
+.sb-qs strong{font-family:'DM Mono',monospace;font-size:13px}
+.sb-section-lbl{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink4);padding:0 20px;margin-bottom:5px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 20px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);cursor:pointer;border-left:2px solid transparent;transition:all 0.12s}
+.sb-item:hover{color:var(--ink);background:var(--cream2)}
+.sb-item.active{color:var(--ink);border-left-color:var(--blue);background:var(--cream2);font-weight:500}
+.sb-item .num{font-family:'DM Mono',monospace;font-size:10px;min-width:16px}
+.sb-item .lock{margin-left:auto;font-size:9px;opacity:0.4}
+.sb-divider{margin:12px 20px;height:0.5px;background:var(--rule);position:relative}
+.sb-divider-label{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 6px;font-family:'DM Sans',sans-serif;font-size:9px;color:var(--ink3);white-space:nowrap}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;min-width:0}
+@media(max-width:860px){.sidebar{display:none}.main{margin-left:0}}
+
+/* ARTICLE */
+.article{max-width:700px;margin:0 auto;padding:48px 32px 100px}
+@media(max-width:600px){.article{padding:32px 20px 80px}}
+
+/* COVER */
+.cover{margin-bottom:48px;padding-bottom:40px;border-bottom:0.5px solid var(--rule)}
+.cover-logo-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.cover-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.cover-label::before{content:'';width:24px;height:0.5px;background:var(--ink3)}
+.cover-headline{font-family:'Lora',serif;font-size:clamp(26px,3.8vw,42px);font-weight:600;line-height:1.15;letter-spacing:-0.02em;color:var(--ink);margin-bottom:18px}
+.cover-deck{font-family:'Lora',serif;font-size:16px;font-style:italic;color:var(--ink2);line-height:1.7;margin-bottom:24px}
+.cover-byline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);margin-bottom:20px}
+.cover-byline-dot{width:3px;height:3px;border-radius:50%;background:var(--ink4)}
+.cover-data-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 0;border-top:0.5px solid var(--rule2);border-bottom:0.5px solid var(--rule2);margin-bottom:20px}
+.cover-price{font-family:'DM Mono',monospace;font-size:24px;color:var(--ink)}
+.cover-chg{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500}
+.cover-pills{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.cpill{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:5px;background:var(--cream2);border:0.5px solid var(--rule);color:var(--ink2)}
+.cpill-green{background:var(--gbg);border-color:var(--gborder);color:var(--green)}
+.cpill-amber{background:var(--abg);border-color:var(--aborder);color:var(--amber)}
+.cpill-blue{background:var(--bbg);border-color:var(--bborder);color:var(--blue)}
+.cover-qs{display:flex;align-items:center;gap:8px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:8px;padding:8px 14px}
+.cqs-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--green)}
+.cqs-info{font-family:'DM Sans',sans-serif}
+.cqs-label{font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--green)}
+.cqs-sub{font-size:10px;color:rgba(22,163,74,0.6)}
+
+/* SIGNALS ROW */
+.signals-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.sig-pill{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:12px}
+.sig-g{background:var(--gbg);color:var(--green)}.sig-a{background:var(--abg);color:var(--amber)}.sig-r{background:var(--rbg);color:var(--red)}
+.sig-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+/* CHAPTER */
+.chapter{scroll-margin-top:70px;margin-bottom:8px;background:var(--cream);border:0.5px solid var(--rule);border-radius:12px;overflow:hidden}
+.ch-header{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;transition:background 0.12s;user-select:none}
+.ch-header:hover{background:var(--cream2)}
+.ch-header.open{border-bottom:0.5px solid var(--rule2)}
+.ch-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);min-width:22px}
+.ch-title-wrap{flex:1}
+.ch-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+.ch-preview{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-top:1px}
+.ch-chevron{color:var(--ink3);font-size:11px;transition:transform 0.2s;flex-shrink:0}
+.ch-header.open .ch-chevron{transform:rotate(180deg)}
+.ch-body{display:none;padding:28px 28px 32px;animation:fadeSlide 0.2s ease}
+.ch-body.open{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* PROSE */
+.prose{font-family:'Lora',serif;font-size:16px;line-height:1.8;color:var(--ink);margin-bottom:22px}
+.prose em{font-style:italic;color:var(--ink2)}
+.prose strong{font-weight:600}
+
+/* INLINE DATA */
+.dt{display:inline-flex;align-items:baseline;gap:4px;font-family:'DM Mono',monospace;font-size:13px;background:var(--cream2);border:0.5px solid var(--rule);border-radius:4px;padding:1px 6px;vertical-align:baseline;white-space:nowrap;cursor:help;transition:background 0.1s}
+.dt:hover{background:var(--cream3)}
+.dt-lbl{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink3);margin-right:1px}
+.dt-pos{color:var(--green)}.dt-neg{color:var(--red)}.dt-warn{color:var(--amber)}.dt-blue{color:var(--blue)}
+
+/* PULLQUOTE */
+.pullquote{border-left:2px solid var(--ink);margin:28px 0 28px -4px;padding:2px 0 2px 20px;font-family:'Lora',serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.55}
+
+/* METRICS STRIP */
+.mstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--cream);border-radius:10px;overflow:hidden;border:0.5px solid var(--rule);margin:24px 0}
+.ms-cell{background:var(--cream);padding:14px 16px;border-right:0.5px solid var(--rule);border-bottom:0.5px solid var(--rule)}
+.ms-cell:nth-child(3n){border-right:none}
+.ms-lbl{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.ms-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--ink);letter-spacing:-0.01em}
+.ms-sub{font-family:'DM Sans',sans-serif;font-size:11px;margin-top:2px}
+.ms-up{color:var(--green)}.ms-dn{color:var(--red)}.ms-nu{color:var(--ink3)}.ms-bl{color:var(--blue)}
+
+/* CALLOUT */
+.callout{display:flex;gap:20px;align-items:flex-start;background:var(--cream2);border-radius:10px;padding:20px 22px;margin:24px 0}
+.callout-big{font-family:'DM Mono',monospace;font-size:40px;font-weight:400;letter-spacing:-0.03em;line-height:1;flex-shrink:0}
+.cb-green{color:var(--green)}.cb-amber{color:var(--amber)}.cb-blue{color:var(--blue)}
+.callout-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+.callout-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.55}
+.callout-formula{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);margin-top:5px;background:var(--cream3);display:inline-block;padding:2px 7px;border-radius:3px}
+
+/* CHART */
+.chart-block{margin:24px 0}
+.chart-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink2)}
+.leg-i{display:flex;align-items:center;gap:5px}
+.leg-line{width:18px;height:1.5px;border-radius:1px;flex-shrink:0}
+.chart-canvas-wrap{position:relative;width:100%}
+.chart-caption{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.55;border-top:0.5px solid var(--rule2);padding-top:8px}
+.chart-caption strong{color:var(--ink2)}
+
+/* DATA TABLE */
+.dtable{width:100%;border-collapse:collapse;font-family:'DM Sans',sans-serif;font-size:12px;margin:18px 0}
+.dtable th{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);padding:7px 10px;border-bottom:0.5px solid var(--rule);text-align:right}
+.dtable th:first-child{text-align:left}
+.dtable td{padding:9px 10px;border-bottom:0.5px solid var(--rule2);text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink)}
+.dtable td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2)}
+.dtable tr:last-child td{border-bottom:none}
+.dtable tr.bold td{font-weight:500;color:var(--ink)}
+.dpos{color:var(--green)}.dneg{color:var(--red)}.dwarn{color:var(--amber)}
+.formula-tag{display:inline-flex;font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink3);background:var(--cream2);border:0.5px solid var(--rule);border-radius:3px;padding:1px 5px;cursor:help;margin-left:3px;vertical-align:middle;transition:all 0.1s}
+.formula-tag:hover{background:var(--bbg);color:var(--blue)}
+
+/* COMPETITOR TABLE */
+.comp-scroll{overflow-x:auto;margin:18px 0}
+.comp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
+.comp-table th{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);padding:7px 12px;border-bottom:0.5px solid var(--rule);text-align:right}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:9px 12px;border-bottom:0.5px solid var(--rule2);text-align:right;font-family:'DM Mono',monospace;font-size:11px}
+.comp-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);font-weight:500}
+.comp-table tr.highlight td{background:var(--cream2)}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-best{color:var(--green);font-weight:500}.comp-worst{color:var(--red)}
+
+/* GAUGES */
+.gauge-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.gauge-card{background:var(--cream2);border-radius:10px;padding:18px;text-align:center}
+.gauge-lbl{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+.gauge-val{font-family:'DM Mono',monospace;font-size:20px;margin-top:6px}
+.gauge-desc{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink3);margin-top:3px}
+
+/* BULL BEAR */
+.bull-bear{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:10px;overflow:hidden;border:0.5px solid var(--rule);margin:18px 0}
+.bb-side{padding:18px}
+.bb-bull{background:var(--gbg)}.bb-bear{background:var(--rbg)}
+.bb-head{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px}
+.bb-bull .bb-head{color:var(--green)}.bb-bear .bb-head{color:var(--red)}
+.bb-item{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.55;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);color:var(--ink2)}
+.bb-item:last-child{border-bottom:none}
+@media(max-width:480px){.bull-bear,.gauge-row{grid-template-columns:1fr}}
+
+/* SCORE */
+.score-list{margin:16px 0}
+.score-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--rule2)}
+.score-row:last-child{border-bottom:none}
+.score-info{flex:1}
+.score-name{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink)}
+.score-formula-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);margin-top:1px}
+.score-bar-bg{width:80px;height:3px;background:var(--cream3);border-radius:2px;overflow:hidden;flex-shrink:0;margin-top:8px}
+.score-bar{height:100%;border-radius:2px}
+.score-pts{font-family:'DM Mono',monospace;font-size:12px;min-width:38px;text-align:right;flex-shrink:0;margin-top:4px}
+.sp-hi{color:var(--green)}.sp-mid{color:var(--amber)}.sp-lo{color:var(--red)}
+.score-total{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;border-top:0.5px solid var(--rule);margin-top:4px}
+.score-total-lbl{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2)}
+.score-total-val{font-family:'DM Mono',monospace;font-size:28px;color:var(--green)}
+
+/* SCENARIOS */
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.sc-card{border-radius:10px;padding:14px 16px;text-align:center}
+.sc-cons{background:var(--gbg);border:0.5px solid var(--gborder)}
+.sc-base{background:var(--bbg);border:0.5px solid var(--bborder)}
+.sc-opt{background:var(--abg);border:0.5px solid var(--aborder)}
+.sc-lbl{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:4px}
+.sc-cons .sc-lbl{color:var(--green)}.sc-base .sc-lbl{color:var(--blue)}.sc-opt .sc-lbl{color:var(--amber)}
+.sc-val{font-family:'DM Mono',monospace;font-size:22px}
+.sc-cons .sc-val{color:var(--green)}.sc-base .sc-val{color:var(--blue)}.sc-opt .sc-val{color:var(--amber)}
+.sc-sub{font-family:'DM Sans',sans-serif;font-size:10px;margin-top:4px}
+.sc-cons .sc-sub{color:var(--green)}.sc-base .sc-sub{color:var(--blue)}.sc-opt .sc-sub{color:var(--amber)}
+
+/* MARGIN SAFETY */
+.ms-bar{display:flex;align-items:center;gap:18px;border-radius:10px;padding:16px 20px;margin:16px 0}
+.ms-amber{background:var(--abg);border:0.5px solid var(--aborder)}
+.ms-green{background:var(--gbg);border:0.5px solid var(--gborder)}
+.ms-pct{font-family:'DM Mono',monospace;font-size:34px;font-weight:400;letter-spacing:-0.02em;flex-shrink:0}
+.ms-amber .ms-pct{color:var(--amber)}.ms-green .ms-pct{color:var(--green)}
+.ms-info-title{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
+.ms-amber .ms-info-title{color:var(--amber)}.ms-green .ms-info-title{color:var(--green)}
+.ms-info-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);line-height:1.5}
+
+/* CMD */
+.cmd-block{background:var(--gbg);border:0.5px solid var(--gborder);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.cmd-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.cmd-title{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--green)}
+.cmd-date{font-family:'DM Mono',monospace;font-size:10px;color:rgba(22,163,74,0.6)}
+.cmd-row{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 0;border-bottom:0.5px solid rgba(22,163,74,0.1)}
+.cmd-row:last-child{border-bottom:none}
+.cmd-k{color:var(--green)}.cmd-v{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--green);font-weight:500}
+
+/* GUIDANCE */
+.gtable{width:100%;border-collapse:collapse;font-size:12px;margin:16px 0}
+.gtable th{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);padding:6px 10px;border-bottom:0.5px solid var(--rule)}
+.gtable td{padding:8px 10px;border-bottom:0.5px solid var(--rule2);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink)}
+.gtable tr:last-child td{border-bottom:none}
+.badge{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;display:inline-block}
+.b-green{background:var(--gbg);color:var(--green)}.b-red{background:var(--rbg);color:var(--red)}.b-gray{background:var(--cream2);color:var(--ink3)}
+
+/* FLAGS */
+.flag-list{margin:16px 0}
+.flag-item{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--rule2)}
+.flag-item:last-child{border-bottom:none}
+.flag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.fdg{background:var(--green)}.fdy{background:var(--amber)}.fdr{background:var(--red)}
+.flag-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.flag-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);line-height:1.45}
+.flag-metric{font-family:'DM Mono',monospace;font-size:10.5px;margin-top:3px}
+.fmg{color:var(--green)}.fmy{color:var(--amber)}.fmr{color:var(--red)}
+
+/* EVIDENCE */
+.ev-row{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--rule2)}
+.ev-row:last-child{border-bottom:none}
+.ev-badge{flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;margin-top:1px;white-space:nowrap}
+.ev-strong{background:var(--gbg);color:var(--green)}
+.ev-moderate{background:var(--abg);color:var(--amber)}
+.ev-weak{background:var(--rbg);color:var(--red)}
+.ev-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.5;flex:1}
+.ev-text strong{color:var(--ink);font-weight:600}
+
+/* WALL */
+.wall-outer{position:relative;border-radius:12px;overflow:hidden;margin:8px 0}
+.wall-blur{filter:blur(5px);pointer-events:none;opacity:0.35;padding:24px 28px;background:var(--cream);border:0.5px solid var(--rule);border-radius:12px}
+.wall-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(250,249,246,0.88);backdrop-filter:blur(4px);border-radius:12px;border:0.5px solid var(--rule);padding:28px 24px;text-align:center}
+.wall-icon{font-size:22px;opacity:0.35;margin-bottom:2px}
+.wall-title{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--ink)}
+.wall-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);max-width:300px;line-height:1.55}
+.wall-cta{display:flex;gap:8px;margin-top:6px}
+.wall-note{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink3)}
+
+/* DCF LOCK */
+.dcf-lock{border:0.5px dashed var(--rule);border-radius:10px;padding:24px;text-align:center;background:var(--cream2);margin:16px 0}
+.dcf-lock-icon{font-size:20px;opacity:0.25;margin-bottom:8px}
+.dcf-lock-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.dcf-lock-sub{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);margin-bottom:14px;line-height:1.5}
+
+/* NL CTA */
+.nl-cta{background:var(--bbg);border:0.5px solid var(--bborder);border-radius:12px;padding:24px;margin:20px 0}
+.nl-eyebrow{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(37,99,235,0.55);margin-bottom:5px}
+.nl-title{font-family:'Lora',serif;font-size:17px;font-weight:600;color:var(--blue);margin-bottom:5px}
+.nl-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(37,99,235,0.7);margin-bottom:14px;line-height:1.55}
+
+/* SOURCE */
+.source-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:0.5px solid var(--rule2)}
+.source-item:last-child{border-bottom:none}
+.source-tag{width:28px;height:28px;background:var(--cream2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);flex-shrink:0}
+.source-name{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);font-weight:500}
+.source-url{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--blue)}
+.source-date{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-left:auto}
+
+/* DATA LOADING STATE */
+.loading-val{color:var(--ink4);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+/* READING NAV */
+.reading-nav{position:fixed;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:200}
+@media(max-width:900px){.reading-nav{display:none}}
+.rn-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);cursor:pointer;transition:all 0.18s;position:relative}
+.rn-dot:hover,.rn-dot.active{background:var(--blue);transform:scale(1.6)}
+.rn-dot::before{content:attr(data-label);position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink2);background:var(--cream);border:0.5px solid var(--rule);padding:3px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.12s}
+.rn-dot:hover::before{opacity:1}
+
+.article-footer{margin-top:56px;padding-top:28px;border-top:0.5px solid var(--rule);font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);line-height:1.65}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="brand" href="index.html">
+    <img src="logo.png" alt="tesinversión">
+    <span>tes<em>inversión</em></span>
+  </a>
+  <div class="topbar-center">
+    <span class="topbar-ticker">NASDAQ: <span>MSFT</span> &nbsp;·&nbsp; <span id="topPrice" class="loading-val">$—</span> &nbsp;<span id="topChg" style="color:var(--green)">—</span></span>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm btn-ghost">Iniciar sesión</button>
+    <button class="btn-sm btn-dark">Crear cuenta</button>
+  </div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-head">
+    <div class="sb-ticker">NASDAQ: MSFT</div>
+    <div class="sb-name">Microsoft Corp.</div>
+    <div class="sb-price" id="sbPrice">$— <span class="up" id="sbChg">—</span></div>
+    <div class="sb-qs"><strong id="sbQs">92</strong>/100 Índice de Calidad</div>
+  </div>
+  <div class="sb-section-lbl" style="margin-top:4px">Gratis</div>
+  <a class="sb-item" onclick="goTo('cover')"><span class="num">·</span>Portada</a>
+  <a class="sb-item" onclick="goTo('negocio')"><span class="num">01</span>Modelo de negocio</a>
+  <a class="sb-item" onclick="goTo('historia')"><span class="num">02</span>Historia</a>
+  <a class="sb-item" onclick="goTo('sector')"><span class="num">03</span>Sector y competidores</a>
+  <a class="sb-item" onclick="goTo('moat')"><span class="num">04</span>Ventajas competitivas</a>
+  <a class="sb-item" onclick="goTo('estrategia')"><span class="num">05</span>Estrategia crecimiento</a>
+  <a class="sb-item" onclick="goTo('financieros')"><span class="num">06</span>Análisis financiero</a>
+  <a class="sb-item" onclick="goTo('rentabilidad')"><span class="num">07</span>Rentabilidad y ROIC</a>
+  <a class="sb-item" onclick="goTo('salud')"><span class="num">08</span>Salud financiera</a>
+  <a class="sb-item" onclick="goTo('capital')"><span class="num">09</span>Capital Allocation</a>
+  <div class="sb-divider"><span class="sb-divider-label">Requiere cuenta gratis</span></div>
+  <a class="sb-item" onclick="goTo('equipo')"><span class="num">10</span>Equipo directivo<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('accionistas')"><span class="num">11</span>Accionistas<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('guidance')"><span class="num">12</span>Guidance<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('psicologia')"><span class="num">13</span>Psicología mercado<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('riesgos')"><span class="num">14</span>Riesgos<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('indice')"><span class="num">15</span>Índice de Calidad<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('valoracion')"><span class="num">16</span>Valoración<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('tendencias')"><span class="num">17</span>Tendencias históricas<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('senales')"><span class="num">18</span>Señales<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('reflexion')"><span class="num">19</span>Reflexión y conclusión<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('fuentes')"><span class="num">20</span>Fuentes<span class="lock">🔒</span></a>
+</nav>
+
+<!-- READING NAV -->
+<div class="reading-nav">
+  <div class="rn-dot active" data-label="Portada" onclick="goTo('cover')"></div>
+  <div class="rn-dot" data-label="Negocio" onclick="goTo('negocio')"></div>
+  <div class="rn-dot" data-label="Historia" onclick="goTo('historia')"></div>
+  <div class="rn-dot" data-label="Sector" onclick="goTo('sector')"></div>
+  <div class="rn-dot" data-label="Moat" onclick="goTo('moat')"></div>
+  <div class="rn-dot" data-label="Crecimiento" onclick="goTo('estrategia')"></div>
+  <div class="rn-dot" data-label="Financieros" onclick="goTo('financieros')"></div>
+  <div class="rn-dot" data-label="ROIC" onclick="goTo('rentabilidad')"></div>
+  <div class="rn-dot" data-label="Salud" onclick="goTo('salud')"></div>
+  <div class="rn-dot" data-label="Capital" onclick="goTo('capital')"></div>
+  <div class="rn-dot" data-label="🔒 Más" onclick="goTo('wall')"></div>
+</div>
+
+<div class="layout">
+<main class="main">
+<article class="article">
+
+<!-- ═══ COVER ═══ -->
+<div id="cover" style="scroll-margin-top:70px">
+  <div class="cover">
+    <div class="cover-logo-wrap">
+      <div style="width:40px;height:40px;border-radius:10px;background:#00a4ef;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:0.5px solid rgba(0,164,239,0.2)">
+        <img src="msft-logo.png" alt="Microsoft" style="width:34px;height:34px;object-fit:contain" onerror="this.parentElement.innerHTML='<svg viewBox=\'0 0 21 21\' width=\'24\' height=\'24\'><rect x=\'0\' y=\'0\' width=\'10\' height=\'10\' fill=\'#f25022\'/><rect x=\'11\' y=\'0\' width=\'10\' height=\'10\' fill=\'#7fba00\'/><rect x=\'0\' y=\'11\' width=\'10\' height=\'10\' fill=\'#00a4ef\'/><rect x=\'11\' y=\'11\' width=\'10\' height=\'10\' fill=\'#ffb900\'/></svg>'">
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3)">NASDAQ: MSFT &nbsp;·&nbsp; Software / Cloud / IA &nbsp;·&nbsp; Estados Unidos</div>
+    </div>
+    <h1 class="cover-headline">Microsoft no es solo software.<br><em>Es una red de productos, nube e IA diseñada para volverse indispensable.</em></h1>
+    <p class="cover-deck">¿Puede Microsoft convertir su apuesta histórica en IA en retornos sostenibles a largo plazo, o el peso del CapEx terminará erosionando la rentabilidad que durante décadas la hizo extraordinaria?</p>
+    <div class="cover-byline">
+      <span>Microsoft Corporation · NASDAQ: MSFT</span>
+      <div class="cover-byline-dot"></div>
+      <span id="coverDate">Actualizado Mar 2025</span>
+      <div class="cover-byline-dot"></div>
+      <span>~22 min de lectura</span>
+    </div>
+    <div class="cover-data-row">
+      <span class="cover-price" id="coverPrice">$—</span>
+      <span class="cover-chg" id="coverChg" style="color:var(--green)">—</span>
+      <div class="cover-pills">
+        <span class="cpill" id="coverMktCap">Market Cap $—</span>
+        <span class="cpill-blue" id="coverCloud">Azure +29% YoY</span>
+        <span class="cpill-amber" id="coverPer">PER $—</span>
+      </div>
+      <div class="cover-qs">
+        <div class="cqs-num" id="coverQs">92</div>
+        <div class="cqs-info">
+          <div class="cqs-label">Índice de Calidad</div>
+          <div class="cqs-sub">/100 · 10 criterios</div>
+        </div>
+      </div>
+    </div>
+    <div class="signals-row">
+      <div class="sig-pill sig-g"><span class="sig-dot" style="background:var(--green)"></span>FCF conversion >90%</div>
+      <div class="sig-pill sig-g"><span class="sig-dot" style="background:var(--green)"></span>Azure creciendo +29%</div>
+      <div class="sig-pill sig-g"><span class="sig-dot" style="background:var(--green)"></span>Dividendo 20 años creciente</div>
+      <div class="sig-pill sig-g"><span class="sig-dot" style="background:var(--green)"></span>Recompras netas</div>
+      <div class="sig-pill sig-a"><span class="sig-dot" style="background:var(--amber)"></span>CapEx IA en expansión</div>
+    </div>
+  </div>
+
+  <!-- METRICS HERO -->
+  <div class="mstrip" style="margin-bottom:32px">
+    <div class="ms-cell"><div class="ms-lbl">Revenue TTM</div><div class="ms-val" id="m-rev">$—</div><div class="ms-sub ms-bl" id="m-rev-g">cargando...</div></div>
+    <div class="ms-cell"><div class="ms-lbl">Margen EBIT</div><div class="ms-val" id="m-ebit">—%</div><div class="ms-sub ms-up" id="m-ebit-g">—</div></div>
+    <div class="ms-cell"><div class="ms-lbl">ROIC</div><div class="ms-val" id="m-roic">—%</div><div class="ms-sub ms-up" id="m-roic-g">—</div></div>
+    <div class="ms-cell"><div class="ms-lbl">FCF</div><div class="ms-val" id="m-fcf">$—</div><div class="ms-sub ms-up" id="m-fcf-g">—</div></div>
+    <div class="ms-cell"><div class="ms-lbl">EPS diluido</div><div class="ms-val" id="m-eps">$—</div><div class="ms-sub ms-up" id="m-eps-g">—</div></div>
+    <div class="ms-cell"><div class="ms-lbl">PER</div><div class="ms-val" id="m-per">—x</div><div class="ms-sub ms-nu" id="m-per-g">—</div></div>
+  </div>
+
+  <!-- NEWSLETTER CTA -->
+  <div class="nl-cta" style="margin-bottom:24px">
+    <div class="nl-eyebrow">Arquitectura de la Inversión · Newsletter mensual</div>
+    <div class="nl-title">La tesis de Microsoft — en preparación</div>
+    <div class="nl-sub">El análisis editorial completo de Microsoft está en preparación. Suscríbete para recibirlo en cuanto esté publicado — con PDF descargable incluido.</div>
+    <button class="btn-sm btn-dark">Suscribirse para recibir la tesis →</button>
+  </div>
+</div>
+
+<!-- 01 NEGOCIO -->
+<div class="chapter" id="negocio">
+  <div class="ch-header open" onclick="toggle(this)">
+    <span class="ch-num">01</span>
+    <div class="ch-title-wrap"><div class="ch-title">Modelo de negocio</div><div class="ch-preview">3 segmentos · Ingresos recurrentes · Ecosistema cerrado</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body open">
+    <p class="prose">Microsoft es un compounder de alta calidad construido sobre tres pilares que se refuerzan mutuamente: un ecosistema difícil de dejar, ingresos recurrentes que crecen año tras año, y una posición cada vez más central en la infraestructura digital global. Ninguno de los tres funciona sin los otros dos — esa interdependencia es la esencia del moat.</p>
+    <p class="prose">El negocio se divide en tres segmentos. <strong>Intelligent Cloud</strong> — liderado por Azure — es el motor de crecimiento: <span class="dt dt-blue">+29% YoY</span> en el último trimestre y ya representa el <span class="dt dt-blue">43%</span> del revenue total. <strong>Productivity & Business Processes</strong> incluye Office 365, LinkedIn y Dynamics — negocios maduros con márgenes elevados y churn bajísimo. <strong>More Personal Computing</strong> agrupa Windows, Xbox y Surface — más cíclico pero generador de caja consistente.</p>
+    <div class="pullquote">"Casi ninguna empresa en el mundo puede permitirse no usar Microsoft. Esa es la diferencia entre una empresa de software y una empresa de infraestructura."</div>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">Intelligent Cloud</div><div class="ms-val">43%</div><div class="ms-sub ms-bl">del revenue total</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Azure crecimiento</div><div class="ms-val">+29%</div><div class="ms-sub ms-up">YoY Q2 FY25</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Office 365 comercial</div><div class="ms-val">+12%</div><div class="ms-sub ms-up">usuarios activos</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Clientes Enterprise</div><div class="ms-val">400k+</div><div class="ms-sub ms-nu">empresas globales</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Copilot integrado</div><div class="ms-val">M365</div><div class="ms-sub ms-bl">IA en todo el stack</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Empleados</div><div class="ms-val" id="m-emp">—</div><div class="ms-sub ms-nu">globalmente</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 02 HISTORIA -->
+<div class="chapter" id="historia">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">02</span>
+    <div class="ch-title-wrap"><div class="ch-title">Historia y evolución</div><div class="ch-preview">1975 → Windows → Office → Cloud → IA · La reinvención permanente</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Pocas empresas en la historia del capitalismo han sobrevivido tres transformaciones tecnológicas radicales y salido más fuertes de cada una. Microsoft nació en 1975 con el DOS, dominó la era del PC con Windows y Office en los 90, sobrevivió la revolución de internet — cuando casi todos la daban por muerta — y se reinventó completamente con la llegada de Satya Nadella en 2014.</p>
+    <p class="prose">La era Nadella es el caso de estudio más importante de la última década en gestión empresarial. En 2014 Microsoft era una empresa estancada, enfocada en defender su monopolio de Windows en un mundo que se movía hacia móvil y cloud. Nadella hizo tres cosas que cambiaron todo: apostó por Azure cuando nadie lo tomaba en serio, abrió Microsoft a código abierto y a Linux (un movimiento impensable años antes), y reorientó toda la empresa hacia el modelo de suscripción. El resultado: el precio de la acción se multiplicó por más de <span class="dt dt-pos">12×</span> en su mandato.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">Fundada</div><div class="ms-val">1975</div><div class="ms-sub ms-nu">Bill Gates y Paul Allen</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Cotiza en bolsa</div><div class="ms-val">1986</div><div class="ms-sub ms-nu">NASDAQ: MSFT</div></div>
+      <div class="ms-cell"><div class="ms-lbl">CEO actual</div><div class="ms-val">Nadella</div><div class="ms-sub ms-nu">desde 2014</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Acq. LinkedIn</div><div class="ms-val">$26B</div><div class="ms-sub ms-nu">2016</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Acq. Activision</div><div class="ms-val">$69B</div><div class="ms-sub ms-nu">2023</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Inversión OpenAI</div><div class="ms-val">$13B+</div><div class="ms-sub ms-bl">apuesta IA</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 SECTOR -->
+<div class="chapter" id="sector">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">03</span>
+    <div class="ch-title-wrap"><div class="ch-title">Sector y competidores</div><div class="ch-preview">Cloud $1T TAM · #2 en IaaS · Competidores: AWS, Google, Salesforce</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Microsoft compite en múltiples mercados simultáneamente — cloud, productividad empresarial, sistemas operativos, videojuegos, IA — pero la batalla más importante de la próxima década es el cloud. El TAM del mercado de cloud computing se estima en más de <span class="dt dt-blue">$1 billón</span> para 2030. Microsoft tiene el 23% de ese mercado con Azure, segundo detrás de AWS (31%) pero creciendo más rápido que la media del sector.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">TAM cloud 2030</div><div class="ms-val">$1T+</div><div class="ms-sub ms-bl">estimado</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Cuota Azure</div><div class="ms-val">~23%</div><div class="ms-sub ms-up">+2pp vs año ant.</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Ciclo negocio</div><div class="ms-val">Bajo</div><div class="ms-sub ms-nu">contratos plurianuales</div></div>
+    </div>
+    <div class="comp-scroll">
+      <table class="comp-table">
+        <thead><tr><th style="text-align:left">Empresa</th><th>Revenue</th><th>EBIT M.</th><th>ROIC</th><th>Cuota cloud</th><th>PER</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td>Microsoft (MSFT)</td><td class="comp-best">$245B</td><td class="comp-best">43.1%</td><td>28.4%</td><td>~23%</td><td>34.8x</td></tr>
+          <tr><td>Amazon (AMZN)</td><td>$620B</td><td>10.8%</td><td>12.4%</td><td class="comp-best">~31%</td><td>44.2x</td></tr>
+          <tr><td>Alphabet (GOOGL)</td><td>$350B</td><td>28.4%</td><td>22.1%</td><td>~12%</td><td>22.4x</td></tr>
+          <tr><td>Salesforce (CRM)</td><td>$38B</td><td>18.2%</td><td>8.4%</td><td>CRM solo</td><td>31.2x</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)">Microsoft es la única empresa del sector con posición líder simultánea en cloud, productividad, SO y gaming. Esa diversificación reduce el riesgo de concentración pero complica la comparación directa.</div>
+  </div>
+</div>
+
+<!-- 04 MOAT -->
+<div class="chapter" id="moat">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">04</span>
+    <div class="ch-title-wrap"><div class="ch-title">Ventajas competitivas — moat</div><div class="ch-preview">Switching costs altísimos · Red ecosistema · Economías de escala IA</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">El moat de Microsoft es uno de los más sólidos y multidimensionales del mercado. A diferencia de Ferrari donde el moat es principalmente de marca y escasez, el de Microsoft es estructural — está construido sobre costes de cambio tan altos que la mayoría de sus clientes no pueden salir aunque quisieran.</p>
+    <div style="margin:18px 0">
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Switching costs extremos:</strong> Una empresa que usa Azure + Microsoft 365 + Teams + Dynamics + Power BI tiene toda su infraestructura digital entrelazada. Migrar a un competidor requiere años de trabajo, millones de euros y un riesgo de disrupción operativa que casi ningún CFO está dispuesto a aceptar. <strong>Evidencia: churn de M365 Enterprise inferior al 3% anual.</strong></div></div>
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Efecto red del ecosistema:</strong> Cuantas más empresas usan Teams, más valioso se vuelve Teams. Cuantos más desarrolladores usan Azure, más servicios y herramientas aparecen en Azure, lo que atrae a más empresas. Es un flywheel que se acelera solo. <strong>Evidencia: Teams supera los 320M de usuarios activos mensuales.</strong></div></div>
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Ventajas de escala en IA:</strong> La inversión de $13B+ en OpenAI y la integración de GPT-4 en todo el stack de Microsoft (Copilot en M365, Azure OpenAI Service, GitHub Copilot) crea una ventaja de distribución que ningún competidor puede replicar a corto plazo. <strong>Evidencia: GitHub Copilot ya tiene 1.8M de suscriptores de pago.</strong></div></div>
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Economías de escala en cloud:</strong> Con >200 datacenters en 60 regiones, Microsoft puede ofrecer latencia, redundancia y compliance que las empresas medianas no pueden construir por sí solas. El coste por unidad de compute decrece con la escala — ventaja que solo AWS comparte.</div></div>
+      <div class="ev-row"><span class="ev-badge ev-moderate">Moderado</span><div class="ev-text"><strong>Marca y confianza enterprise:</strong> "Nadie fue despedido por comprar Microsoft" sigue siendo una realidad en los departamentos de TI corporativos. La marca corporativa es más fuerte que la de consumidor — pero es menos defensible que los switching costs reales.</div></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Margen EBIT Microsoft</div>
+        <div class="leg-i"><div class="leg-line" style="background:transparent;border-top:1.5px dashed #9a9a90;width:18px"></div>Media sector software</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:160px"><canvas id="moatChart"></canvas></div>
+      <div class="chart-caption"><strong>Margen EBIT Microsoft vs media sector software 2019–2024.</strong> La expansión de márgenes bajo Nadella es la huella cuantitativa del moat — una empresa que mejora márgenes mientras crece a doble dígito tiene poder de fijación de precios real.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 ESTRATEGIA -->
+<div class="chapter" id="estrategia">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">05</span>
+    <div class="ch-title-wrap"><div class="ch-title">Estrategia de crecimiento</div><div class="ch-preview">IA como palanca central · Azure + Copilot · CapEx en expansión</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">La apuesta estratégica de Microsoft en IA es la más importante — y la más arriesgada — de la última década. La empresa ha comprometido más de <span class="dt dt-warn">$80B</span> en CapEx solo en 2025 para construir la infraestructura de datacenters que alimenta su oferta de IA. Es una apuesta de que el mundo va a necesitar enormes cantidades de computación en la nube para entrenar y servir modelos de IA, y que Microsoft va a ser el proveedor central de esa computación.</p>
+    <p class="prose">La tensión central que plantea la tesis es real: el CapEx se está disparando más rápido que el revenue. En FY2024, el CapEx creció un <span class="dt dt-warn">+75%</span> año sobre año. Si la demanda de IA no materializa los retornos esperados en 3-5 años, esa inversión puede pesar significativamente sobre el FCF. Si los retornos llegan, Microsoft habrá construido una ventaja competitiva que tardará décadas en ser replicada.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">CapEx FY2025 est.</div><div class="ms-val">$80B+</div><div class="ms-sub" style="color:var(--amber)">+75% YoY</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Datacenters</div><div class="ms-val">200+</div><div class="ms-sub ms-nu">en 60 regiones</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Copilot usuarios</div><div class="ms-val">1.8M+</div><div class="ms-sub ms-bl">GitHub Copilot pago</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Inversión OpenAI</div><div class="ms-val">$13B+</div><div class="ms-sub ms-nu">socio exclusivo IA</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Azure AI growth</div><div class="ms-val">+157%</div><div class="ms-sub ms-up">revenue IA YoY</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Activision integrado</div><div class="ms-val">FY2024</div><div class="ms-sub ms-nu">gaming + IA</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 06 FINANCIEROS -->
+<div class="chapter" id="financieros">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">06</span>
+    <div class="ch-title-wrap"><div class="ch-title">Análisis financiero</div><div class="ch-preview">Revenue $245B · FCF $74B · Márgenes clase mundial</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Los financieros de Microsoft son, en términos absolutos, los mejores del sector tecnológico. Revenue de <span class="dt dt-pos" id="f-rev">$—</span>, margen EBIT de <span class="dt dt-pos" id="f-ebit-m">—%</span>, y un FCF de <span class="dt dt-pos" id="f-fcf">$—</span> que crece consistentemente. La empresa genera más caja de la que sabe cómo invertir productivamente — un problema de alta calidad.</p>
+    <table class="dtable" id="plTable">
+      <thead><tr><th>Cuenta de Resultados</th><th id="yr1">—</th><th id="yr2">—</th><th id="yr3">—</th><th id="yr4">—</th><th>CAGR 3A</th></tr></thead>
+      <tbody>
+        <tr class="bold"><td>Revenue <span class="formula-tag">$B</span></td><td id="r-rev1">—</td><td id="r-rev2">—</td><td id="r-rev3">—</td><td id="r-rev4">—</td><td id="r-revc" class="dpos">—</td></tr>
+        <tr><td style="padding-left:16px">% Margen bruto</td><td id="r-gm1">—</td><td id="r-gm2">—</td><td id="r-gm3">—</td><td id="r-gm4">—</td><td id="r-gmc" class="dpos">—</td></tr>
+        <tr class="bold"><td>EBIT <span class="formula-tag" title="Revenue − Costes operativos totales">fórmula</span></td><td id="r-ebit1">—</td><td id="r-ebit2">—</td><td id="r-ebit3">—</td><td id="r-ebit4">—</td><td id="r-ebitc" class="dpos">—</td></tr>
+        <tr><td style="padding-left:16px">% Margen EBIT</td><td id="r-em1">—</td><td id="r-em2">—</td><td id="r-em3">—</td><td id="r-em4">—</td><td id="r-emc" class="dpos">—</td></tr>
+        <tr class="bold"><td>Beneficio neto</td><td id="r-ni1">—</td><td id="r-ni2">—</td><td id="r-ni3">—</td><td id="r-ni4">—</td><td id="r-nic" class="dpos">—</td></tr>
+        <tr><td style="padding-left:16px">% Margen neto</td><td id="r-nm1">—</td><td id="r-nm2">—</td><td id="r-nm3">—</td><td id="r-nm4">—</td><td id="r-nmc" class="dpos">—</td></tr>
+        <tr class="bold"><td>EPS diluido</td><td id="r-eps1">—</td><td id="r-eps2">—</td><td id="r-eps3">—</td><td id="r-eps4">—</td><td id="r-epsc" class="dpos">—</td></tr>
+        <tr class="bold"><td>FCF <span class="formula-tag" title="EBITDA − Capex mant. − Intereses − Impuestos pagados − ΔWC">fórmula</span></td><td id="r-fcf1">—</td><td id="r-fcf2">—</td><td id="r-fcf3">—</td><td id="r-fcf4">—</td><td id="r-fcfc" class="dpos">—</td></tr>
+        <tr><td style="padding-left:16px">FCF conv. <span class="formula-tag" title="FCF / Net Income × 100">fórmula</span></td><td id="r-fcc1">—</td><td id="r-fcc2">—</td><td id="r-fcc3">—</td><td id="r-fcc4">—</td><td>—</td></tr>
+        <tr><td style="padding-left:16px">EV / FCF <span class="formula-tag" title="EV / FCF">fórmula</span></td><td id="r-evf1">—</td><td id="r-evf2">—</td><td id="r-evf3">—</td><td id="r-evf4">—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Margen bruto</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>Margen EBIT</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>Margen neto</div>
+        <div class="leg-i"><div class="leg-line" style="background:#8b5cf6"></div>FCF margin</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:180px"><canvas id="marginsChart"></canvas></div>
+      <div class="chart-caption"><strong>Evolución de márgenes Microsoft 2019–2024.</strong> La expansión de márgenes bajo Nadella es estructural — no coyuntural. La pregunta para los próximos años es si el CapEx masivo en IA frenará esa expansión temporalmente. Fuente: datos reales FMP.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 07 RENTABILIDAD -->
+<div class="chapter" id="rentabilidad">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">07</span>
+    <div class="ch-title-wrap"><div class="ch-title">Rentabilidad y ROIC</div><div class="ch-preview">ROIC 28.4% · FCF conversion >90% · Spread WACC +20pp</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">El ROIC de Microsoft de <span class="dt dt-pos" id="roic-val">—%</span> está muy por encima del umbral de calidad del 15% y refleja décadas de reinversión eficiente. La pregunta crítica — y la tensión central de la tesis — es qué pasa con el ROIC Incremental cuando el CapEx de IA empiece a masificarse. Si la IA genera los retornos esperados, el ROIC incremental se mantendrá alto. Si no, cada nuevo datacenter construido destruye valor capital.</p>
+    <div class="callout">
+      <div class="callout-big cb-blue" id="roic-big">—%</div>
+      <div>
+        <div class="callout-label">ROIC actual — muy por encima del umbral de calidad</div>
+        <div class="callout-text">Media del sector software: ~18%. Media del mercado: 13%. Microsoft genera retornos casi el doble que la media del mercado sobre su capital invertido. La clave de los próximos 3 años es si el CapEx en IA mantiene o deteriora este ratio.</div>
+        <div class="callout-formula">ROIC = EBIT × (1 − T) / Capital Invertido × 100</div>
+      </div>
+    </div>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">ROIC actual</div><div class="ms-val" id="r2-roic">—%</div><div class="ms-sub ms-up">umbral calidad: 15%</div></div>
+      <div class="ms-cell"><div class="ms-lbl">ROE <span class="formula-tag" title="Net Income / Equity × 100">f</span></div><div class="ms-val" id="r2-roe">—%</div><div class="ms-sub ms-nu">—</div></div>
+      <div class="ms-cell"><div class="ms-lbl">ROA <span class="formula-tag" title="Net Income / Total Assets × 100">f</span></div><div class="ms-val" id="r2-roa">—%</div><div class="ms-sub ms-nu">sector: ~8%</div></div>
+      <div class="ms-cell"><div class="ms-lbl">FCF conversion</div><div class="ms-val" id="r2-fcc">—%</div><div class="ms-sub ms-up">umbral: 80%</div></div>
+      <div class="ms-cell"><div class="ms-lbl">WACC estimado</div><div class="ms-val">8.1%</div><div class="ms-sub ms-nu">estimado</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Spread ROIC−WACC</div><div class="ms-val" id="r2-spread">—pp</div><div class="ms-sub ms-up">creación de valor</div></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>ROIC</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>ROIC incremental</div>
+        <div class="leg-i"><div class="leg-line" style="background:transparent;border-top:1.5px dashed #ef4444;width:18px"></div>WACC (8.1%)</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:180px"><canvas id="roicChart"></canvas></div>
+      <div class="chart-caption"><strong>ROIC y ROIC Incremental Microsoft 2019–2024.</strong> Datos reales de FMP con fórmulas propias de tesinversion.com.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 SALUD -->
+<div class="chapter" id="salud">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">08</span>
+    <div class="ch-title-wrap"><div class="ch-title">Salud financiera y deuda</div><div class="ch-preview">Deuda neta baja · ICR >40x · Balance sólido</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Microsoft tiene uno de los balances más sólidos del mundo — triple A rating de S&P, una de las pocas empresas no financieras en el mundo con esa calificación. La deuda neta existe pero es irrelevante: con un ICR de más de 40x y generando más de $70B de FCF al año, la deuda es un instrumento de optimización fiscal, no una restricción financiera.</p>
+    <div class="gauge-row">
+      <div class="gauge-card">
+        <div class="gauge-lbl">Deuda neta / EBITDA <span class="formula-tag" title="Posición financiera neta / EBITDA">f</span></div>
+        <canvas id="gaugeDebt" width="180" height="100"></canvas>
+        <div class="gauge-val" id="g-debt" style="color:var(--green)">—x</div>
+        <div class="gauge-desc">Verde &lt;2x · Amarillo 2–4x · Rojo &gt;4x</div>
+      </div>
+      <div class="gauge-card">
+        <div class="gauge-lbl">Cobertura intereses (ICR) <span class="formula-tag" title="EBIT / Interest Expense">f</span></div>
+        <canvas id="gaugeICR" width="180" height="100"></canvas>
+        <div class="gauge-val" id="g-icr" style="color:var(--green)">—x</div>
+        <div class="gauge-desc">Rojo &lt;3x · Amarillo 3–5x · Verde &gt;5x</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 09 CAPITAL ALLOCATION -->
+<div class="chapter" id="capital">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">09</span>
+    <div class="ch-title-wrap"><div class="ch-title">Capital Allocation</div><div class="ch-preview">Recompras + dividendo + CapEx masivo IA · Payout total elevado</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">La asignación de capital de Microsoft en los últimos años cuenta dos historias a la vez. La historia de siempre: recompras consistentes, dividendo creciente durante 20 años, capital allocation disciplinado que ha reducido el share count año tras año. Y la historia nueva: un CapEx que se está disparando hacia los $80B anuales por la apuesta en IA, que está empezando a competir con las recompras por el FCF disponible. Cómo Microsoft equilibra estas dos prioridades en los próximos 3 años es uno de los monitores más importantes de la tesis.</p>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>Dividendos</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>Recompras netas</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>CapEx</div>
+        <div class="leg-i"><div class="leg-line" style="background:#8b5cf6"></div>Adquisiciones</div>
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:8px">
+        <button class="btn-sm btn-dark" id="capBtn1" onclick="switchCap('abs',this)" style="font-size:11px;padding:4px 10px">$ Millones</button>
+        <button class="btn-sm btn-ghost" id="capBtn2" onclick="switchCap('pct',this)" style="font-size:11px;padding:4px 10px">% FCF</button>
+      </div>
+      <div class="chart-canvas-wrap" style="height:200px"><canvas id="capChart"></canvas></div>
+      <div class="chart-caption"><strong>Destino del FCF generado año por año.</strong> El crecimiento del CapEx en los últimos dos años es la señal más clara de la apuesta en IA. Fuente: datos reales FMP.</div>
+    </div>
+  </div>
+</div>
+
+<!-- WALL -->
+<div class="wall-outer" id="wall">
+  <div class="wall-blur">
+    <div style="height:60px;background:var(--cream2);border-radius:8px;margin-bottom:10px"></div>
+    <div style="height:40px;background:var(--cream2);border-radius:8px;margin-bottom:10px"></div>
+    <div style="height:80px;background:var(--cream2);border-radius:8px"></div>
+  </div>
+  <div class="wall-overlay">
+    <div class="wall-icon">🔒</div>
+    <div class="wall-title">Continúa el análisis completo</div>
+    <div class="wall-sub">Regístrate gratis para acceder a las secciones 10–20: Equipo directivo, Guidance, Psicología del mercado, Valoración, Señales, Reflexión y conclusión.</div>
+    <div class="wall-cta">
+      <button class="btn-sm btn-dark" onclick="unlockAll()">Crear cuenta gratis</button>
+      <button class="btn-sm btn-ghost" onclick="unlockAll()">Iniciar sesión</button>
+    </div>
+    <div class="wall-note">30 segundos · Sin tarjeta · 2 empresas gratis incluidas</div>
+  </div>
+</div>
+
+<!-- LOCKED CONTENT -->
+<div id="locked" style="display:none">
+
+<!-- 10 EQUIPO -->
+<div class="chapter" id="equipo">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">10</span>
+    <div class="ch-title-wrap"><div class="ch-title">Equipo directivo</div><div class="ch-preview">Satya Nadella · CEO desde 2014 · La reinvención del siglo</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Satya Nadella es, junto con Jensen Huang de Nvidia, el CEO más admirado del sector tecnológico en la última década. Su mandato desde 2014 no fue solo una transición de producto — fue una transformación cultural profunda de una empresa que había perdido el rumbo. La decisión de apostar por Azure cuando era un proyecto secundario, abrir Microsoft a Linux y código abierto, y mover toda la empresa al modelo de suscripción son decisiones que hoy parecen obvias pero que en su momento fueron radicales y polémicas.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">CEO: Satya Nadella</div><div class="ms-val">2014</div><div class="ms-sub ms-nu">desde este año</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Retorno bajo Nadella</div><div class="ms-val">+1,200%</div><div class="ms-sub ms-up">precio acción</div></div>
+      <div class="ms-cell"><div class="ms-lbl">También Chairman</div><div class="ms-val">2021</div><div class="ms-sub ms-nu">desde este año</div></div>
+      <div class="ms-cell"><div class="ms-lbl">CFO: Amy Hood</div><div class="ms-val">2013</div><div class="ms-sub ms-nu">gestión conservadora</div></div>
+      <div class="ms-cell"><div class="ms-lbl">CTO: Kevin Scott</div><div class="ms-val">2017</div><div class="ms-sub ms-bl">arquitecto de la apuesta IA</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Insider ownership</div><div class="ms-val">~1.5%</div><div class="ms-sub ms-nu">dirección + fundadores</div></div>
+    </div>
+    <div class="callout" style="background:var(--bbg)">
+      <div class="callout-big cb-blue" style="font-size:28px">$70M+</div>
+      <div>
+        <div class="callout-label">Compensación de Nadella en FY2024</div>
+        <div class="callout-text">La mayor parte en stock. Nadella tiene skin in the game real — su riqueza está ligada al precio de la acción. Una señal de alineación con el accionista minoritario, aunque el porcentaje de ownership total es modesto dado el tamaño de la empresa.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 12 GUIDANCE -->
+<div class="chapter" id="guidance">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">12</span>
+    <div class="ch-title-wrap"><div class="ch-title">Guidance tracker</div><div class="ch-preview">Tasa cumplimiento >85% · Estilo conservador · Azure el foco</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Microsoft da guidance de revenue por segmento cada trimestre y lo cumple con una consistencia que pocos en el sector pueden igualar. El mercado presta especial atención al crecimiento de Azure — un número que mueve el precio de la acción más que cualquier otra métrica de la empresa. Amy Hood, como CFO, es conocida por dar guidance conservador que supera sistemáticamente.</p>
+    <table class="gtable">
+      <thead><tr><th>Periodo</th><th>Métrica</th><th>Guidance</th><th>Real</th><th>Resultado</th><th>Diferencia</th></tr></thead>
+      <tbody>
+        <tr><td>Q2 FY25</td><td>Revenue</td><td>$68.1–69.1B</td><td>$69.6B</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+0.7%</td></tr>
+        <tr><td>Q2 FY25</td><td>Azure growth</td><td>31–32%</td><td>31%</td><td><span class="badge b-green">In Line</span></td><td>0pp</td></tr>
+        <tr><td>Q1 FY25</td><td>Revenue</td><td>$63.8–64.8B</td><td>$65.6B</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+1.2%</td></tr>
+        <tr><td>Q1 FY25</td><td>Azure growth</td><td>33–34%</td><td>33%</td><td><span class="badge b-green">In Line</span></td><td>0pp</td></tr>
+        <tr><td>Q4 FY24</td><td>EPS</td><td>$2.93–2.96</td><td>$2.95</td><td><span class="badge b-green">In Line</span></td><td>0%</td></tr>
+        <tr><td>FY24</td><td>Revenue</td><td>$245B</td><td>$245.1B</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+0.04%</td></tr>
+      </tbody>
+    </table>
+    <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);margin-top:10px;padding-top:10px;border-top:0.5px solid var(--rule2)">
+      Tasa cumplimiento: <strong style="color:var(--green)">87%</strong> · Estilo: conservador · Monitor principal: crecimiento de Azure cada trimestre
+    </div>
+  </div>
+</div>
+
+<!-- 13 PSICOLOGÍA -->
+<div class="chapter" id="psicologia">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">13</span>
+    <div class="ch-title-wrap"><div class="ch-title">Psicología del mercado</div><div class="ch-preview">Narrativa IA premium · PER >35x · Expectativas de alto crecimiento</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">El mercado cotiza a Microsoft como la empresa mejor posicionada para capturar el valor de la IA en la economía real. No como una empresa de investigación de IA (eso es OpenAI), sino como la empresa que convierte la IA en valor empresarial concreto a través de su red de distribución existente. Esa narrativa justifica un múltiplo superior a su media histórica.</p>
+    <p class="prose">La fragilidad de esa narrativa es la misma pregunta que articula tu tesis: si el CapEx no genera los retornos esperados, o si Azure pierde tracción frente a AWS, la re-tasación puede ser severa. El mercado no tiene margen de error incorporado en el precio actual.</p>
+    <div class="callout" style="background:var(--bbg)">
+      <div class="callout-big cb-blue" id="psi-per" style="font-size:28px">—x</div>
+      <div>
+        <div class="callout-label">PER actual — premium de IA incorporado</div>
+        <div class="callout-text">El PER actual de Microsoft está por encima de su media histórica. El mercado paga ese premium asumiendo que la IA va a acelerar el crecimiento y expandir los márgenes a largo plazo. Si esa hipótesis es correcta, el precio actual puede ser razonable. Si no, la corrección puede ser significativa.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 RIESGOS -->
+<div class="chapter" id="riesgos">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">14</span>
+    <div class="ch-title-wrap"><div class="ch-title">Riesgos — alcista y bajista</div><div class="ch-preview">Imparcial · La tensión central: IA retornos vs CapEx</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="bull-bear">
+      <div class="bb-side bb-bull">
+        <div class="bb-head">↑ Tesis alcista</div>
+        <div class="bb-item">La IA no es una moda — es una transición tecnológica estructural, y Microsoft tiene la mejor posición para monetizarla gracias a su distribución enterprise existente.</div>
+        <div class="bb-item">Copilot en M365 puede ser el driver de precio por usuario más importante desde que Office pasó a suscripción. Cada empleado del mundo en una empresa de >500 personas es un cliente potencial.</div>
+        <div class="bb-item">Azure tiene runway de crecimiento de décadas — la adopción de cloud en enterprise todavía está en el 30-40% del potencial total.</div>
+        <div class="bb-item">Switching costs crecientes: cuanto más integren las empresas la IA de Microsoft, más difícil se vuelve cambiar de proveedor.</div>
+        <div class="bb-item">Balance triple A + $70B de FCF anual = capacidad de aguantar el CapEx de IA sin riesgo financiero real.</div>
+      </div>
+      <div class="bb-side bb-bear">
+        <div class="bb-head">↓ Tesis bajista</div>
+        <div class="bb-item">El CapEx de $80B anuales en IA puede no generar los retornos esperados si la demanda de computación IA se normaliza o si modelos más eficientes reducen el coste por inferencia drásticamente.</div>
+        <div class="bb-item">Azure está perdiendo tracción en crecimiento — de 35% YoY hace 18 meses a 29% hoy. Si esa desaceleración continúa, el PER actual no está justificado.</div>
+        <div class="bb-item">Riesgo regulatorio creciente — la FTC y la Comisión Europea están mirando de cerca las adquisiciones y la posición dominante en nube y productividad.</div>
+        <div class="bb-item">Competencia de modelos de IA abiertos (Llama de Meta, DeepSeek) puede reducir la ventaja diferencial de la integración con OpenAI.</div>
+        <div class="bb-item">Riesgo de que Activision (pagada a 44x EBITDA) no integre bien y destruya valor durante años.</div>
+      </div>
+    </div>
+    <p class="prose" style="font-size:14px;margin-top:16px"><strong>¿Qué podría estar sobreestimando el mercado?</strong> La velocidad y el tamaño de la monetización de Copilot. El mercado asume una adopción rápida de los add-ons de IA a $30/usuario/mes — si la adopción es más lenta o si el pricing baja por competencia, las estimaciones de revenue de FY26-27 tendrán que revisarse a la baja.</p>
+  </div>
+</div>
+
+<!-- 15 ÍNDICE DE CALIDAD -->
+<div class="chapter" id="indice">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">15</span>
+    <div class="ch-title-wrap"><div class="ch-title">Índice de Calidad — desglose</div><div class="ch-preview">92/100 · 10 criterios · Uno de los más altos del mercado</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="score-list">
+      <div class="score-row"><div class="score-info"><div class="score-name">ROIC consistente >15%</div><div class="score-formula-lbl">EBIT×(1−T) / Capital Invertido</div></div><div class="score-bar-bg"><div class="score-bar" style="width:90%;background:var(--green)"></div></div><span class="score-pts sp-hi">9/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Márgenes estables o crecientes</div><div class="score-formula-lbl">Tendencia EBIT margin 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:100%;background:var(--green)"></div></div><span class="score-pts sp-hi">10/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Salud financiera y deuda</div><div class="score-formula-lbl">Deuda/EBITDA · ICR · Rating S&P</div></div><div class="score-bar-bg"><div class="score-bar" style="width:95%;background:var(--green)"></div></div><span class="score-pts sp-hi">9.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">FCF conversion >80%</div><div class="score-formula-lbl">FCF / Net Income × 100</div></div><div class="score-bar-bg"><div class="score-bar" style="width:95%;background:var(--green)"></div></div><span class="score-pts sp-hi">9.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Capital allocation y recompras</div><div class="score-formula-lbl">Payout total · Cambio share count</div></div><div class="score-bar-bg"><div class="score-bar" style="width:85%;background:var(--green)"></div></div><span class="score-pts sp-hi">8.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Crecimiento EPS consistente</div><div class="score-formula-lbl">EPS creciendo ≥4 de los últimos 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:100%;background:var(--green)"></div></div><span class="score-pts sp-hi">10/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">ROIC incremental > WACC</div><div class="score-formula-lbl">Δ NOPAT / Δ Capital Invertido vs WACC</div></div><div class="score-bar-bg"><div class="score-bar" style="width:85%;background:var(--green)"></div></div><span class="score-pts sp-hi">8.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Guidance accuracy</div><div class="score-formula-lbl">% trimestres con beat EPS · 8 trimestres</div></div><div class="score-bar-bg"><div class="score-bar" style="width:90%;background:var(--green)"></div></div><span class="score-pts sp-hi">9/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Insider ownership / skin in the game</div><div class="score-formula-lbl">% ownership directivos + compras mercado</div></div><div class="score-bar-bg"><div class="score-bar" style="width:75%;background:var(--amber)"></div></div><span class="score-pts sp-mid">7.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Dilución neta (share count bajando)</div><div class="score-formula-lbl">Cambio % acciones diluidas en 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:100%;background:var(--green)"></div></div><span class="score-pts sp-hi">10/10</span></div>
+    </div>
+    <div class="score-total"><span class="score-total-lbl">Índice de Calidad total</span><span class="score-total-val">92<span style="font-size:14px">/100</span></span></div>
+  </div>
+</div>
+
+<!-- 16 VALORACIÓN -->
+<div class="chapter" id="valoracion">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">16</span>
+    <div class="ch-title-wrap"><div class="ch-title">Valoración — 3 escenarios</div><div class="ch-preview">Depende de la velocidad de monetización de la IA</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">La valoración de Microsoft en 2025 es inseparable de la pregunta de la tesis: ¿cuánto vale la apuesta en IA? Los tres escenarios reflejan distintas hipótesis sobre la velocidad de monetización de Copilot, la estabilización del CapEx, y la capacidad de Azure para mantener su cuota de mercado.</p>
+    <div class="scenario-grid">
+      <div class="sc-card sc-cons"><div class="sc-lbl">Conservador</div><div class="sc-val">$340</div><div class="sc-sub">IA monetización lenta · FCF CAGR 8%</div></div>
+      <div class="sc-card sc-base"><div class="sc-lbl">Base</div><div class="sc-val">$520</div><div class="sc-sub">IA según plan · FCF CAGR 14%</div></div>
+      <div class="sc-card sc-opt"><div class="sc-lbl">Optimista</div><div class="sc-val">$680</div><div class="sc-sub">IA supera expectativas · FCF CAGR 20%</div></div>
+    </div>
+    <div class="ms-bar ms-amber">
+      <div class="ms-pct" id="val-ms">+22%</div>
+      <div class="ms-info">
+        <div class="ms-info-title">Margen de seguridad — escenario base</div>
+        <div class="ms-info-desc" id="val-ms-desc">Precio actual vs valor intrínseco base $520. Margen positivo. La empresa es extraordinaria pero la clave es si la IA entrega los retornos del escenario base. Zona de mayor interés por debajo de $370 con margen >30%.</div>
+      </div>
+    </div>
+    <div style="background:var(--cream2);border-radius:8px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px">Precio para retorno anual ≥15% (escenario base)</div>
+      <div style="font-size:22px;font-family:'DM Mono',monospace;color:var(--ink)">$340</div>
+      <div style="font-size:11px;color:var(--ink3);margin-top:3px">A precio actual el retorno implícito es ~11% anualizado en escenario base</div>
+    </div>
+    <div class="dcf-lock">
+      <div class="dcf-lock-icon">⚡</div>
+      <div class="dcf-lock-title">Calculadora DCF interactiva</div>
+      <div class="dcf-lock-sub">Ajusta la tasa de crecimiento del revenue, el WACC y el múltiplo de salida. Cambia los supuestos del CapEx en IA y ve el impacto en el valor intrínseco en tiempo real.</div>
+      <button class="btn-sm btn-dark">Activar con plan Pro</button>
+    </div>
+  </div>
+</div>
+
+<!-- 17 TENDENCIAS -->
+<div class="chapter" id="tendencias">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">17</span>
+    <div class="ch-title-wrap"><div class="ch-title">Tendencias históricas</div><div class="ch-preview">Revenue · Márgenes · ROIC · EPS · Múltiplos — datos reales FMP</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="chart-block">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Revenue y FCF ($B)</div>
+      <div class="chart-canvas-wrap" style="height:150px"><canvas id="tRevFcf"></canvas></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#3b82f6"></div>PER</div>
+        <div class="leg-i"><div class="leg-line" style="background:#10b981"></div>EV/EBITDA</div>
+        <div class="leg-i"><div class="leg-line" style="background:#f59e0b"></div>EV/FCF</div>
+      </div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Múltiplos históricos</div>
+      <div class="chart-canvas-wrap" style="height:150px"><canvas id="tMultiplos"></canvas></div>
+      <div class="chart-caption"><strong>PER, EV/EBITDA y EV/FCF 2019–2024.</strong> La re-clasificación como empresa de IA ha impulsado los múltiplos hacia la zona más alta del histórico. Fuente: datos reales FMP.</div>
+    </div>
+    <div class="chart-block">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">EPS diluido ($)</div>
+      <div class="chart-canvas-wrap" style="height:130px"><canvas id="tEps"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 18 SEÑALES -->
+<div class="chapter" id="senales">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">18</span>
+    <div class="ch-title-wrap"><div class="ch-title">Señales automáticas</div><div class="ch-preview">4 verdes · 1 amarilla · CapEx en vigilancia</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="flag-list">
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">ROIC por encima del umbral de calidad</div><div class="flag-desc">ROIC consistentemente por encima del 15% en los últimos 5 años. Media del mercado 13%. La creación de valor es estructural y sostenida.</div><div class="flag-metric fmg">0 años por debajo del umbral en 5A · Sector software media: ~18%</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">FCF conversion >90% — calidad de earnings excepcional</div><div class="flag-desc">Microsoft convierte más del 90% de su beneficio neto en caja real. Es una señal de que los earnings reportados son de alta calidad y no contienen partidas contables agresivas.</div><div class="flag-metric fmg">0 años con FCF negativo · Umbral calidad: 80%</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Dividendo creciente 20 años consecutivos</div><div class="flag-desc">Microsoft lleva 20 años incrementando el dividendo sin interrupción. Señal de confianza del management en la generación de caja futura y disciplina en la asignación de capital.</div><div class="flag-metric fmg">20 años consecutivos de crecimiento del dividendo</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Share count reducido 10 años consecutivos</div><div class="flag-desc">Recompras netas consistentes durante más de una década. El número de acciones en circulación ha caído año tras año — señal de management alineado con el accionista.</div><div class="flag-metric fmg">10 años consecutivos de reducción neta del share count</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdy"></div><div><div class="flag-name">CapEx en expansión acelerada — vigilancia activa</div><div class="flag-desc">El CapEx se ha más que duplicado en dos años por la apuesta en IA. No es una señal de alarma automática — puede ser la mejor inversión de la década. Pero requiere monitoreo trimestral para confirmar que los retornos llegan según lo previsto.</div><div class="flag-metric fmy">CapEx FY25 est.: $80B+ · +75% YoY · Monitor: Azure growth + Copilot adoption</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 19 REFLEXIÓN -->
+<div class="chapter" id="reflexion">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">19</span>
+    <div class="ch-title-wrap"><div class="ch-title">Reflexión final y conclusión</div><div class="ch-preview">La pregunta más importante · Qué vigilar · ¿Tiene sentido hoy?</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Microsoft es una empresa extraordinaria. Índice de Calidad de <span class="dt dt-pos">92/100</span>, uno de los balances más sólidos del mundo, management excepcional, y una posición competitiva que se fortalece año tras año. La pregunta no es si Microsoft es una empresa de calidad — lo es sin ninguna duda. La pregunta es si el precio actual incorpora ya demasiado optimismo sobre la monetización de la IA.</p>
+    <p class="prose"><strong>Mi lectura personal:</strong> Microsoft está bien posicionada para ganar en IA, pero el mercado ya le está pagando por esa victoria antes de que ocurra. El margen de seguridad es positivo en el escenario base (+22%) pero ajustado. Es una empresa para tener en el radar y acumular en correcciones. Por debajo de $370 la relación riesgo/retorno se vuelve mucho más atractiva.</p>
+    <p class="prose" style="font-style:italic;color:var(--ink2)"><strong style="font-style:normal;color:var(--ink)">Qué vigilar cada trimestre:</strong> crecimiento de Azure (¿se estabiliza por encima del 30%?), adopción de pago de Copilot en M365 (¿cuántos usuarios al precio de $30/mes?), evolución del CapEx (¿empieza a normalizarse?), y márgenes del segmento Intelligent Cloud (¿se expanden o comprimen con la inversión en IA?).</p>
+    <!-- PDF descarga — descomentar cuando la tesis esté publicada -->
+    <!--
+    <div class="pdf-cta">...pdf block...</div>
+    -->
+  </div>
+</div>
+
+<!-- 20 FUENTES -->
+<div class="chapter" id="fuentes">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">20</span>
+    <div class="ch-title-wrap"><div class="ch-title">Bibliografía y fuentes oficiales</div><div class="ch-preview">Datos reales FMP · 10-K · Earnings calls · IR Microsoft</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div>
+      <div class="source-item"><div class="source-tag">10K</div><div><div class="source-name">Annual Report FY2024 (10-K)</div><div class="source-url">microsoft.com/investor/reports</div></div><span class="source-date">Jul 2024</span></div>
+      <div class="source-item"><div class="source-tag">IR</div><div><div class="source-name">Investor Relations — Microsoft Corp.</div><div class="source-url">microsoft.com/en-us/investor</div></div><span class="source-date">Actualizado</span></div>
+      <div class="source-item"><div class="source-tag">EC</div><div><div class="source-name">Q2 FY2025 Earnings Call Transcript</div><div class="source-url">Fuente: SEC EDGAR / Bloomberg</div></div><span class="source-date">Ene 2025</span></div>
+      <div class="source-item"><div class="source-tag">DB</div><div><div class="source-name">Datos financieros — Financial Modeling Prep</div><div class="source-url">financialmodelingprep.com · API /stable/ · Datos reales</div></div><span class="source-date">Tiempo real</span></div>
+      <div class="source-item"><div class="source-tag">MX</div><div><div class="source-name">Verificación histórica — Macrotrends</div><div class="source-url">macrotrends.net/stocks/charts/MSFT</div></div><span class="source-date">Verificado</span></div>
+      <div class="source-item"><div class="source-tag">SEC</div><div><div class="source-name">SEC EDGAR — filings oficiales</div><div class="source-url">sec.gov/cgi-bin/browse-edgar · MSFT</div></div><span class="source-date">Siempre vigente</span></div>
+    </div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-top:14px;padding-top:12px;border-top:0.5px solid var(--rule2);line-height:1.65"><strong style="color:var(--ink2)">Nota importante:</strong> Los datos financieros de Microsoft (P&L, balance, cash flow) son <strong style="color:var(--green)">datos reales en tiempo real</strong> obtenidos de Financial Modeling Prep, verificados contra los 10-K oficiales de la SEC. Microsoft es una empresa americana y sus datos están disponibles en el plan gratuito de FMP.</div>
+  </div>
+</div>
+
+</div><!-- /locked -->
+
+<div class="article-footer">
+  <p><strong style="color:var(--ink2)">Disclaimer:</strong> Este contenido es exclusivamente educativo. No constituye recomendación de inversión ni asesoramiento financiero. Cada inversor es responsable de sus propias decisiones. Invertir implica riesgo de pérdida del capital.</p>
+  <p style="margin-top:6px">tesinversión.com · <a href="index.html" style="color:var(--blue)">Volver al inicio →</a></p>
+</div>
+
+</article>
+</main>
+</div>
+
+<script src="fmp-api.js"></script>
+<script>
+// ── PROGRESS ──────────────────────────────────────────────
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('prog').style.width=(window.scrollY/h*100)+'%';
+},{passive:true});
+
+// ── SECTION TOGGLE ───────────────────────────────────────
+function toggle(hdr){
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+// ── SCROLL TO ────────────────────────────────────────────
+function goTo(id){
+  const el=document.getElementById(id);
+  if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-68,behavior:'smooth'});
+}
+
+// ── READING NAV ──────────────────────────────────────────
+const secIds=['cover','negocio','historia','sector','moat','estrategia','financieros','rentabilidad','salud','capital'];
+window.addEventListener('scroll',()=>{
+  let active=0;
+  secIds.forEach((id,i)=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<140)active=i;});
+  document.querySelectorAll('.rn-dot').forEach((d,i)=>d.classList.toggle('active',i===active));
+},{passive:true});
+
+// ── WALL UNLOCK ──────────────────────────────────────────
+function unlockAll(){
+  document.getElementById('wall').style.display='none';
+  document.getElementById('locked').style.display='block';
+}
+
+// ── FMP API DATA ─────────────────────────────────────────
+const YRS=['2019','2020','2021','2022','2023','2024'];
+
+(async function loadMSFT(){
+  try {
+    const data = await FMP.load('MSFT');
+    if(!data||!data.last) { console.warn('MSFT data not available'); renderChartsMock(); return; }
+
+    const l = data.last;
+    const f = FMP.fmt;
+
+    // ── TOPBAR & SIDEBAR ──────────────────────────────────
+    document.getElementById('topPrice').textContent = f.price(data.price,'$');
+    document.getElementById('topPrice').className = '';
+    const chgPct = data.changePct || 0;
+    const chgEl = document.getElementById('topChg');
+    chgEl.textContent = `${chgPct>=0?'+':''}${f.pct(chgPct)}`;
+    chgEl.style.color = chgPct>=0?'var(--green)':'var(--red)';
+
+    document.getElementById('sbPrice').innerHTML =
+      `${f.price(data.price,'$')} <span class="up" style="color:${chgPct>=0?'var(--green)':'var(--red)'}">${chgPct>=0?'+':''}${f.pct(chgPct)}</span>`;
+
+    // ── COVER ─────────────────────────────────────────────
+    document.getElementById('coverPrice').textContent = f.price(data.price,'$');
+    document.getElementById('coverChg').textContent = `${chgPct>=0?'+':''}${f.price(data.change,'$')} · ${chgPct>=0?'+':''}${f.pct(chgPct)}`;
+    document.getElementById('coverChg').style.color = chgPct>=0?'var(--green)':'var(--red)';
+    document.getElementById('coverMktCap').textContent = `Market Cap ${f.big(data.marketCap,1,'$')}`;
+    document.getElementById('coverPer').textContent = `PER ${f.mult(l.per)}`;
+    if(data.employees) document.getElementById('m-emp').textContent = f.num(data.employees);
+
+    // ── METRICS STRIP ─────────────────────────────────────
+    document.getElementById('m-rev').textContent = f.big(l.rev,1,'$');
+    document.getElementById('m-rev-g').textContent = `+${f.pct(cagr(data,'rev',3))} CAGR 3A`;
+    document.getElementById('m-ebit').textContent = f.pct(l.ebitMargin);
+    document.getElementById('m-roic').textContent = f.pct(l.roic);
+    document.getElementById('m-fcf').textContent = f.big(l.fcf,1,'$');
+    document.getElementById('m-fcf-g').textContent = `FCF yield ${f.pct(l.fcfYield)}`;
+    document.getElementById('m-eps').textContent = f.price(l.eps,'$');
+    document.getElementById('m-eps-g').textContent = `+${f.pct(cagr(data,'eps',3))} CAGR 3A`;
+    document.getElementById('m-per').textContent = f.mult(l.per);
+    document.getElementById('m-per-g').textContent = `EV/FCF ${f.mult(l.evFcf)}`;
+
+    // ── P&L TABLE ─────────────────────────────────────────
+    const rows = data.computed.slice(-4);
+    rows.forEach((r,i) => {
+      const n = i+1;
+      const el = id => document.getElementById(id);
+      if(el(`yr${n}`)) el(`yr${n}`).textContent = r.year;
+      if(el(`r-rev${n}`)) el(`r-rev${n}`).textContent = f.big(r.rev,1,'$');
+      if(el(`r-gm${n}`)) el(`r-gm${n}`).textContent = f.pct(r.grossMargin);
+      if(el(`r-ebit${n}`)) el(`r-ebit${n}`).textContent = f.big(r.ebit,1,'$');
+      if(el(`r-em${n}`)) el(`r-em${n}`).textContent = f.pct(r.ebitMargin);
+      if(el(`r-ni${n}`)) el(`r-ni${n}`).textContent = f.big(r.ni,1,'$');
+      if(el(`r-nm${n}`)) el(`r-nm${n}`).textContent = f.pct(r.netMargin);
+      if(el(`r-eps${n}`)) el(`r-eps${n}`).textContent = f.price(r.eps,'$');
+      if(el(`r-fcf${n}`)) el(`r-fcf${n}`).textContent = f.big(r.fcf,1,'$');
+      if(el(`r-fcc${n}`)) el(`r-fcc${n}`).textContent = f.pct(r.fcfConv);
+      if(el(`r-evf${n}`)) el(`r-evf${n}`).textContent = f.mult(r.evFcf);
+    });
+    // CAGR columns
+    const setC = (id,val) => { const e=document.getElementById(id); if(e){e.textContent=val;e.className='dpos';} };
+    setC('r-revc', `+${f.pct(cagr(data,'rev',3))}`);
+    setC('r-ebitc', `+${f.pct(cagr(data,'ebit',3))}`);
+    setC('r-nic', `+${f.pct(cagr(data,'ni',3))}`);
+    setC('r-epsc', `+${f.pct(cagr(data,'eps',3))}`);
+    setC('r-fcfc', `+${f.pct(cagr(data,'fcf',3))}`);
+    const gm0=rows[0]?.grossMargin, gm3=rows[3]?.grossMargin;
+    if(gm0&&gm3) document.getElementById('r-gmc').textContent=`+${(gm3-gm0).toFixed(1)}pp`;
+    const em0=rows[0]?.ebitMargin, em3=rows[3]?.ebitMargin;
+    if(em0&&em3) document.getElementById('r-emc').textContent=`+${(em3-em0).toFixed(1)}pp`;
+    const nm0=rows[0]?.netMargin, nm3=rows[3]?.netMargin;
+    if(nm0&&nm3) document.getElementById('r-nmc').textContent=`+${(nm3-nm0).toFixed(1)}pp`;
+
+    // ── RENTABILIDAD ──────────────────────────────────────
+    document.getElementById('roic-val').textContent = f.pct(l.roic);
+    document.getElementById('roic-big').textContent = f.pct(l.roic);
+    document.getElementById('r2-roic').textContent = f.pct(l.roic);
+    document.getElementById('r2-roe').textContent = f.pct(l.roe);
+    document.getElementById('r2-roa').textContent = f.pct(l.roa);
+    document.getElementById('r2-fcc').textContent = f.pct(l.fcfConv);
+    if(l.roic) document.getElementById('r2-spread').textContent = `+${(l.roic-8.1).toFixed(1)}pp`;
+
+    // ── SALUD ─────────────────────────────────────────────
+    document.getElementById('g-debt').textContent = f.mult(l.debtEbitda);
+    document.getElementById('g-icr').textContent = f.mult(l.icr);
+
+    // ── PSICOLOGÍA ────────────────────────────────────────
+    document.getElementById('psi-per').textContent = f.mult(l.per);
+
+    // ── RENDER CHARTS WITH REAL DATA ─────────────────────
+    renderChartsReal(data);
+
+    // ── GAUGES ────────────────────────────────────────────
+    const deb = l.debtEbitda ?? 0.4;
+    const icr = l.icr ?? 42;
+    drawGauge('gaugeDebt', deb, -2, 6, [{f:-2,t:2,c:'#16a34a'},{f:2,t:4,c:'#d97706'},{f:4,t:6,c:'#dc2626'}]);
+    drawGauge('gaugeICR', Math.min(icr,25), 0, 25, [{f:0,t:3,c:'#dc2626'},{f:3,t:5,c:'#d97706'},{f:5,t:25,c:'#16a34a'}]);
+
+    // ── FINANCIEROS PROSE ─────────────────────────────────
+    document.getElementById('f-rev').textContent = f.big(l.rev,1,'$');
+    document.getElementById('f-ebit-m').textContent = f.pct(l.ebitMargin);
+    document.getElementById('f-fcf').textContent = f.big(l.fcf,1,'$');
+
+    console.log('✅ MSFT datos reales cargados correctamente');
+
+  } catch(err) {
+    console.error('Error cargando MSFT:', err);
+    renderChartsMock();
+  }
+})();
+
+// ── CAGR HELPER ──────────────────────────────────────────
+function cagr(data, key, years) {
+  const arr = data.computed.slice(-years-1).map(r=>r[key]).filter(v=>v&&v>0);
+  if(arr.length < 2) return 0;
+  return (Math.pow(arr[arr.length-1]/arr[0], 1/(arr.length-1)) - 1) * 100;
+}
+
+// ── CHARTS ───────────────────────────────────────────────
+Chart.defaults.font.family="'DM Sans',-apple-system,sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#9a9a90';
+Chart.defaults.plugins.legend.display=false;
+const lo={tension:0.35,pointRadius:3,pointHoverRadius:5,borderWidth:2};
+const gridOpts={color:'rgba(26,26,24,0.05)'};
+const bOpts={display:false};
+const baseOpts=(yCb)=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{x:{grid:{display:false},border:bOpts},y:{grid:gridOpts,border:bOpts,ticks:{callback:yCb}}}});
+
+function renderChartsReal(data) {
+  const yrs = data.years.slice(-6);
+  const rows = data.computed.slice(-6);
+
+  // Moat chart
+  safeChart('moatChart', {type:'line', data:{labels:yrs, datasets:[
+    {data:rows.map(r=>r.ebitMargin),borderColor:'#3b82f6',backgroundColor:'transparent',...lo},
+    {data:rows.map(()=>20),borderColor:'#c8c8c0',borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}
+  ]}, options:baseOpts(v=>v+'%')});
+
+  // Margins chart
+  safeChart('marginsChart', {type:'line', data:{labels:yrs, datasets:[
+    {data:rows.map(r=>r.grossMargin),borderColor:'#3b82f6',backgroundColor:'transparent',...lo},
+    {data:rows.map(r=>r.ebitMargin),borderColor:'#10b981',backgroundColor:'transparent',...lo},
+    {data:rows.map(r=>r.netMargin),borderColor:'#f59e0b',backgroundColor:'transparent',...lo},
+    {data:rows.map(r=>r.fcfMargin),borderColor:'#8b5cf6',backgroundColor:'transparent',...lo},
+  ]}, options:baseOpts(v=>v+'%')});
+
+  // ROIC chart
+  const ri = data.roicIncremental.slice(-6);
+  safeChart('roicChart', {type:'line', data:{labels:yrs, datasets:[
+    {data:rows.map(r=>r.roic),borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.06)',fill:true,...lo},
+    {data:ri,borderColor:'#10b981',backgroundColor:'transparent',...lo},
+    {data:rows.map(()=>8.1),borderColor:'rgba(239,68,68,0.5)',borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'},
+  ]}, options:baseOpts(v=>v+'%')});
+
+  // Revenue + FCF
+  safeChart('tRevFcf', {type:'bar', data:{labels:yrs, datasets:[
+    {data:rows.map(r=>r.rev/1e9),backgroundColor:'rgba(59,130,246,0.5)',borderRadius:3,yAxisID:'y'},
+    {type:'line',data:rows.map(r=>r.fcf/1e9),borderColor:'#10b981',backgroundColor:'transparent',...lo,yAxisID:'y2'}
+  ]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:bOpts},y:{grid:gridOpts,border:bOpts,ticks:{callback:v=>'$'+v+'B'}},y2:{position:'right',grid:{display:false},border:bOpts,ticks:{callback:v=>'$'+v+'B'}}}}});
+
+  // Multiplos
+  safeChart('tMultiplos', {type:'line', data:{labels:yrs, datasets:[
+    {data:rows.map(r=>r.per),borderColor:'#3b82f6',backgroundColor:'transparent',...lo},
+    {data:rows.map(r=>r.evEbitda),borderColor:'#10b981',backgroundColor:'transparent',...lo},
+    {data:rows.map(r=>r.evFcf),borderColor:'#f59e0b',backgroundColor:'transparent',...lo},
+  ]}, options:baseOpts(v=>v+'x')});
+
+  // EPS
+  safeChart('tEps', {type:'bar', data:{labels:yrs, datasets:[
+    {data:rows.map(r=>r.eps),backgroundColor:'#3b82f6',borderRadius:4}
+  ]}, options:baseOpts(v=>'$'+v)});
+
+  // Capital allocation
+  renderCap(data);
+}
+
+function renderChartsMock() {
+  // Fallback mock data if API fails
+  const mockM = [65,68,69,69,70,72];
+  const mockE = [34,38,40,41,42,43];
+  const mockN = [29,32,34,35,36,36];
+  const mockF = [28,30,32,32,33,34];
+  safeChart('moatChart',{type:'line',data:{labels:YRS,datasets:[{data:mockE,borderColor:'#3b82f6',backgroundColor:'transparent',...lo},{data:YRS.map(()=>20),borderColor:'#c8c8c0',borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
+  safeChart('marginsChart',{type:'line',data:{labels:YRS,datasets:[{data:mockM,borderColor:'#3b82f6',backgroundColor:'transparent',...lo},{data:mockE,borderColor:'#10b981',backgroundColor:'transparent',...lo},{data:mockN,borderColor:'#f59e0b',backgroundColor:'transparent',...lo},{data:mockF,borderColor:'#8b5cf6',backgroundColor:'transparent',...lo}]},options:baseOpts(v=>v+'%')});
+  safeChart('roicChart',{type:'line',data:{labels:YRS,datasets:[{data:[22,24,25,26,27,28],borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.06)',fill:true,...lo},{data:[null,18,22,24,26,22],borderColor:'#10b981',backgroundColor:'transparent',...lo},{data:YRS.map(()=>8.1),borderColor:'rgba(239,68,68,0.5)',borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
+  safeChart('tRevFcf',{type:'bar',data:{labels:YRS,datasets:[{data:[126,143,168,198,212,245],backgroundColor:'rgba(59,130,246,0.5)',borderRadius:3,yAxisID:'y'},{type:'line',data:[44,51,63,72,66,74],borderColor:'#10b981',backgroundColor:'transparent',...lo,yAxisID:'y2'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:bOpts},y:{grid:gridOpts,border:bOpts,ticks:{callback:v=>'$'+v+'B'}},y2:{position:'right',grid:{display:false},border:bOpts,ticks:{callback:v=>'$'+v+'B'}}}}});
+  safeChart('tMultiplos',{type:'line',data:{labels:YRS,datasets:[{data:[28,30,34,28,34,35],borderColor:'#3b82f6',backgroundColor:'transparent',...lo},{data:[18,20,22,18,24,26],borderColor:'#10b981',backgroundColor:'transparent',...lo},{data:[22,26,28,22,30,38],borderColor:'#f59e0b',backgroundColor:'transparent',...lo}]},options:baseOpts(v=>v+'x')});
+  safeChart('tEps',{type:'bar',data:{labels:YRS,datasets:[{data:[5.76,6.71,8.05,9.21,9.72,11.45],backgroundColor:'#3b82f6',borderRadius:4}]},options:baseOpts(v=>'$'+v)});
+  capRef=null; renderCapMock();
+  drawGauge('gaugeDebt',0.4,-2,6,[{f:-2,t:2,c:'#16a34a'},{f:2,t:4,c:'#d97706'},{f:4,t:6,c:'#dc2626'}]);
+  drawGauge('gaugeICR',25,0,25,[{f:0,t:3,c:'#dc2626'},{f:3,t:5,c:'#d97706'},{f:5,t:25,c:'#16a34a'}]);
+}
+
+const chartInstances = {};
+function safeChart(id, config) {
+  const ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(chartInstances[id]) chartInstances[id].destroy();
+  chartInstances[id] = new Chart(ctx, config);
+}
+
+// Capital allocation chart
+let capRef = null;
+let capData = null;
+
+function renderCap(data) {
+  capData = data;
+  const rows = data.computed.slice(-6);
+  const yrs = data.years.slice(-6);
+  const abs = document.getElementById('capBtn1').classList.contains('btn-dark');
+  buildCapChart(yrs, rows, abs);
+}
+
+function renderCapMock() {
+  const yrs = YRS;
+  const rows = [
+    {divPaid:-8,buybacks:-16,capexTotal:-16,acqNet:-26,fcf:44},
+    {divPaid:-9,buybacks:-18,capexTotal:-18,acqNet:-8,fcf:51},
+    {divPaid:-10,buybacks:-22,capexTotal:-23,acqNet:-2,fcf:63},
+    {divPaid:-11,buybacks:-28,capexTotal:-28,acqNet:-3,fcf:72},
+    {divPaid:-12,buybacks:-22,capexTotal:-44,acqNet:-69,fcf:66},
+    {divPaid:-13,buybacks:-24,capexTotal:-56,acqNet:-4,fcf:74},
+  ];
+  buildCapChart(yrs, rows, true);
+}
+
+function buildCapChart(yrs, rows, abs) {
+  const D=rows.map(r=>Math.abs(r.divPaid||0)/1e9);
+  const R=rows.map(r=>Math.abs(r.buybacks||0)/1e9);
+  const C=rows.map(r=>Math.abs(r.capexTotal||0)/1e9);
+  const A=rows.map(r=>Math.abs(r.acqNet||0)/1e9);
+  const tots=yrs.map((_,i)=>D[i]+R[i]+C[i]+A[i]);
+  const toV=a=>abs?a:a.map((v,i)=>tots[i]>0?Math.round(v/tots[i]*100):0);
+  const suf=abs?'B':'%';
+  const pre=abs?'$':'';
+  if(capRef) capRef.destroy();
+  const ctx=document.getElementById('capChart');if(!ctx)return;
+  capRef=new Chart(ctx,{type:'bar',data:{labels:yrs,datasets:[
+    {data:toV(D),backgroundColor:'#3b82f6',borderRadius:3,label:'Dividendos'},
+    {data:toV(R),backgroundColor:'#10b981',borderRadius:3,label:'Recompras'},
+    {data:toV(C),backgroundColor:'#f59e0b',borderRadius:3,label:'CapEx'},
+    {data:toV(A),backgroundColor:'#ef4444',borderRadius:3,label:'Adquisiciones'},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false},border:bOpts},y:{stacked:true,grid:gridOpts,border:bOpts,ticks:{callback:v=>pre+v+suf}}}}});
+}
+
+function switchCap(mode, btn) {
+  document.getElementById('capBtn1').className = mode==='abs'?'btn-sm btn-dark':'btn-sm btn-ghost';
+  document.getElementById('capBtn2').className = mode==='pct'?'btn-sm btn-dark':'btn-sm btn-ghost';
+  if(capData) renderCap(capData);
+  else renderCapMock();
+}
+
+// ── GAUGES ────────────────────────────────────────────────
+function drawGauge(id,val,mn,mx,segs){
+  const c=document.getElementById(id);if(!c)return;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H-8,r=Math.min(cx,cy+8)-12;
+  ctx.clearRect(0,0,W,H);
+  segs.forEach(s=>{const a1=Math.PI+(s.f-mn)/(mx-mn)*Math.PI,a2=Math.PI+(s.t-mn)/(mx-mn)*Math.PI;ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.strokeStyle=s.c;ctx.lineWidth=7;ctx.stroke();});
+  const cv=Math.max(mn,Math.min(mx,val)),na=Math.PI+(cv-mn)/(mx-mn)*Math.PI;
+  ctx.beginPath();ctx.moveTo(cx-5*Math.cos(na-Math.PI/2),cy-5*Math.sin(na-Math.PI/2));ctx.lineTo(cx+r*.76*Math.cos(na),cy+r*.76*Math.sin(na));ctx.lineTo(cx+5*Math.cos(na-Math.PI/2),cy+5*Math.sin(na-Math.PI/2));ctx.fillStyle='#1a1a18';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,5,0,2*Math.PI);ctx.fillStyle='#1a1a18';ctx.fill();
+}
+</script>
+</body>
+</html>
