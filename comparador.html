@@ -147,6 +147,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 
 </div>
 
+<script src="companies.js"></script>
 <script>
 // ── DATA — loaded from companies.js ──────────────────────────
 // COMPANIES array comes from companies.js (loaded before this script)
@@ -210,7 +211,7 @@ function buildMockData(co) {
 }
 
 // ── STATE ─────────────────────────────────────────────────
-const COMPANIES_MAP = buildCompData();
+let COMPANIES_MAP = {};
 let selected = ['RACE', 'MSFT', null];
 let openPicker = null;
 
@@ -418,8 +419,12 @@ function removeCompany(slot, e){
 }
 
 // ── INIT ─────────────────────────────────────────────────
-render();
+setTimeout(function() {
+  if(typeof COMPANIES !== 'undefined') {
+    COMPANIES_MAP = buildCompData();
+  }
+  render();
+}, 20);
 </script>
-<script src="companies.js"></script>
 </body>
 </html>
