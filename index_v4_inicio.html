@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tesinversión.com — Análisis fundamental de empresas de calidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf9f6;--cream2:#f4f3ef;--cream3:#ece9e0;
+  --ink:#1a1a18;--ink2:#4a4a44;--ink3:#9a9a90;--ink4:#c8c8c0;
+  --rule:rgba(26,26,24,0.09);--rule2:rgba(26,26,24,0.05);
+  --green:#2d6a4f;--gbg:#f0f7f4;--gborder:rgba(45,106,79,0.18);
+  --amber:#92400e;--abg:#fef9f0;--aborder:rgba(146,64,14,0.18);
+  --red:#991b1b;--rbg:#fdf5f5;
+  --blue:#1e3a5f;--bbg:#f0f4f9;--bborder:rgba(30,58,95,0.15);
+}
+html{font-size:15.5px;scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;height:50px;background:rgba(250,249,246,0.95);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--rule);display:flex;align-items:center;padding:0 28px;gap:16px}
+.brand{font-family:'Lora',serif;font-size:17px;color:var(--ink);text-decoration:none;letter-spacing:0.01em}
+.brand em{font-style:italic;color:var(--ink3)}
+.nav-links{display:flex;gap:2px;margin-left:16px}
+.nav-link{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px;transition:background 0.12s}
+.nav-link:hover{background:var(--cream2);color:var(--ink)}
+.topbar-right{margin-left:auto;display:flex;gap:6px}
+.btn-sm{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 13px;border-radius:6px;cursor:pointer;transition:all 0.12s}
+.btn-ghost{background:none;border:0.5px solid var(--rule);color:var(--ink2)}
+.btn-ghost:hover{background:var(--cream2)}
+.btn-dark{background:var(--ink);border:none;color:var(--cream);font-weight:500}
+.btn-dark:hover{opacity:0.84}
+
+/* HERO */
+.hero{max-width:860px;margin:0 auto;padding:72px 32px 56px;text-align:center}
+.hero-eyebrow{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:0.5px;background:var(--ink4)}
+.hero-headline{font-family:'Lora',serif;font-size:clamp(32px,5vw,54px);font-weight:600;line-height:1.12;letter-spacing:-0.025em;color:var(--ink);margin-bottom:20px}
+.hero-headline em{font-style:italic;color:var(--ink2)}
+.hero-sub{font-family:'Lora',serif;font-size:17px;font-style:italic;color:var(--ink2);line-height:1.65;max-width:560px;margin:0 auto 36px}
+
+/* SEARCH */
+.search-wrap{max-width:540px;margin:0 auto 12px;background:var(--cream);border:0.5px solid var(--rule);border-radius:12px;box-shadow:0 4px 24px rgba(26,26,24,0.07);display:flex;align-items:center;gap:0;overflow:hidden;transition:box-shadow 0.2s}
+.search-wrap:focus-within{box-shadow:0 4px 24px rgba(26,26,24,0.12),0 0 0 2px rgba(26,26,24,0.1)}
+.search-icon{padding:0 16px 0 18px;color:var(--ink3);flex-shrink:0;font-size:15px}
+.search-input{flex:1;border:none;outline:none;padding:15px 0;font-size:14px;font-family:inherit;color:var(--ink);background:none}
+.search-input::placeholder{color:var(--ink3)}
+.search-btn{background:var(--ink);color:var(--cream);border:none;padding:10px 20px;margin:5px;border-radius:8px;font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;transition:opacity 0.12s}
+.search-btn:hover{opacity:0.84}
+.search-hints{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);margin-bottom:48px}
+.search-hints span{color:var(--ink2);cursor:pointer;transition:color 0.12s}
+.search-hints span:hover{color:var(--ink)}
+
+/* STATS */
+.stats-row{display:flex;justify-content:center;gap:0;background:var(--cream);border:0.5px solid var(--rule);border-radius:12px;overflow:hidden;max-width:640px;margin:0 auto 36px}
+.stat-item{flex:1;padding:18px 20px;text-align:center;border-right:0.5px solid var(--rule)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'DM Mono',monospace;font-size:22px;color:var(--ink);margin-bottom:3px}
+.stat-lbl{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:0 28px 80px}
+
+/* SECTION HEADER */
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px}
+.sec-title{font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+.sec-link{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--blue);cursor:pointer;text-decoration:none}
+
+/* CATEGORIES */
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.cat-pill{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border:0.5px solid var(--rule);border-radius:20px;background:var(--cream);color:var(--ink2);cursor:pointer;transition:all 0.12s}
+.cat-pill:hover,.cat-pill.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+
+/* COMPANY CARDS */
+.company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:60px}
+.company-card{background:var(--cream);border:0.5px solid var(--rule);border-radius:14px;padding:20px 22px;cursor:pointer;transition:all 0.18s;text-decoration:none;display:block;color:inherit;position:relative}
+.company-card:hover{border-color:rgba(26,26,24,0.18);box-shadow:0 4px 20px rgba(26,26,24,0.08);transform:translateY(-1px)}
+.cc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.cc-logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:500;flex-shrink:0;border:0.5px solid var(--rule)}
+.cc-meta{flex:1;min-width:0}
+.cc-name{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cc-ticker{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);letter-spacing:0.04em}
+.cc-qs{background:var(--gbg);border:0.5px solid var(--gborder);border-radius:8px;padding:8px 12px;text-align:center;flex-shrink:0}
+.cc-qs-num{font-family:'DM Mono',monospace;font-size:16px;color:var(--green);font-weight:500}
+.cc-qs-lbl{font-family:'DM Sans',sans-serif;font-size:9px;color:var(--green);text-transform:uppercase;letter-spacing:0.05em;margin-top:1px}
+.cc-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px}
+.cc-m{background:var(--cream2);border-radius:7px;padding:9px 10px}
+.cc-m-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--ink)}
+.cc-m-lbl{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink3);margin-top:1px}
+.cc-signals{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.cc-sig{display:flex;align-items:center;gap:4px;font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 8px;border-radius:12px}
+.cs-g{background:var(--gbg);color:var(--green)}.cs-a{background:var(--abg);color:var(--amber)}.cs-r{background:var(--rbg);color:var(--red)}
+.cc-sig .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:0.5px solid var(--rule2);font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)}
+.cc-tesis-badge{font-family:'DM Sans',sans-serif;font-size:10px;background:var(--bbg);color:var(--blue);padding:2px 8px;border-radius:10px;font-weight:500}
+/* Soon card */
+.cc-soon{opacity:0.5;cursor:default}
+.cc-soon:hover{transform:none;box-shadow:none;border-color:var(--rule)}
+.cc-soon-badge{position:absolute;top:14px;right:14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;background:var(--cream3);color:var(--ink3);padding:3px 9px;border-radius:10px}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:60px}
+.how-card{background:var(--cream);border:0.5px solid var(--rule);border-radius:12px;padding:22px 22px}
+.how-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3);margin-bottom:10px;letter-spacing:0.06em}
+.how-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.how-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.55}
+
+/* PHILOSOPHY */
+.philosophy{max-width:640px;margin:0 auto 60px;text-align:center}
+.ph-eyebrow{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px}
+.ph-headline{font-family:'Lora',serif;font-size:24px;font-weight:600;line-height:1.3;letter-spacing:-0.015em;color:var(--ink);margin-bottom:14px}
+.ph-text{font-family:'Lora',serif;font-size:15px;font-style:italic;color:var(--ink2);line-height:1.7}
+
+/* NEWSLETTER CTA */
+.nl-cta{background:var(--ink);border-radius:16px;padding:44px 40px;display:flex;align-items:center;gap:36px;margin-bottom:60px;flex-wrap:wrap}
+.nl-text{flex:1;min-width:240px}
+.nl-eyebrow{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px}
+.nl-title{font-family:'Lora',serif;font-size:24px;font-weight:600;color:var(--cream);margin-bottom:8px;letter-spacing:-0.01em}
+.nl-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(250,249,246,0.65);line-height:1.6;max-width:400px}
+.nl-action{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.nl-btn{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:11px 24px;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;transition:opacity 0.12s}
+.nl-btn:hover{opacity:0.9}
+.nl-recent-wrap{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(250,249,246,0.45);text-align:right}
+.nl-recent-item{padding:2px 0}
+
+/* SUBCATEGORIES */
+.subcat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:60px}
+.subcat-card{background:var(--cream);border:0.5px solid var(--rule);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all 0.12s;text-decoration:none}
+.subcat-card:hover{background:var(--cream2);border-color:rgba(26,26,24,0.16)}
+.subcat-icon{font-size:18px;margin-bottom:8px;display:block}
+.subcat-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.subcat-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3)}
+
+/* FOOTER */
+.footer{border-top:0.5px solid var(--rule);padding:28px 0;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);line-height:1.6;text-align:center}
+
+@media(max-width:600px){
+  .hero{padding:48px 20px 40px}
+  .nl-cta{padding:28px 22px;flex-direction:column;gap:20px}
+  .nl-action{flex-direction:row;align-items:center}
+  .stats-row{flex-direction:column;max-width:100%}
+  .stat-item{border-right:none;border-bottom:0.5px solid var(--rule)}
+  .stat-item:last-child{border-bottom:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="brand" href="#">tes<em>inversión</em></a>
+  <div class="nav-links">
+    <button class="nav-link">Empresas</button>
+    <button class="nav-link" onclick="window.location.href='comparador.html'">Comparar</button>
+    <button class="nav-link">Newsletter</button>
+    <button class="nav-link">Sobre el proyecto</button>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm btn-ghost">Iniciar sesión</button>
+    <button class="btn-sm btn-dark">Crear cuenta gratis</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Análisis fundamental · Inversores de largo plazo</div>
+  <h1 class="hero-headline">No visualizamos datos.<br><em>Contamos historias con números.</em></h1>
+  <p class="hero-sub">Análisis fundamental profundo de empresas de calidad — combinando el rigor cuantitativo de Bloomberg con la claridad narrativa de un buen newsletter de inversión.</p>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" placeholder="Busca una empresa: Ferrari, ASML, Microsoft...">
+    <button class="search-btn">Analizar →</button>
+  </div>
+  <div class="search-hints">Prueba: <span onclick="window.location.href='ferrari_v4.html'">Ferrari</span> · <span>ASML</span> · <span>Microsoft</span> · <span>Hermès</span> · <span>Visa</span></div>
+
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num">15</div><div class="stat-lbl">Empresas analizadas</div></div>
+    <div class="stat-item"><div class="stat-num">10</div><div class="stat-lbl">Criterios de calidad</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Metodología transparente</div></div>
+    <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Métricas de trading</div></div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- SUBCATEGORIES -->
+  <div class="sec-head">
+    <div class="sec-title">Explorar por categoría</div>
+  </div>
+  <div class="subcat-grid">
+    <a class="subcat-card"><span class="subcat-icon">👑</span><div class="subcat-name">Dividend Kings</div><div class="subcat-count">3 empresas</div></a>
+    <a class="subcat-card"><span class="subcat-icon">📈</span><div class="subcat-name">Aristócratas dividendo</div><div class="subcat-count">5 empresas</div></a>
+    <a class="subcat-card"><span class="subcat-icon">💻</span><div class="subcat-name">Tecnología</div><div class="subcat-count">4 empresas</div></a>
+    <a class="subcat-card"><span class="subcat-icon">💊</span><div class="subcat-name">Salud y farmacéuticas</div><div class="subcat-count">2 empresas</div></a>
+    <a class="subcat-card"><span class="subcat-icon">🏦</span><div class="subcat-name">Sector financiero</div><div class="subcat-count">Próximamente</div></a>
+    <a class="subcat-card"><span class="subcat-icon">🛍️</span><div class="subcat-name">Consumo defensivo</div><div class="subcat-count">2 empresas</div></a>
+    <a class="subcat-card"><span class="subcat-icon">🔩</span><div class="subcat-name">Industrial</div><div class="subcat-count">Próximamente</div></a>
+    <a class="subcat-card"><span class="subcat-icon">🏠</span><div class="subcat-name">REITs</div><div class="subcat-count">Próximamente</div></a>
+  </div>
+
+
+  <!-- FEATURED COMPANIES -->
+
+  <div class="sec-head">
+    <div class="sec-title">Empresas destacadas</div>
+    <a class="sec-link">Ver todas →</a>
+  </div>
+
+  <div class="cat-row">
+    <button class="cat-pill active" onclick="filterCat(this,'all')">Todas</button>
+    <button class="cat-pill" onclick="filterCat(this,'lujo')">Lujo</button>
+    <button class="cat-pill" onclick="filterCat(this,'tech')">Tecnología</button>
+    <button class="cat-pill" onclick="filterCat(this,'semi')">Semiconductores</button>
+    <button class="cat-pill" onclick="filterCat(this,'pagos')">Pagos</button>
+    <button class="cat-pill" onclick="filterCat(this,'salud')">Salud</button>
+    <button class="cat-pill" onclick="filterCat(this,'consumo')">Consumo</button>
+  </div>
+
+  <div class="company-grid">
+
+    <!-- Ferrari -->
+    <a href="ferrari_v4.html" class="company-card" data-cat="lujo">
+      <div class="cc-top">
+        <div class="cc-logo" style="background:#fdf5f5;color:#991b1b">RACE</div>
+        <div class="cc-meta">
+          <div class="cc-name">Ferrari N.V.</div>
+          <div class="cc-ticker">NYSE · EXM: RACE &nbsp;·&nbsp; Lujo automotriz &nbsp;·&nbsp; Italia</div>
+        </div>
+        <div class="cc-qs"><div class="cc-qs-num">87</div><div class="cc-qs-lbl">Calidad</div></div>
+      </div>
+      <div class="cc-metrics">
+        <div class="cc-m"><div class="cc-m-val">38.2%</div><div class="cc-m-lbl">ROIC</div></div>
+        <div class="cc-m"><div class="cc-m-val">27.4%</div><div class="cc-m-lbl">EBIT margin</div></div>
+        <div class="cc-m"><div class="cc-m-val">46.2x</div><div class="cc-m-lbl">PER</div></div>
+      </div>
+      <div class="cc-signals">
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>Caja neta</div>
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>Recompras 5A</div>
+        <div class="cc-sig cs-a"><span class="dot" style="background:var(--amber)"></span>Valoración ajustada</div>
+      </div>
+      <div class="cc-footer">
+        <span>Tesis · Mar 2025</span>
+        <span class="cc-tesis-badge">PDF disponible</span>
+      </div>
+    </a>
+
+    <!-- Microsoft -->
+    <a href="#" class="company-card" data-cat="tech">
+      <div class="cc-top">
+        <div class="cc-logo" style="background:#f0f4f9;color:#1e3a5f">MSFT</div>
+        <div class="cc-meta">
+          <div class="cc-name">Microsoft Corporation</div>
+          <div class="cc-ticker">NASDAQ: MSFT &nbsp;·&nbsp; Software / Cloud &nbsp;·&nbsp; USA</div>
+        </div>
+        <div class="cc-qs"><div class="cc-qs-num">92</div><div class="cc-qs-lbl">Calidad</div></div>
+      </div>
+      <div class="cc-metrics">
+        <div class="cc-m"><div class="cc-m-val">28.4%</div><div class="cc-m-lbl">ROIC</div></div>
+        <div class="cc-m"><div class="cc-m-val">43.1%</div><div class="cc-m-lbl">EBIT margin</div></div>
+        <div class="cc-m"><div class="cc-m-val">34.8x</div><div class="cc-m-lbl">PER</div></div>
+      </div>
+      <div class="cc-signals">
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>Azure +29%</div>
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>FCF yield 2.4%</div>
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>IA integrada</div>
+      </div>
+      <div class="cc-footer">
+        <span>Tesis · Ene 2025</span>
+        <span class="cc-tesis-badge">PDF disponible</span>
+      </div>
+    </a>
+
+    <!-- ASML -->
+    <a href="#" class="company-card" data-cat="semi">
+      <div class="cc-top">
+        <div class="cc-logo" style="background:#f0f7f4;color:#2d6a4f">ASML</div>
+        <div class="cc-meta">
+          <div class="cc-name">ASML Holding N.V.</div>
+          <div class="cc-ticker">NASDAQ · AMS: ASML &nbsp;·&nbsp; Semiconductores &nbsp;·&nbsp; NL</div>
+        </div>
+        <div class="cc-qs"><div class="cc-qs-num">91</div><div class="cc-qs-lbl">Calidad</div></div>
+      </div>
+      <div class="cc-metrics">
+        <div class="cc-m"><div class="cc-m-val">44.1%</div><div class="cc-m-lbl">ROIC</div></div>
+        <div class="cc-m"><div class="cc-m-val">32.8%</div><div class="cc-m-lbl">EBIT margin</div></div>
+        <div class="cc-m"><div class="cc-m-val">30.2x</div><div class="cc-m-lbl">PER</div></div>
+      </div>
+      <div class="cc-signals">
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>Monopolio EUV</div>
+        <div class="cc-sig cs-g"><span class="dot" style="background:var(--green)"></span>Backlog €36B</div>
+        <div class="cc-sig cs-a"><span class="dot" style="background:var(--amber)"></span>Riesgo China</div>
+      </div>
+      <div class="cc-footer">
+        <span>Tesis · Feb 2025</span>
+        <span class="cc-tesis-badge">PDF disponible</span>
+      </div>
+    </a>
+
+    <!-- Hermès — próximamente -->
+    <div class="company-card cc-soon" data-cat="lujo">
+      <span class="cc-soon-badge">Próximamente</span>
+      <div class="cc-top">
+        <div class="cc-logo" style="background:var(--abg);color:var(--amber)">RMS</div>
+        <div class="cc-meta">
+          <div class="cc-name">Hermès International</div>
+          <div class="cc-ticker">EPA: RMS &nbsp;·&nbsp; Lujo exclusivo &nbsp;·&nbsp; Francia</div>
+        </div>
+        <div class="cc-qs" style="background:var(--cream2);border-color:var(--rule)"><div class="cc-qs-num" style="color:var(--ink3)">—</div><div class="cc-qs-lbl" style="color:var(--ink3)">Pronto</div></div>
+      </div>
+      <div class="cc-metrics">
+        <div class="cc-m"><div class="cc-m-val" style="color:var(--ink3)">—</div><div class="cc-m-lbl">ROIC</div></div>
+        <div class="cc-m"><div class="cc-m-val" style="color:var(--ink3)">—</div><div class="cc-m-lbl">EBIT margin</div></div>
+        <div class="cc-m"><div class="cc-m-val" style="color:var(--ink3)">—</div><div class="cc-m-lbl">PER</div></div>
+      </div>
+      <div class="cc-footer"><span style="color:var(--blue)">Abr 2025 — Suscríbete para ser el primero</span></div>
+    </div>
+
+    <!-- Visa — próximamente -->
+    <div class="company-card cc-soon" data-cat="pagos">
+      <span class="cc-soon-badge">Próximamente</span>
+      <div class="cc-top">
+        <div class="cc-logo" style="background:#f0f4f9;color:#1e3a5f">V</div>
+        <div class="cc-meta">
+          <div class="cc-name">Visa Inc.</div>
+          <div class="cc-ticker">NYSE: V &nbsp;·&nbsp; Pagos digitales &nbsp;·&nbsp; USA</div>
+        </div>
+        <div class="cc-qs" style="background:var(--cream2);border-color:var(--rule)"><div class="cc-qs-num" style="color:var(--ink3)">—</div><div class="cc-qs-lbl" style="color:var(--ink3)">Pronto</div></div>
+      </div>
+      <div class="cc-metrics">
+        <div class="cc-m"><div class="cc-m-val" style="color:var(--ink3)">—</div><div class="cc-m-lbl">ROIC</div></div>
+        <div class="cc-m"><div class="cc-m-val" style="color:var(--ink3)">—</div><div class="cc-m-lbl">EBIT margin</div></div>
+        <div class="cc-m"><div class="cc-m-val" style="color:var(--ink3)">—</div><div class="cc-m-lbl">PER</div></div>
+      </div>
+      <div class="cc-footer"><span style="color:var(--blue)">May 2025</span></div>
+    </div>
+
+    <!-- Add more card -->
+    <div class="company-card" style="display:flex;align-items:center;justify-content:center;min-height:180px;flex-direction:column;gap:8px;opacity:0.4;cursor:default;border-style:dashed">
+      <div style="font-size:22px">+</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2)">Más empresas en camino</div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)">Suscríbete para enterarte primero</div>
+    </div>
+
+  </div>
+
+  <!-- PHILOSOPHY BLOCK -->
+  <div class="philosophy">
+    <div class="ph-eyebrow">Nuestra filosofía</div>
+    <h2 class="ph-headline">Los datos sin contexto son ruido. El contexto sin datos es narrativa.</h2>
+    <p class="ph-text">tesinversión combina ambos. Cada número tiene una historia detrás. Cada historia tiene un número que la respalda. No hacemos trading. No damos recomendaciones. Hacemos análisis fundamental de empresas que merezcan 10 minutos de tu atención intelectual.</p>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="sec-head">
+    <div class="sec-title">¿Cómo funciona?</div>
+  </div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">01 — Datos</div>
+      <div class="how-title">Métricas reales y trazables</div>
+      <div class="how-text">FCF, ROIC, Capital Invertido — calculados con fórmulas propias y verificados manualmente contra los filings oficiales. Cada número es trazable hasta su fuente.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">02 — Narrativa</div>
+      <div class="how-title">La historia de la empresa</div>
+      <div class="how-text">No es un dump de métricas. Es una tesis escrita con lógica: modelo de negocio → moat → números → valoración → conclusión. Los datos aparecen cuando la historia los necesita.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">03 — Índice de Calidad</div>
+      <div class="how-title">Transparente, no una caja negra</div>
+      <div class="how-text">10 criterios, 10 puntos cada uno. Ves exactamente de dónde viene cada punto y por qué. Ningún algoritmo opaco — solo los criterios que aplicaría un inversor de largo plazo riguroso.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">04 — Newsletter</div>
+      <div class="how-title">La plataforma + la tesis completa</div>
+      <div class="how-text">La plataforma monitorea si la tesis sigue vigente. El newsletter mensual es el análisis editorial profundo de 80 páginas. Dos productos que se refuerzan, no que compiten.</div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER CTA -->
+  <div class="nl-cta">
+    <div class="nl-text">
+      <div class="nl-eyebrow">Arquitectura de la Inversión · Newsletter mensual</div>
+      <div class="nl-title">Una tesis al mes.<br>80 páginas de análisis real.</div>
+      <div class="nl-sub">Sin ruido, sin trading, sin recomendaciones. Solo análisis fundamental profundo de una empresa de calidad — cada mes, con tu nombre en el PDF.</div>
+    </div>
+    <div class="nl-action">
+      <button class="nl-btn">Suscribirse al newsletter →</button>
+      <div class="nl-recent-wrap">
+        <div class="nl-recent-item">Mar 2025 — Ferrari N.V.</div>
+        <div class="nl-recent-item">Feb 2025 — ASML Holding</div>
+        <div class="nl-recent-item">Ene 2025 — Microsoft</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  tesinversión.com &nbsp;·&nbsp; Arquitectura de la Inversión &nbsp;·&nbsp; Contenido educativo — no asesoramiento financiero<br>
+  Invertir implica riesgo de pérdida del capital. Cada inversor es responsable de sus propias decisiones.
+</div>
+
+<script>
+function filterCat(btn, cat) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.company-card[data-cat]').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

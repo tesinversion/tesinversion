@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferrari N.V. — tesinversión.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf9f6;--cream2:#f4f3ef;--cream3:#ece9e0;
+  --ink:#1a1a18;--ink2:#4a4a44;--ink3:#9a9a90;--ink4:#c8c8c0;
+  --rule:rgba(26,26,24,0.09);--rule2:rgba(26,26,24,0.05);
+  --green:#2d6a4f;--gbg:#f0f7f4;--gborder:rgba(45,106,79,0.18);
+  --amber:#92400e;--abg:#fef9f0;--aborder:rgba(146,64,14,0.18);
+  --red:#991b1b;--rbg:#fdf5f5;--rborder:rgba(153,27,27,0.15);
+  --blue:#1e3a5f;--bbg:#f0f4f9;--bborder:rgba(30,58,95,0.15);
+  /* Chart palette — distinguishable, not garish */
+  --ch1:#2c5282;--ch2:#276749;--ch3:#975a16;--ch4:#742a2a;--ch5:#4a5568;
+  --sidebar:230px;--col:700px;
+}
+html{font-size:15.5px;scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+
+/* LOGO MONOGRAM */
+.company-logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;flex-shrink:0;border:0.5px solid var(--rule);letter-spacing:-0.02em}
+.cover-logo-wrap{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:50px;background:rgba(250,249,246,0.95);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--rule);display:flex;align-items:center;padding:0 28px;gap:16px}
+.brand{font-family:'Lora',serif;font-size:16px;color:var(--ink);text-decoration:none}
+.brand em{font-style:italic;color:var(--ink3)}
+.topbar-center{flex:1;display:flex;justify-content:center}
+.topbar-ticker{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink3)}
+.topbar-ticker span{color:var(--ink);font-weight:500}
+.topbar-right{display:flex;gap:6px;align-items:center;margin-left:auto}
+.btn-sm{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all 0.12s}
+.btn-ghost{background:none;border:0.5px solid var(--rule);color:var(--ink2)}
+.btn-ghost:hover{background:var(--cream2)}
+.btn-dark{background:var(--ink);border:none;color:var(--cream);font-weight:500}
+.btn-dark:hover{opacity:0.84}
+
+/* PROGRESS */
+.progress-bar{position:fixed;top:50px;left:0;right:0;height:1.5px;background:var(--rule2);z-index:299}
+.progress-fill{height:100%;background:var(--ink);width:0;transition:width 0.08s linear}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:50px;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:50px;left:0;width:var(--sidebar);height:calc(100vh - 50px);overflow-y:auto;padding:28px 0 40px;border-right:0.5px solid var(--rule);background:var(--cream);scrollbar-width:none}
+.sidebar::-webkit-scrollbar{display:none}
+.sb-head{padding:0 20px 20px;border-bottom:0.5px solid var(--rule);margin-bottom:18px}
+.sb-ticker{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);letter-spacing:0.05em;margin-bottom:3px}
+.sb-name{font-family:'Lora',serif;font-size:14px;color:var(--ink);margin-bottom:4px}
+.sb-price{font-family:'DM Mono',monospace;font-size:13px;color:var(--ink2)}
+.sb-price .up{color:var(--green)}
+.sb-qs{display:inline-flex;align-items:center;gap:5px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:5px;padding:3px 8px;margin-top:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--green)}
+.sb-qs strong{font-family:'DM Mono',monospace;font-size:13px}
+.sb-section-lbl{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink4);padding:0 20px;margin-bottom:5px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 20px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);cursor:pointer;border-left:2px solid transparent;transition:all 0.12s;text-decoration:none}
+.sb-item:hover{color:var(--ink);background:var(--cream2)}
+.sb-item.active{color:var(--ink);border-left-color:var(--ink);background:var(--cream2);font-weight:500}
+.sb-item .num{font-family:'DM Mono',monospace;font-size:10px;min-width:16px}
+.sb-item .lock{margin-left:auto;font-size:9px;opacity:0.4}
+.sb-divider{margin:12px 20px;height:0.5px;background:var(--rule);position:relative}
+.sb-divider-label{position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:var(--cream);padding:0 6px;font-family:'DM Sans',sans-serif;font-size:9px;color:var(--ink3);white-space:nowrap}
+
+/* MAIN */
+.main{margin-left:var(--sidebar);flex:1;min-width:0}
+@media(max-width:860px){.sidebar{display:none}.main{margin-left:0}}
+
+/* ARTICLE */
+.article{max-width:var(--col);margin:0 auto;padding:48px 32px 100px}
+@media(max-width:600px){.article{padding:32px 20px 80px}}
+
+/* COVER */
+.cover{margin-bottom:56px;padding-bottom:48px;border-bottom:0.5px solid var(--rule)}
+.cover-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.cover-label::before{content:'';width:24px;height:0.5px;background:var(--ink3)}
+.cover-headline{font-family:'Lora',serif;font-size:clamp(30px,4.5vw,48px);font-weight:600;line-height:1.12;letter-spacing:-0.02em;color:var(--ink);margin-bottom:18px}
+.cover-headline em{font-style:italic;color:var(--ink2)}
+.cover-deck{font-family:'Lora',serif;font-size:17px;font-style:italic;color:var(--ink2);line-height:1.65;margin-bottom:24px}
+.cover-byline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);margin-bottom:20px}
+.cover-byline-dot{width:3px;height:3px;border-radius:50%;background:var(--ink4)}
+.cover-data-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 0;border-top:0.5px solid var(--rule2);border-bottom:0.5px solid var(--rule2)}
+.cover-price{font-family:'DM Mono',monospace;font-size:24px;color:var(--ink)}
+.cover-chg{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--green);font-weight:500}
+.cover-pills{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.cpill{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:5px;background:var(--cream2);border:0.5px solid var(--rule);color:var(--ink2)}
+.cpill-green{background:var(--gbg);border-color:var(--gborder);color:var(--green)}
+.cpill-amber{background:var(--abg);border-color:var(--aborder);color:var(--amber)}
+.cover-score-badge{display:flex;align-items:center;gap:8px;background:var(--gbg);border:0.5px solid var(--gborder);border-radius:8px;padding:8px 14px}
+.csb-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--green)}
+.csb-info{font-family:'DM Sans',sans-serif}
+.csb-label{font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--green);margin-bottom:1px}
+.csb-sub{font-size:10px;color:rgba(45,106,79,0.6)}
+
+/* CHAPTER */
+.chapter{scroll-margin-top:70px;margin-bottom:8px;background:var(--cream);border:0.5px solid var(--rule);border-radius:12px;overflow:hidden}
+.ch-header{display:flex;align-items:center;gap:12px;padding:16px 22px;cursor:pointer;transition:background 0.12s;user-select:none}
+.ch-header:hover{background:var(--cream2)}
+.ch-header.open{border-bottom:0.5px solid var(--rule2)}
+.ch-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);min-width:22px}
+.ch-title-wrap{flex:1}
+.ch-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+.ch-preview{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-top:1px}
+.ch-chevron{color:var(--ink3);font-size:11px;transition:transform 0.2s;flex-shrink:0}
+.ch-header.open .ch-chevron{transform:rotate(180deg)}
+.ch-body{display:none;padding:28px 28px 32px;animation:fadeSlide 0.2s ease}
+.ch-body.open{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* EDITORIAL PROSE */
+.prose{font-family:'Lora',serif;font-size:16px;line-height:1.8;color:var(--ink);margin-bottom:22px}
+.prose em{font-style:italic;color:var(--ink2)}
+.prose strong{font-weight:600}
+.prose + .prose{margin-top:-10px}
+
+/* INLINE DATA TAG */
+.dt{display:inline-flex;align-items:baseline;gap:4px;font-family:'DM Mono',monospace;font-size:13px;background:var(--cream2);border:0.5px solid var(--rule);border-radius:4px;padding:1px 6px;vertical-align:baseline;white-space:nowrap;cursor:help;transition:background 0.1s}
+.dt:hover{background:var(--cream3)}
+.dt-lbl{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;color:var(--ink3);margin-right:1px}
+.dt-pos{color:var(--green)}.dt-neg{color:var(--red)}.dt-warn{color:var(--amber)}
+
+/* PULLQUOTE */
+.pullquote{border-left:2px solid var(--ink);margin:28px 0 28px -4px;padding:2px 0 2px 20px;font-family:'Lora',serif;font-size:18px;font-style:italic;color:var(--ink);line-height:1.55}
+
+/* METRICS STRIP */
+.mstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:0;background:var(--cream);border-radius:10px;overflow:hidden;border:0.5px solid var(--rule);margin:24px 0}
+.ms-cell{background:var(--cream);padding:14px 16px;border-right:0.5px solid var(--rule);border-bottom:0.5px solid var(--rule)}
+.ms-cell:nth-child(3n){border-right:none}
+.ms-lbl{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.ms-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--ink);letter-spacing:-0.01em}
+.ms-sub{font-family:'DM Sans',sans-serif;font-size:11px;margin-top:2px}
+.ms-up{color:var(--green)}.ms-dn{color:var(--red)}.ms-nu{color:var(--ink3)}
+
+/* STAT CALLOUT */
+.callout{display:flex;gap:20px;align-items:flex-start;background:var(--cream2);border-radius:10px;padding:20px 22px;margin:24px 0}
+.callout-big{font-family:'DM Mono',monospace;font-size:40px;font-weight:400;letter-spacing:-0.03em;line-height:1;flex-shrink:0}
+.cb-green{color:var(--green)}.cb-amber{color:var(--amber)}.cb-red{color:var(--red)}
+.callout-body{}
+.callout-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+.callout-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.55}
+.callout-formula{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);margin-top:5px;background:var(--cream3);display:inline-block;padding:2px 7px;border-radius:3px}
+
+/* CHART */
+.chart-block{margin:24px 0}
+.chart-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:8px;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink2)}
+.leg-i{display:flex;align-items:center;gap:5px}
+.leg-line{width:18px;height:1.5px;border-radius:1px;flex-shrink:0}
+.chart-canvas-wrap{position:relative;width:100%}
+.chart-caption{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.55;border-top:0.5px solid var(--rule2);padding-top:8px}
+.chart-caption strong{color:var(--ink2)}
+
+/* EVIDENCE LIST */
+.evidence-list{margin:18px 0}
+.ev-row{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--rule2)}
+.ev-row:last-child{border-bottom:none}
+.ev-badge{flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;padding:3px 8px;border-radius:4px;margin-top:1px;white-space:nowrap}
+.ev-strong{background:var(--gbg);color:var(--green)}
+.ev-moderate{background:var(--abg);color:var(--amber)}
+.ev-weak{background:var(--rbg);color:var(--red)}
+.ev-na{background:var(--cream2);color:var(--ink3)}
+.ev-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);line-height:1.5;flex:1}
+.ev-text strong{color:var(--ink);font-weight:600}
+
+/* DATA TABLE */
+.dtable{width:100%;border-collapse:collapse;font-family:'DM Sans',sans-serif;font-size:12px;margin:18px 0}
+.dtable th{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);padding:7px 10px;border-bottom:0.5px solid var(--rule);text-align:right}
+.dtable th:first-child{text-align:left}
+.dtable td{padding:9px 10px;border-bottom:0.5px solid var(--rule2);text-align:right;font-family:'DM Mono',monospace;font-size:11px;color:var(--ink)}
+.dtable td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2)}
+.dtable tr:last-child td{border-bottom:none}
+.dtable tr.bold td{font-weight:500;color:var(--ink)}
+.dtable tr.bold td:first-child{color:var(--ink)}
+.dtable tr.section-row td{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink3);background:var(--cream2);padding:6px 10px}
+.dpos{color:var(--green)}.dneg{color:var(--red)}.dwarn{color:var(--amber)}
+.formula-tag{display:inline-flex;align-items:center;font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink3);background:var(--cream2);border:0.5px solid var(--rule);border-radius:3px;padding:1px 5px;cursor:help;margin-left:3px;vertical-align:middle;transition:all 0.1s}
+.formula-tag:hover{background:var(--bbg);color:var(--blue)}
+
+/* COMPETITORS */
+.comp-scroll{overflow-x:auto;margin:18px 0}
+.comp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:480px}
+.comp-table th{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);padding:7px 12px;border-bottom:0.5px solid var(--rule);text-align:right}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:9px 12px;border-bottom:0.5px solid var(--rule2);text-align:right;font-family:'DM Mono',monospace;font-size:11px}
+.comp-table td:first-child{text-align:left;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink);font-weight:500}
+.comp-table tr.highlight td{background:var(--cream2)}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-best{color:var(--green);font-weight:500}.comp-worst{color:var(--red)}
+
+/* GAUGE PAIR */
+.gauge-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.gauge-card{background:var(--cream2);border-radius:10px;padding:18px;text-align:center}
+.gauge-lbl{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px}
+.gauge-val{font-family:'DM Mono',monospace;font-size:20px;margin-top:6px}
+.gauge-desc{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink3);margin-top:3px}
+
+/* BULL BEAR */
+.bull-bear{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:10px;overflow:hidden;border:0.5px solid var(--rule);margin:18px 0}
+.bb-side{padding:18px}
+.bb-bull{background:var(--gbg)}.bb-bear{background:var(--rbg)}
+.bb-head{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:12px}
+.bb-bull .bb-head{color:var(--green)}.bb-bear .bb-head{color:var(--red)}
+.bb-item{font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.55;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);color:var(--ink2)}
+.bb-item:last-child{border-bottom:none}
+@media(max-width:480px){.bull-bear,.gauge-row{grid-template-columns:1fr}}
+
+/* SCORE BARS */
+.score-list{margin:16px 0}
+.score-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--rule2)}
+.score-row:last-child{border-bottom:none;padding-bottom:0}
+.score-info{flex:1}
+.score-name{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink)}
+.score-formula-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);margin-top:1px}
+.score-bar-bg{width:80px;height:3px;background:var(--cream3);border-radius:2px;overflow:hidden;flex-shrink:0;margin-top:8px}
+.score-bar{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.score-pts{font-family:'DM Mono',monospace;font-size:12px;min-width:38px;text-align:right;flex-shrink:0;margin-top:4px}
+.sp-hi{color:var(--green)}.sp-mid{color:var(--amber)}.sp-lo{color:var(--red)}
+.score-total{display:flex;justify-content:space-between;align-items:center;padding:14px 0 0;border-top:0.5px solid var(--rule);margin-top:4px}
+.score-total-lbl{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2)}
+.score-total-val{font-family:'DM Mono',monospace;font-size:28px;color:var(--green)}
+
+/* SCENARIOS */
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.sc-card{border-radius:10px;padding:14px 16px;text-align:center}
+.sc-cons{background:var(--gbg);border:0.5px solid var(--gborder)}
+.sc-base{background:var(--bbg);border:0.5px solid var(--bborder)}
+.sc-opt{background:var(--abg);border:0.5px solid var(--aborder)}
+.sc-lbl{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;margin-bottom:4px}
+.sc-cons .sc-lbl{color:var(--green)}.sc-base .sc-lbl{color:var(--blue)}.sc-opt .sc-lbl{color:var(--amber)}
+.sc-val{font-family:'DM Mono',monospace;font-size:22px}
+.sc-cons .sc-val{color:var(--green)}.sc-base .sc-val{color:var(--blue)}.sc-opt .sc-val{color:var(--amber)}
+.sc-sub{font-family:'DM Sans',sans-serif;font-size:10px;margin-top:4px}
+.sc-cons .sc-sub{color:var(--green)}.sc-base .sc-sub{color:var(--blue)}.sc-opt .sc-sub{color:var(--amber)}
+@media(max-width:480px){.scenario-grid{grid-template-columns:1fr}}
+
+/* MARGIN SAFETY */
+.ms-bar{display:flex;align-items:center;gap:18px;border-radius:10px;padding:16px 20px;margin:16px 0}
+.ms-amber{background:var(--abg);border:0.5px solid var(--aborder)}
+.ms-green{background:var(--gbg);border:0.5px solid var(--gborder)}
+.ms-pct{font-family:'DM Mono',monospace;font-size:34px;font-weight:400;letter-spacing:-0.02em;flex-shrink:0}
+.ms-amber .ms-pct{color:var(--amber)}.ms-green .ms-pct{color:var(--green)}
+.ms-info-title{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px}
+.ms-amber .ms-info-title{color:var(--amber)}.ms-green .ms-info-title{color:var(--green)}
+.ms-info-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);line-height:1.5}
+
+/* CMD */
+.cmd-block{background:var(--gbg);border:0.5px solid var(--gborder);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+.cmd-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.cmd-title{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--green)}
+.cmd-date{font-family:'DM Mono',monospace;font-size:10px;color:rgba(45,106,79,0.6)}
+.cmd-row{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 0;border-bottom:0.5px solid rgba(45,106,79,0.1)}
+.cmd-row:last-child{border-bottom:none}
+.cmd-k{color:var(--green)}.cmd-v{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--green);font-weight:500}
+
+/* GUIDANCE TABLE */
+.gtable{width:100%;border-collapse:collapse;font-size:12px;margin:16px 0}
+.gtable th{font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink3);padding:6px 10px;border-bottom:0.5px solid var(--rule)}
+.gtable td{padding:8px 10px;border-bottom:0.5px solid var(--rule2);font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink)}
+.gtable tr:last-child td{border-bottom:none}
+.badge{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;padding:2px 7px;border-radius:20px;display:inline-block}
+.b-green{background:var(--gbg);color:var(--green)}
+.b-red{background:var(--rbg);color:var(--red)}
+.b-gray{background:var(--cream2);color:var(--ink3)}
+
+/* FLAG LIST */
+.flag-list{margin:16px 0}
+.flag-item{display:flex;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--rule2)}
+.flag-item:last-child{border-bottom:none}
+.flag-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.fdg{background:var(--green)}.fdy{background:var(--amber)}.fdr{background:var(--red)}
+.flag-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.flag-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);line-height:1.45}
+.flag-metric{font-family:'DM Mono',monospace;font-size:10.5px;margin-top:3px}
+.fmg{color:var(--green)}.fmy{color:var(--amber)}.fmr{color:var(--red)}
+
+/* WALL */
+.wall-outer{position:relative;border-radius:12px;overflow:hidden;margin:8px 0}
+.wall-blur{filter:blur(5px);pointer-events:none;opacity:0.35;padding:24px 28px;background:var(--cream);border:0.5px solid var(--rule);border-radius:12px}
+.wall-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(250,249,246,0.88);backdrop-filter:blur(4px);border-radius:12px;border:0.5px solid var(--rule);padding:28px 24px;text-align:center}
+.wall-icon{font-size:22px;opacity:0.35;margin-bottom:2px}
+.wall-title{font-family:'Lora',serif;font-size:18px;font-weight:600;color:var(--ink)}
+.wall-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);max-width:300px;line-height:1.55}
+.wall-cta{display:flex;gap:8px;margin-top:6px}
+.wall-note{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink3)}
+
+/* DCF LOCK */
+.dcf-lock{border:0.5px dashed var(--rule);border-radius:10px;padding:24px;text-align:center;background:var(--cream2);margin:16px 0}
+.dcf-lock-icon{font-size:20px;opacity:0.25;margin-bottom:8px}
+.dcf-lock-title{font-family:'Lora',serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.dcf-lock-sub{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);margin-bottom:14px;line-height:1.5}
+
+/* PDF CTA */
+.pdf-cta{background:var(--bbg);border:0.5px solid var(--bborder);border-radius:10px;padding:18px 20px;display:flex;align-items:center;gap:16px;margin:20px 0}
+.pdf-icon{width:40px;height:48px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;color:white;letter-spacing:0.05em}
+.pdf-info{flex:1}
+.pdf-title{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--blue);margin-bottom:2px}
+.pdf-sub{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(30,58,95,0.65);line-height:1.4}
+
+/* SOURCE */
+.source-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:0.5px solid var(--rule2)}
+.source-item:last-child{border-bottom:none}
+.source-tag{width:28px;height:28px;background:var(--cream2);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--ink3);flex-shrink:0}
+.source-name{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);font-weight:500}
+.source-url{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--blue)}
+.source-date{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-left:auto}
+
+/* NL CTA */
+.nl-cta{background:var(--bbg);border:0.5px solid var(--bborder);border-radius:12px;padding:24px;margin:20px 0}
+.nl-eyebrow{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(30,58,95,0.55);margin-bottom:5px}
+.nl-title{font-family:'Lora',serif;font-size:17px;font-weight:600;color:var(--blue);margin-bottom:5px}
+.nl-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(30,58,95,0.7);margin-bottom:14px;line-height:1.55}
+.nl-items{border-top:0.5px solid rgba(30,58,95,0.1);padding-top:10px;margin-top:10px}
+.nl-item{display:flex;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(30,58,95,0.7);padding:4px 0;border-bottom:0.5px solid rgba(30,58,95,0.06)}
+.nl-item:last-child{border-bottom:none}
+
+/* READING NAV */
+.reading-nav{position:fixed;right:24px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:200}
+@media(max-width:900px){.reading-nav{display:none}}
+.rn-dot{width:6px;height:6px;border-radius:50%;background:var(--ink4);cursor:pointer;transition:all 0.18s;position:relative}
+.rn-dot:hover,.rn-dot.active{background:var(--ink);transform:scale(1.6)}
+.rn-dot::before{content:attr(data-label);position:absolute;right:14px;top:50%;transform:translateY(-50%);font-family:'DM Sans',sans-serif;font-size:10px;color:var(--ink2);background:var(--cream);border:0.5px solid var(--rule);padding:3px 8px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.12s}
+.rn-dot:hover::before{opacity:1}
+
+/* DISCLAIMER */
+.article-footer{margin-top:56px;padding-top:28px;border-top:0.5px solid var(--rule);font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);line-height:1.65}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">tes<em>inversión</em></a>
+  <div class="topbar-center">
+    <span class="topbar-ticker">NYSE/EXM: <span>RACE</span> &nbsp;·&nbsp; $412.80 &nbsp;<span style="color:var(--green)">+2.34%</span></span>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm btn-ghost">Iniciar sesión</button>
+    <button class="btn-sm btn-dark">Crear cuenta</button>
+  </div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-head">
+    <div class="sb-ticker">NYSE · EXM: RACE</div>
+    <div class="sb-name">Ferrari N.V.</div>
+    <div class="sb-price">$412.80 <span class="up">+2.34%</span></div>
+    <div class="sb-qs"><strong>87</strong>/100 Índice de Calidad</div>
+  </div>
+
+  <div class="sb-section-lbl" style="margin-top:4px">Gratis</div>
+  <a class="sb-item" onclick="goTo('cover')"><span class="num">·</span>Portada</a>
+  <a class="sb-item" onclick="goTo('negocio')"><span class="num">01</span>Modelo de negocio</a>
+  <a class="sb-item" onclick="goTo('historia')"><span class="num">02</span>Historia</a>
+  <a class="sb-item" onclick="goTo('sector')"><span class="num">03</span>Sector y competidores</a>
+  <a class="sb-item" onclick="goTo('moat')"><span class="num">04</span>Ventajas competitivas</a>
+  <a class="sb-item" onclick="goTo('estrategia')"><span class="num">05</span>Estrategia crecimiento</a>
+  <a class="sb-item" onclick="goTo('financieros')"><span class="num">06</span>Análisis financiero</a>
+  <a class="sb-item" onclick="goTo('rentabilidad')"><span class="num">07</span>Rentabilidad y ROIC</a>
+  <a class="sb-item" onclick="goTo('salud')"><span class="num">08</span>Salud financiera</a>
+  <a class="sb-item" onclick="goTo('capital')"><span class="num">09</span>Capital Allocation</a>
+
+  <div class="sb-divider"><span class="sb-divider-label">Requiere cuenta gratis</span></div>
+
+  <a class="sb-item" onclick="goTo('equipo')"><span class="num">10</span>Equipo directivo<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('accionistas')"><span class="num">11</span>Accionistas<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('guidance')"><span class="num">12</span>Guidance<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('psicologia')"><span class="num">13</span>Psicología mercado<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('riesgos')"><span class="num">14</span>Riesgos<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('indice')"><span class="num">15</span>Índice de Calidad<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('valoracion')"><span class="num">16</span>Valoración<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('tendencias')"><span class="num">17</span>Tendencias históricas<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('senales')"><span class="num">18</span>Señales<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('reflexion')"><span class="num">19</span>Reflexión y conclusión<span class="lock">🔒</span></a>
+  <a class="sb-item" onclick="goTo('fuentes')"><span class="num">20</span>Fuentes<span class="lock">🔒</span></a>
+</nav>
+
+<!-- READING NAV -->
+<div class="reading-nav" id="readingNav">
+  <div class="rn-dot active" data-label="Portada" data-id="cover" onclick="goTo('cover')"></div>
+  <div class="rn-dot" data-label="Negocio" data-id="negocio" onclick="goTo('negocio')"></div>
+  <div class="rn-dot" data-label="Historia" data-id="historia" onclick="goTo('historia')"></div>
+  <div class="rn-dot" data-label="Sector" data-id="sector" onclick="goTo('sector')"></div>
+  <div class="rn-dot" data-label="Moat" data-id="moat" onclick="goTo('moat')"></div>
+  <div class="rn-dot" data-label="Crecimiento" data-id="estrategia" onclick="goTo('estrategia')"></div>
+  <div class="rn-dot" data-label="Financieros" data-id="financieros" onclick="goTo('financieros')"></div>
+  <div class="rn-dot" data-label="ROIC" data-id="rentabilidad" onclick="goTo('rentabilidad')"></div>
+  <div class="rn-dot" data-label="Salud" data-id="salud" onclick="goTo('salud')"></div>
+  <div class="rn-dot" data-label="Capital" data-id="capital" onclick="goTo('capital')"></div>
+  <div class="rn-dot" data-label="🔒 Más" data-id="wall" onclick="goTo('wall')"></div>
+</div>
+
+<div class="layout">
+<main class="main">
+<article class="article">
+
+<!-- COVER -->
+<div id="cover" style="scroll-margin-top:70px">
+  <div class="cover">
+    <div class="cover-logo-wrap"><div class="company-logo" style="background:#fdf5f5;color:#742a2a;font-size:11px">RACE</div><div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink3)">NYSE · EXM: RACE &nbsp;·&nbsp; Consumo discrecional &nbsp;·&nbsp; Italia</div></div>
+    <h1 class="cover-headline">Ferrari no vende coches.<br><em>Vende la imposibilidad de tenerlo.</em></h1>
+    <p class="cover-deck">Un análisis del monopolio del lujo más rentable del mundo: por qué su modelo es prácticamente irrepetible, qué riesgos no se deben ignorar, y cuánto deberías pagar hoy por él.</p>
+    <div class="cover-byline">
+      <span>Ferrari N.V. · NYSE/EXM: RACE</span>
+      <div class="cover-byline-dot"></div>
+      <span>Actualizado Mar 2025</span>
+      <div class="cover-byline-dot"></div>
+      <span>~22 min de lectura</span>
+    </div>
+    <div class="cover-data-row">
+      <span class="cover-price">$412.80</span>
+      <span class="cover-chg">+$9.42 · +2.34%</span>
+      <div class="cover-pills">
+        <span class="cpill">Market Cap $74.8B</span>
+        <span class="cpill-green">Caja neta +€824M</span>
+        <span class="cpill-amber">PER 46.2x — más caro que el 72% de su historia</span>
+      </div>
+      <div class="cover-score-badge">
+        <div class="csb-num">87</div>
+        <div class="csb-info">
+          <div class="csb-label">Índice de Calidad</div>
+          <div class="csb-sub">/100 · 10 criterios</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- METRICS HERO -->
+  <div class="mstrip" style="margin-bottom:32px">
+    <div class="ms-cell"><div class="ms-lbl">Revenue</div><div class="ms-val">€6.68B</div><div class="ms-sub ms-up">+11.8%</div></div>
+    <div class="ms-cell"><div class="ms-lbl">Margen EBIT</div><div class="ms-val">27.4%</div><div class="ms-sub ms-up">+1.2pp</div></div>
+    <div class="ms-cell"><div class="ms-lbl">ROIC</div><div class="ms-val">38.2%</div><div class="ms-sub ms-up">media 5A: 32%</div></div>
+    <div class="ms-cell"><div class="ms-lbl">FCF</div><div class="ms-val">€1.42B</div><div class="ms-sub ms-up">yield 1.98%</div></div>
+    <div class="ms-cell"><div class="ms-lbl">EPS</div><div class="ms-val">€8.10</div><div class="ms-sub ms-up">+21.7% CAGR</div></div>
+    <div class="ms-cell"><div class="ms-lbl">PER</div><div class="ms-val">46.2x</div><div class="ms-sub ms-nu">media 38x</div></div>
+  </div>
+
+  <!-- Newsletter CTA — dos estados: con tesis publicada / sin tesis aún -->
+  <!-- ESTADO: Sin tesis publicada todavía -->
+  <div class="nl-cta" style="margin-bottom:24px" id="nlBlock">
+    <div class="nl-eyebrow">Arquitectura de la Inversión · Newsletter mensual</div>
+    <div class="nl-title" id="nlTitle">La tesis de Ferrari — en preparación</div>
+    <div class="nl-sub" id="nlSub">El análisis editorial completo de Ferrari está en preparación. Suscríbete al newsletter para recibirlo en cuanto esté publicado — con PDF descargable incluido.</div>
+    <button class="btn-sm btn-dark">Suscribirse para recibir la tesis →</button>
+    <!-- Cuando la tesis esté publicada, reemplazar el bloque anterior por:
+    <div class="nl-title">La tesis de Ferrari — publicada</div>
+    <div class="nl-sub">Análisis de 80 páginas con modelo de negocio, moat, financieros, valoración y conclusión editorial. Disponible como PDF para suscriptores.</div>
+    <button class="btn-sm btn-dark">Leer la tesis completa →</button>
+    <div class="nl-items">
+      <div class="nl-item"><span>Ferrari N.V. — El monopolio del lujo</span><span style="font-size:10px;opacity:0.5">Mar 2025</span></div>
+    </div>
+    -->
+  </div>
+</div>
+
+<!-- 01 NEGOCIO -->
+<div class="chapter" id="negocio">
+  <div class="ch-header open" onclick="toggle(this)">
+    <span class="ch-num">01</span>
+    <div class="ch-title-wrap"><div class="ch-title">Modelo de negocio</div><div class="ch-preview">Escasez controlada · ASP €400k · 100% personalización</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body open">
+    <p class="prose">Existe una frase que define a Ferrari mejor que cualquier ratio financiero: <em>"vender un coche menos de lo que el mercado demanda."</em> No es marketing — es la estrategia deliberada que convierte una empresa de 16,000 empleados en un negocio con márgenes de software.</p>
+    <p class="prose">Ferrari produce deliberadamente <span class="dt"><span class="dt-lbl">máx</span>~14,000 u/año</span> mientras la demanda podría absorber el doble. El resultado: listas de espera de <span class="dt">2–4 años</span> y un precio medio por coche (ASP) de <span class="dt dt-pos"><span class="dt-lbl">ASP</span>€400k</span> que sube cada año sin que nadie abandone la cola. En 2019 ese ASP era <span class="dt">€270k</span>. Un incremento del <span class="dt dt-pos">+48%</span> en 5 años sin perder un solo cliente.</p>
+    <div class="pullquote">"Es un bien Veblen en estado puro: cuanto más sube el precio, más deseable se vuelve."</div>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">Producción máx.</div><div class="ms-val">14,000</div><div class="ms-sub ms-nu">unidades/año</div></div>
+      <div class="ms-cell"><div class="ms-lbl">ASP 2024</div><div class="ms-val">€400k</div><div class="ms-sub ms-up">+8.2% vs 2023</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Lista espera</div><div class="ms-val">2–4 años</div><div class="ms-sub ms-nu">sin reducción</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Personalización</div><div class="ms-val">100%</div><div class="ms-sub ms-nu">de los coches</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Clientes activos</div><div class="ms-val">90,000</div><div class="ms-sub ms-up">+20% vs 2022</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Mercados</div><div class="ms-val">60+</div><div class="ms-sub ms-nu">países</div></div>
+    </div>
+    <div class="ch-title-wrap" style="margin-bottom:10px"><div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3)">Fuentes de ingresos</div></div>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Vehículos 78%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>Engines 9%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>Sponsoring/F1 8%</div>
+        <div class="leg-i"><div class="leg-line" style="background:#4a5568"></div>Licencias 5%</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:170px"><canvas id="revDonut"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 02 HISTORIA -->
+<div class="chapter" id="historia">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">02</span>
+    <div class="ch-title-wrap"><div class="ch-title">Historia y evolución</div><div class="ch-preview">1947 · IPO 2015 · €6.5B invertidos · 41 modelos</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">En 1947, con la Segunda Guerra Mundial recién terminada y el asfalto aún sin reponer, Enzo Ferrari decidió construir un motor de 12 cilindros. Nadie le creía. Lo construyó. Esa voluntad de progreso — <em>festina lente</em>, apresúrate despacio — es el hilo que conecta cada decisión que Ferrari ha tomado desde entonces.</p>
+    <p class="prose">El momento más revelador de la historia reciente no fue el IPO en 2015, aunque fue significativo. Fue la decisión de Sergio Marchionne de separar Ferrari de Fiat Chrysler y cotizarla de forma independiente, argumentando que el mercado nunca valoraría correctamente a Ferrari dentro de un conglomerado automotriz. Tenía razón. Desde la salida a bolsa en octubre de 2015, Ferrari ha multiplicado su valor por más de <span class="dt dt-pos">8×</span>.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">IPO</div><div class="ms-val">Oct 2015</div><div class="ms-sub ms-nu">NYSE / Borsa Italiana</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Capex desde IPO</div><div class="ms-val">€6.5B</div><div class="ms-sub ms-nu">inversión total</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Modelos lanzados</div><div class="ms-val">41</div><div class="ms-sub ms-nu">desde el IPO</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Plantilla</div><div class="ms-val">16,664</div><div class="ms-sub ms-up">+2× desde IPO</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Patentes</div><div class="ms-val">883</div><div class="ms-sub ms-nu">desde IPO</div></div>
+      <div class="ms-cell" style="background:var(--cream2);cursor:default"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 03 SECTOR -->
+<div class="chapter" id="sector">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">03</span>
+    <div class="ch-title-wrap"><div class="ch-title">Sector y competidores</div><div class="ch-preview">TAM $48B · #1 segmento >$300k · Competidor más cercano: Hermès</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Ferrari no compite en el sector automotriz. Compite en el sector del lujo absoluto — el mismo espacio que Hermès con sus Birkins o Patek Philippe con sus relojes. La ciclicidad del sector automotriz convencional no aplica: la demanda de Ferrari supera estructuralmente a la oferta, independientemente del ciclo económico.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">TAM ultra-lujo</div><div class="ms-val">$48B</div><div class="ms-sub ms-up">CAGR 9%</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Posición</div><div class="ms-val">#1</div><div class="ms-sub ms-nu">segmento >$300k</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Ciclicidad</div><div class="ms-val">Baja</div><div class="ms-sub ms-nu">demanda > oferta siempre</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Exposición geo.</div><div class="ms-val">Europa 45%</div><div class="ms-sub" style="color:var(--amber)">concentración</div></div>
+    </div>
+    <div class="comp-scroll">
+      <table class="comp-table">
+        <thead><tr><th style="text-align:left">Empresa</th><th>Revenue</th><th>EBIT M.</th><th>ROIC</th><th>Deuda/EBITDA</th><th>PER</th></tr></thead>
+        <tbody>
+          <tr class="highlight"><td>Ferrari (RACE)</td><td class="comp-best">€6.68B</td><td class="comp-best">27.4%</td><td class="comp-best">38.2%</td><td class="comp-best">−0.4x</td><td class="comp-worst">46.2x</td></tr>
+          <tr><td>Hermès (RMS)</td><td>€13.4B</td><td class="comp-best">42.1%</td><td>44.8%</td><td class="comp-best">−1.2x</td><td>54.8x</td></tr>
+          <tr><td>Porsche (P911)</td><td>€40.5B</td><td>15.1%</td><td>14.8%</td><td>0.8x</td><td>18.4x</td></tr>
+          <tr><td>LVMH (MC)</td><td>€84.7B</td><td>21.2%</td><td>16.4%</td><td>1.2x</td><td>24.1x</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)">✓ mejor en la categoría. El competidor más relevante para Ferrari no es Porsche sino Hermès — mismo modelo de escasez, misma lógica de pricing power, similar perfil financiero.</div>
+  </div>
+</div>
+
+<!-- 04 MOAT -->
+<div class="chapter" id="moat">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">04</span>
+    <div class="ch-title-wrap"><div class="ch-title">Ventajas competitivas — moat</div><div class="ch-preview">Pricing power fuerte · Marca irrepetible · Sin barreras regulatorias</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Aquí no aceptamos narrativa sin datos. Cada ventaja que listamos tiene evidencia cuantitativa. El moat de Ferrari es real, pero no es uniforme.</p>
+    <div class="evidence-list">
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Pricing power:</strong> ASP +48% en 5 años sin caída de demanda. Margen bruto 49% — comparable a Hermès (69%), 22pp por encima de Porsche. Lista de espera intacta. Evidencia irrefutable de bien Veblen.</div></div>
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Poder de marca:</strong> 130 años, equipo F1 más ganador de la historia (16 títulos de constructores), 3 victorias consecutivas Le Mans 2024. Genera >€500M en visibilidad global anual sin presupuesto publicitario.</div></div>
+      <div class="ev-row"><span class="ev-badge ev-strong">Fuerte</span><div class="ev-text"><strong>Retención:</strong> 45% de coleccionistas son nuevos desde 2022. Los coleccionistas aumentaron coches en su garaje +20%. La comunidad Ferraristi crea un coste de salida emocional alto y real.</div></div>
+      <div class="ev-row"><span class="ev-badge ev-moderate">Moderado</span><div class="ev-text"><strong>Switching costs:</strong> Moderados en primera compra, altos en recompra. La configuración personalizada y la relación con el concesionario crean fricción real. No son switching costs tecnológicos pero existen.</div></div>
+      <div class="ev-row"><span class="ev-badge ev-weak">Riesgo</span><div class="ev-text"><strong>Barreras regulatorias — exposición, no moat:</strong> Euro 7 y regulaciones de emisiones pueden forzar la transición EV en plazos no controlados. Es un riesgo regulatorio, no una ventaja competitiva.</div></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Ferrari EBIT margin</div>
+        <div class="leg-i"><div class="leg-line" style="background:transparent;border-top:1.5px dashed #4a5568"></div>Media sector auto (6–7%)</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:160px"><canvas id="moatChart"></canvas></div>
+      <div class="chart-caption"><strong>EBIT margin Ferrari vs sector automotriz 2019–2024.</strong> La brecha no se cierra — se amplía año a año. Eso es el moat en formato numérico.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 05 ESTRATEGIA -->
+<div class="chapter" id="estrategia">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">05</span>
+    <div class="ch-title-wrap"><div class="ch-title">Estrategia de crecimiento</div><div class="ch-preview">Orgánico + EV · 4 lanzamientos/año · Lifestyle · Ferrari elettrica 2026</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">El crecimiento de Ferrari es deliberadamente lento en volumen pero acelerado en valor. La estrategia no es producir más coches — es que cada coche valga más. Esto se consigue a través de tres palancas: el mix hacia modelos más exclusivos (Icona, Special Series, One-off), el crecimiento del ASP vía personalización, y la expansión del negocio Lifestyle sin tocar la exclusividad del coche.</p>
+    <p class="prose">La Ferrari elettrica, con entregas previstas desde finales de 2026, no es un movimiento defensivo ante la regulación — es una apuesta ofensiva. Ferrari está convencida de que puede trasladar su filosofía de <em>emotion-driven innovation</em> al mundo eléctrico. La arquitectura con 4 motores independientes por rueda, diseñada y ensamblada en Maranello, no tiene equivalente en el mercado.</p>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">Lanzamientos 2026–30</div><div class="ms-val">4/año</div><div class="ms-sub ms-nu">ritmo confirmado</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Ferrari elettrica</div><div class="ms-val">Late 2026</div><div class="ms-sub ms-nu">entregas</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Mix EV 2030</div><div class="ms-val">20%</div><div class="ms-sub ms-nu">del lineup</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Tailor Made</div><div class="ms-val">Tokio+LA</div><div class="ms-sub ms-nu">apertura 2027</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Flagship stores</div><div class="ms-val">London+NY</div><div class="ms-sub ms-nu">2026</div></div>
+    </div>
+    <p class="prose">El crecimiento inorgánico es mínimo y deliberado. Ferrari no hace adquisiciones transformadoras — invierte en capacidad interna. El e-building en Maranello, donde se diseñan, ensamblan y verifican los componentes eléctricos estratégicos, es la manifestación más concreta de esta filosofía: si es estratégico, se hace en casa.</p>
+  </div>
+</div>
+
+<!-- 06 FINANCIEROS -->
+<div class="chapter" id="financieros">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">06</span>
+    <div class="ch-title-wrap"><div class="ch-title">Análisis financiero</div><div class="ch-preview">Revenue €6.68B · FCF €1.42B · Márgenes en expansión 5 años</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Los financieros de Ferrari cuentan la misma historia que el modelo de negocio, pero en euros. Revenue creciendo al <span class="dt dt-pos">+16.2% CAGR 3A</span>, márgenes en expansión, y un FCF que crece al <span class="dt dt-pos">+25.3%</span> — más rápido que el propio revenue. Cada euro de crecimiento cuesta cada vez menos en capital.</p>
+    <table class="dtable">
+      <thead><tr><th>Cuenta de Resultados</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>CAGR 3A</th></tr></thead>
+      <tbody>
+        <tr class="bold"><td>Revenue <span class="formula-tag" title="€ millones">€M</span></td><td>4,270</td><td>4,970</td><td>5,970</td><td>6,680</td><td class="dpos">+16.2%</td></tr>
+        <tr><td style="padding-left:16px">% Margen bruto</td><td>46.6%</td><td>47.1%</td><td>48.4%</td><td>49.0%</td><td class="dpos">+2.4pp</td></tr>
+        <tr class="bold"><td>EBIT <span class="formula-tag" title="Ventas − COGS − SG&A − R&D − D&A">fórmula</span></td><td>1,090</td><td>1,360</td><td>1,580</td><td>1,830</td><td class="dpos">+18.8%</td></tr>
+        <tr><td style="padding-left:16px">% Margen EBIT</td><td>25.6%</td><td>27.3%</td><td>26.4%</td><td>27.4%</td><td class="dpos">+1.8pp</td></tr>
+        <tr class="bold"><td>Beneficio neto</td><td>845</td><td>1,050</td><td>1,250</td><td>1,440</td><td class="dpos">+19.5%</td></tr>
+        <tr><td style="padding-left:16px">% Margen neto</td><td>19.8%</td><td>21.1%</td><td>20.9%</td><td>21.6%</td><td class="dpos">+1.8pp</td></tr>
+        <tr class="bold"><td>EPS diluido</td><td>€4.50</td><td>€5.73</td><td>€6.90</td><td>€8.10</td><td class="dpos">+21.7%</td></tr>
+        <tr class="bold"><td>FCF <span class="formula-tag" title="EBITDA − Capex mant. − Intereses − Impuestos pagados − ΔWC">fórmula</span></td><td>723</td><td>918</td><td>1,180</td><td>1,420</td><td class="dpos">+25.3%</td></tr>
+        <tr><td style="padding-left:16px">FCF conv. <span class="formula-tag" title="FCF / Net Income × 100">fórmula</span></td><td>85.6%</td><td>87.4%</td><td>94.4%</td><td>98.6%</td><td class="dpos">+13pp</td></tr>
+        <tr><td style="padding-left:16px">FCF/acción <span class="formula-tag" title="FCF / acciones diluidas">fórmula</span></td><td>€3.98</td><td>€5.12</td><td>€6.68</td><td>€8.16</td><td class="dpos">+27.1%</td></tr>
+        <tr><td style="padding-left:16px">FCF Yield <span class="formula-tag" title="FCF/acción ÷ precio × 100">fórmula</span></td><td>2.8%</td><td>3.1%</td><td>2.4%</td><td>1.98%</td><td>—</td></tr>
+        <tr><td style="padding-left:16px">Payout dividendos <span class="formula-tag" title="Dividendos / Net Income × 100">fórmula</span></td><td>24.1%</td><td>24.2%</td><td>24.2%</td><td>23.7%</td><td>Estable</td></tr>
+        <tr><td style="padding-left:16px">Payout total <span class="formula-tag" title="(Dividendos + Recompras) / FCF × 100">fórmula</span></td><td>68.2%</td><td>69.8%</td><td>70.4%</td><td>71.8%</td><td>Creciente</td></tr>
+      </tbody>
+    </table>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Margen bruto</div>
+        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>EBIT margin</div>
+        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>Margen neto</div>
+        <div class="leg-i"><div class="leg-line" style="background:#742a2a"></div>FCF margin</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:180px"><canvas id="marginsChart"></canvas></div>
+      <div class="chart-caption"><strong>Todos los márgenes en expansión 2019–2024.</strong> La pandemia generó una contracción temporal en 2020 que se recuperó completamente en 2021. La tendencia estructural es de expansión. Fuente: Annual Reports Ferrari, cálculos tesinversion.com.</div>
+    </div>
+  </div>
+</div>
+
+<!-- 07 RENTABILIDAD -->
+<div class="chapter" id="rentabilidad">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">07</span>
+    <div class="ch-title-wrap"><div class="ch-title">Rentabilidad y ROIC</div><div class="ch-preview">ROIC 38.2% · ROIC incremental 29.4% · Spread WACC +30pp</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Si hubiera que elegir una sola métrica para evaluar la calidad de un negocio, sería el ROIC. Mide lo que realmente importa: ¿cuánto retorno genera la empresa por cada euro de capital invertido? Ferrari genera <span class="dt dt-pos">38.2 céntimos</span> por cada euro de capital. La media del sector automotriz genera <span class="dt">6.4 céntimos</span>.</p>
+    <div class="callout">
+      <div class="callout-big cb-green">38.2%</div>
+      <div class="callout-body">
+        <div class="callout-label">ROIC actual — Top 3% del sector</div>
+        <div class="callout-text">5.8× el ROIC de Porsche (6.6%), su competidor más cercano. La media del mercado es 13%. Que Ferrari genere este retorno consistentemente durante 5 años no es un accidente financiero — es la demostración cuantitativa de su moat.</div>
+        <div class="callout-formula">ROIC = EBIT × (1 − T) / Capital Invertido × 100</div>
+      </div>
+    </div>
+    <p class="prose">El <strong>ROIC Incremental</strong> responde la pregunta más importante para el inversor de largo plazo: ¿está Ferrari creando valor con el dinero que invierte <em>hoy</em>? Un ROIC histórico alto no sirve de nada si los proyectos nuevos retornan al 5%. La fórmula: Δ NOPAT / Δ Capital Invertido. El resultado de Ferrari en 2024: <span class="dt dt-pos">29.4%</span> vs WACC estimado de <span class="dt">8.2%</span>. El spread es de <span class="dt dt-pos">+21pp</span>. Cada euro nuevo crea valor real.</p>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#1a1a18"></div>ROIC</div>
+        <div class="leg-i"><div class="leg-line" style="background:#2d6a4f"></div>ROIC incremental</div>
+        <div class="leg-i"><div class="leg-line" style="background:transparent;border-top:1.5px dashed #991b1b;width:18px"></div>WACC (8.2%)</div>
+      </div>
+      <div class="chart-canvas-wrap" style="height:180px"><canvas id="roicChart"></canvas></div>
+      <div class="chart-caption"><strong>ROIC y ROIC Incremental 2019–2024.</strong> El ROIC incremental supera consistentemente el WACC — señal de creación de valor sostenida. Caída en 2020 por pandemia, recuperada completamente. Fórmulas: tesinversion.com. Datos: FMP + Annual Reports.</div>
+    </div>
+    <div class="mstrip">
+      <div class="ms-cell"><div class="ms-lbl">ROE <span class="formula-tag" title="Net Income / Equity × 100">f</span></div><div class="ms-val">41.8%</div><div class="ms-sub ms-up">+3.2pp</div></div>
+      <div class="ms-cell"><div class="ms-lbl">ROA <span class="formula-tag" title="Net Income / Total Assets × 100">f</span></div><div class="ms-val">14.6%</div><div class="ms-sub ms-nu">sector: 4.2%</div></div>
+      <div class="ms-cell"><div class="ms-lbl">FCF conversion</div><div class="ms-val">84%</div><div class="ms-sub ms-up">umbral: 80%</div></div>
+      <div class="ms-cell"><div class="ms-lbl">Tasa reinversión <span class="formula-tag" title="(Growth Capex + Adquis.) / FCF × 100">f</span></div><div class="ms-val">59%</div><div class="ms-sub ms-nu">org. + inorg.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 08 SALUD -->
+<div class="chapter" id="salud">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">08</span>
+    <div class="ch-title-wrap"><div class="ch-title">Salud financiera y deuda</div><div class="ch-preview">Caja neta +€824M · ICR 18.2x · CCC −18 días</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Ferrari tiene más caja que deuda. En el sector automotriz — donde la media de deuda neta/EBITDA es de 1.8x — esto es excepcional. No paga intereses netos, puede invertir en la transición eléctrica sin comprometer el balance, y su posición de tesorería actúa como colchón ante cualquier shock externo.</p>
+    <div class="gauge-row">
+      <div class="gauge-card">
+        <div class="gauge-lbl">Deuda neta / EBITDA <span class="formula-tag" title="Deuda financiera − Caja total">f</span></div>
+        <canvas id="gaugeDebt" width="180" height="100"></canvas>
+        <div class="gauge-val" style="color:var(--green)">−0.4x</div>
+        <div class="gauge-desc">Verde &lt;2x · Amarillo 2–4x · Rojo &gt;4x</div>
+      </div>
+      <div class="gauge-card">
+        <div class="gauge-lbl">Cobertura de intereses <span class="formula-tag" title="EBIT / Interest Expense">f</span></div>
+        <canvas id="gaugeICR" width="180" height="100"></canvas>
+        <div class="gauge-val" style="color:var(--green)">18.2x</div>
+        <div class="gauge-desc">Rojo &lt;3x · Amarillo 3–5x · Verde &gt;5x</div>
+      </div>
+    </div>
+    <p class="prose">El CCC (Ciclo de Conversión de Caja) de <span class="dt dt-pos">−18 días</span> significa que Ferrari cobra de sus clientes antes de pagar a sus proveedores. Es financiación gratuita del negocio — una señal del poder de negociación que tiene con su cadena de suministro y la fuerza de la demanda de sus clientes.</p>
+  </div>
+</div>
+
+<!-- 09 CAPITAL ALLOCATION -->
+<div class="chapter" id="capital">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">09</span>
+    <div class="ch-title-wrap"><div class="ch-title">Capital Allocation</div><div class="ch-preview">Recompras €682M · Payout total 71.8% · Share count −9.8% en 5A</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Cómo una empresa decide qué hacer con el dinero que genera dice todo sobre la calidad y los valores del management. Ferrari en 2024: <span class="dt">€682M</span> en recompras netas, <span class="dt">€341M</span> en dividendos, <span class="dt">€720M</span> en capex de crecimiento, deuda prácticamente amortizada. Un management que compra sus propias acciones sistemáticamente está diciendo que cree que están baratas — o al menos razonablemente valoradas.</p>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>Dividendos</div>
+        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>Recompras netas</div>
+        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>Capex crecimiento</div>
+        <div class="leg-i"><div class="leg-line" style="background:#742a2a"></div>Pago deuda</div>
+        <div class="leg-i"><div class="leg-line" style="background:#4a5568"></div>Acum. caja</div>
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:8px">
+        <button class="btn-sm btn-ghost" id="capBtn1" onclick="switchCap('abs',this)" style="font-size:11px;padding:4px 10px">€ Millones</button>
+        <button class="btn-sm" id="capBtn2" onclick="switchCap('pct',this)" style="font-size:11px;padding:4px 10px;background:none;border:0.5px solid var(--rule);color:var(--ink3);border-radius:6px;cursor:pointer">% FCF</button>
+      </div>
+      <div class="chart-canvas-wrap" style="height:200px"><canvas id="capChart"></canvas></div>
+      <div class="chart-caption"><strong>Destino del FCF generado año por año.</strong> La parte negra (recompras) crece año a año — señal de management alineado con el accionista. Datos: Cash Flow Statement Ferrari. Cálculos: tesinversion.com.</div>
+    </div>
+  </div>
+</div>
+
+<!-- WALL -->
+<div class="wall-outer" id="wall">
+  <div class="wall-blur">
+    <div style="height:60px;background:var(--cream2);border-radius:8px;margin-bottom:10px"></div>
+    <div style="height:40px;background:var(--cream2);border-radius:8px;margin-bottom:10px"></div>
+    <div style="height:80px;background:var(--cream2);border-radius:8px"></div>
+  </div>
+  <div class="wall-overlay">
+    <div class="wall-icon">🔒</div>
+    <div class="wall-title">Continúa el análisis completo</div>
+    <div class="wall-sub">Regístrate gratis para acceder a las secciones 10–20: Equipo directivo, Guidance, Psicología del mercado, Valoración, Señales, Reflexión y conclusión.</div>
+    <div class="wall-cta">
+      <button class="btn-sm btn-dark" onclick="unlockAll()">Crear cuenta gratis</button>
+      <button class="btn-sm btn-ghost" onclick="unlockAll()">Iniciar sesión</button>
+    </div>
+    <div class="wall-note">30 segundos · Sin tarjeta · 2 empresas gratis incluidas</div>
+  </div>
+</div>
+
+<!-- LOCKED CONTENT -->
+<div id="locked" style="display:none">
+
+<!-- 10-11: EQUIPO + ACCIONISTAS (collapsed, registered) -->
+<div class="chapter" id="equipo">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">10</span>
+    <div class="ch-title-wrap"><div class="ch-title">Equipo directivo</div><div class="ch-preview">Vigna CEO desde 2021 · Elkann Chairman · Insider 33.9%</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Benedetto Vigna llegó a Ferrari en 2021 desde STMicroelectronics — un perfil tecnológico deliberadamente elegido para liderar la transición EV. En marzo de 2024 compró <span class="dt dt-pos">+12,400 acciones</span> en mercado abierto con su propio dinero. John Elkann compró <span class="dt dt-pos">+48,200 acciones</span> en enero de 2024 a través de Exor. Los Agnelli tratan Ferrari como un activo generacional, no especulativo.</p>
+    <div class="callout">
+      <div class="callout-big cb-green">33.9%</div>
+      <div class="callout-body">
+        <div class="callout-label">Insider ownership total</div>
+        <div class="callout-text">Exor (22.9%) + Piero Ferrari (10%). La familia fundadora controla casi un tercio de la empresa y no ha vendido en décadas. Es el mayor indicador de alineación con los accionistas minoritarios que puede mostrar una empresa.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 12 GUIDANCE -->
+<div class="chapter" id="guidance">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">12</span>
+    <div class="ch-title-wrap"><div class="ch-title">Guidance tracker</div><div class="ch-preview">Cumplimiento 83% · CMD 2022 completado 2 años antes · CMD 2030 en seguimiento</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <table class="gtable">
+      <thead><tr><th>Periodo</th><th>Métrica</th><th>Guidance</th><th>Real</th><th>Resultado</th><th>Diferencia</th></tr></thead>
+      <tbody>
+        <tr><td>Q4 2024</td><td>Revenue</td><td>€1.72B</td><td>€1.74B</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+1.2%</td></tr>
+        <tr><td>Q4 2024</td><td>EBIT</td><td>€478M</td><td>€496M</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+3.8%</td></tr>
+        <tr><td>Q3 2024</td><td>Revenue</td><td>€1.65B</td><td>€1.64B</td><td><span class="badge b-red">Miss</span></td><td class="dneg">−0.6%</td></tr>
+        <tr><td>Q2 2024</td><td>EPS</td><td>€2.08</td><td>€2.19</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+5.3%</td></tr>
+        <tr><td>FY 2024</td><td>EBIT Margin</td><td>&gt;26.5%</td><td>27.4%</td><td><span class="badge b-green">Beat</span></td><td class="dpos">+0.9pp</td></tr>
+      </tbody>
+    </table>
+    <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink2);margin-top:10px;padding-top:10px;border-top:0.5px solid var(--rule2)">Tasa de cumplimiento: <strong style="color:var(--green)">83%</strong> · Beat promedio: <strong style="color:var(--green)">+2.4%</strong> · Estilo: conservador — da guidance bajo para superar</div>
+    <div class="cmd-block" style="margin-top:16px">
+      <div class="cmd-head"><span class="cmd-title">CMD 2022 → 2026 — CUMPLIDO ANTES DE PLAZO</span><span class="cmd-date">Jun 2022</span></div>
+      <div class="cmd-row"><span class="cmd-k">Revenue ≤€6.7B</span><span class="cmd-v">Alcanzado en 2024 — 2 años antes ✓</span></div>
+      <div class="cmd-row"><span class="cmd-k">EPS €7.2–8.0</span><span class="cmd-v">Alcanzado: €8.10 ✓</span></div>
+      <div class="cmd-row"><span class="cmd-k">EBIT margin 27–30%</span><span class="cmd-v">Cumplido: 27.4% ✓</span></div>
+    </div>
+    <div class="cmd-block">
+      <div class="cmd-head"><span class="cmd-title">CMD 2025 → 2030 — EN SEGUIMIENTO</span><span class="cmd-date">Oct 2025 · Año 1 de 5</span></div>
+      <div class="cmd-row"><span class="cmd-k">Revenue &gt;€9.0B</span><span class="cmd-v">CAGR implícito ~5%</span></div>
+      <div class="cmd-row"><span class="cmd-k">EBIT margin &gt;30%</span><span class="cmd-v">+2.6pp vs actual</span></div>
+      <div class="cmd-row"><span class="cmd-k">Mix 40/40/20</span><span class="cmd-v">ICE/híbrido/eléctrico</span></div>
+      <div class="cmd-row"><span class="cmd-k">Ferrari elettrica</span><span class="cmd-v">Entregas finales 2026</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 13 PSICOLOGÍA -->
+<div class="chapter" id="psicologia">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">13</span>
+    <div class="ch-title-wrap"><div class="ch-title">Psicología del mercado</div><div class="ch-preview">Narrativa de lujo · Valoración exigente · Expectativas implícitas altas</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">El mercado ha re-clasificado a Ferrari. Ya no es un fabricante de coches — es una empresa de lujo, comparable a LVMH o Hermès. Esta re-clasificación mental es la que justifica múltiplos de 40–50x. Es una narrativa que tiene fundamento real en los números, pero que también crea una fragilidad: si esa narrativa se rompe, la re-tasación puede ser violenta.</p>
+    <p class="prose">Las expectativas implícitas en el precio actual (<span class="dt dt-warn">$412.80</span>) asumen crecimiento del FCF de ~11–12% anual durante al menos 10 años. Es el rango histórico — no es imposible — pero no hay margen para decepcionar. El mercado no le da a Ferrari el beneficio de la duda: le exige consistencia perfecta.</p>
+    <div class="callout" style="background:var(--abg)">
+      <div class="callout-big cb-amber" style="font-size:30px">!</div>
+      <div class="callout-body">
+        <div class="callout-label">PER por encima de su media histórica de 38x</div>
+        <div class="callout-text">Ferrari cotiza más cara que en el 72% de los momentos de su historia como empresa cotizada. No es una señal de venta, pero sí indica que el mercado ya descuenta mucho crecimiento futuro. El riesgo asimétrico está más hacia abajo que hacia arriba desde estos niveles.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 RIESGOS -->
+<div class="chapter" id="riesgos">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">14</span>
+    <div class="ch-title-wrap"><div class="ch-title">Riesgos — alcista y bajista</div><div class="ch-preview">Imparcial · Con evidencia · Sin narrativa sin datos</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="bull-bear">
+      <div class="bb-side bb-bull">
+        <div class="bb-head">↑ Tesis alcista</div>
+        <div class="bb-item">CMD 2022 cumplido 2 años antes. Historial de ejecución superior — el management entrega lo que promete.</div>
+        <div class="bb-item">Ferrari elettrica puede abrir un segmento completamente nuevo sin canibalizar el existente.</div>
+        <div class="bb-item">Caja neta +€824M da flexibilidad para invertir en la transición sin comprometer el balance.</div>
+        <div class="bb-item">Penetración del 0.3% entre HNWIs — runway enorme si se mantiene la exclusividad.</div>
+        <div class="bb-item">Lifestyle (stores, experiencias) puede crecer sin tocar el límite de producción de coches.</div>
+      </div>
+      <div class="bb-side bb-bear">
+        <div class="bb-head">↓ Tesis bajista</div>
+        <div class="bb-item">PER 46x no perdona. Cualquier miss en guidance puede provocar una corrección severa con múltiplos de valoración exigentes.</div>
+        <div class="bb-item">¿Puede un Ferrari eléctrico preservar el sonido, la emoción y el pricing power? Pregunta sin respuesta.</div>
+        <div class="bb-item">Paradoja del lujo: crecer 11%/año en revenue mientras mantienes la escasez es una tensión no resuelta.</div>
+        <div class="bb-item">Concentración: Europa 45% del revenue — exposición real a recesión y tipos EUR/USD.</div>
+        <div class="bb-item">Dependencia F1: rendimiento deportivo consistente como herramienta de marketing. Sin control total.</div>
+      </div>
+    </div>
+    <p class="prose" style="font-size:14px;margin-top:16px"><strong>Qué podría estar sobreestimando:</strong> La capacidad de Ferrari para crecer manteniendo la exclusividad indefinidamente. El cliente EV-nativo del 2030 puede valorar atributos completamente distintos al cliente de gasolina del 2024. Es el riesgo más difícil de cuantificar y el más importante.</p>
+  </div>
+</div>
+
+<!-- 15 ÍNDICE DE CALIDAD -->
+<div class="chapter" id="indice">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">15</span>
+    <div class="ch-title-wrap"><div class="ch-title">Índice de Calidad — desglose</div><div class="ch-preview">87/100 · 10 criterios · 100% transparente · No es una caja negra</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="score-list">
+      <div class="score-row"><div class="score-info"><div class="score-name">ROIC consistente &gt;15%</div><div class="score-formula-lbl">EBIT×(1−T) / Capital Invertido · umbral mínimo: 8% media mercado</div></div><div class="score-bar-bg"><div class="score-bar" style="width:95%;background:var(--green)"></div></div><span class="score-pts sp-hi">9.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Márgenes estables o crecientes</div><div class="score-formula-lbl">Tendencia EBIT margin últimos 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:80%;background:var(--green)"></div></div><span class="score-pts sp-hi">8/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Salud financiera y deuda</div><div class="score-formula-lbl">Deuda neta/EBITDA · ICR · Posición financiera neta</div></div><div class="score-bar-bg"><div class="score-bar" style="width:100%;background:var(--green)"></div></div><span class="score-pts sp-hi">10/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">FCF conversion &gt;80%</div><div class="score-formula-lbl">FCF / Net Income × 100</div></div><div class="score-bar-bg"><div class="score-bar" style="width:85%;background:var(--green)"></div></div><span class="score-pts sp-hi">8.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Capital allocation y recompras</div><div class="score-formula-lbl">Payout total · cambio share count 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:75%;background:var(--amber)"></div></div><span class="score-pts sp-mid">7.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Crecimiento EPS consistente</div><div class="score-formula-lbl">EPS creciendo ≥4 de los últimos 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:90%;background:var(--green)"></div></div><span class="score-pts sp-hi">9/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">ROIC incremental &gt; WACC</div><div class="score-formula-lbl">Δ NOPAT / Δ Capital Invertido vs WACC estimado</div></div><div class="score-bar-bg"><div class="score-bar" style="width:85%;background:var(--green)"></div></div><span class="score-pts sp-hi">8.5/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Guidance accuracy</div><div class="score-formula-lbl">% trimestres con beat · histórico 8 trimestres</div></div><div class="score-bar-bg"><div class="score-bar" style="width:80%;background:var(--green)"></div></div><span class="score-pts sp-hi">8/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Insider ownership / skin in the game</div><div class="score-formula-lbl">% ownership directivos + compras mercado abierto</div></div><div class="score-bar-bg"><div class="score-bar" style="width:90%;background:var(--green)"></div></div><span class="score-pts sp-hi">9/10</span></div>
+      <div class="score-row"><div class="score-info"><div class="score-name">Dilución neta (share count bajando)</div><div class="score-formula-lbl">Cambio % acciones diluidas en 5 años</div></div><div class="score-bar-bg"><div class="score-bar" style="width:90%;background:var(--green)"></div></div><span class="score-pts sp-hi">9/10</span></div>
+    </div>
+    <div class="score-total"><span class="score-total-lbl">Índice de Calidad total</span><span class="score-total-val">87<span style="font-size:14px">/100</span></span></div>
+  </div>
+</div>
+
+<!-- 16 VALORACIÓN -->
+<div class="chapter" id="valoracion">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">16</span>
+    <div class="ch-title-wrap"><div class="ch-title">Valoración — 3 escenarios</div><div class="ch-preview">Valor base $480 · Margen seguridad +14% · Precio ≥15%: $318</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="scenario-grid">
+      <div class="sc-card sc-cons"><div class="sc-lbl">Conservador</div><div class="sc-val">$348</div><div class="sc-sub">FCF CAGR 8% · EV/FCF 38x</div></div>
+      <div class="sc-card sc-base"><div class="sc-lbl">Base</div><div class="sc-val">$480</div><div class="sc-sub">FCF CAGR 12% · EV/FCF 44x</div></div>
+      <div class="sc-card sc-opt"><div class="sc-lbl">Optimista</div><div class="sc-val">$610</div><div class="sc-sub">FCF CAGR 16% · EV/FCF 50x</div></div>
+    </div>
+    <div class="ms-bar ms-amber">
+      <div class="ms-pct">+14%</div>
+      <div class="ms-info">
+        <div class="ms-info-title">Margen de seguridad — escenario base</div>
+        <div class="ms-info-desc">Precio actual $412.80 vs intrínseco base $480. Positivo pero ajustado. Zona de mayor interés por debajo de $380 (margen &gt;20%). Para retorno anual ≥15% habría que comprar a ~$318.</div>
+      </div>
+    </div>
+    <div class="dcf-lock">
+      <div class="dcf-lock-icon">⚡</div>
+      <div class="dcf-lock-title">Calculadora DCF interactiva</div>
+      <div class="dcf-lock-sub">Ajusta tasa de crecimiento, WACC y múltiplo de salida. Datos de Ferrari precargados. Ve el impacto en el valor intrínseco en tiempo real.</div>
+      <button class="btn-sm btn-dark">Activar con plan Pro</button>
+    </div>
+  </div>
+</div>
+
+<!-- 17 TENDENCIAS -->
+<div class="chapter" id="tendencias">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">17</span>
+    <div class="ch-title-wrap"><div class="ch-title">Tendencias históricas</div><div class="ch-preview">Revenue · Márgenes · ROIC · Deuda · EPS · Múltiplos — todo en un vistazo</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="chart-block">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Revenue y FCF (€B)</div>
+      <div class="chart-canvas-wrap" style="height:150px"><canvas id="tRevFcf"></canvas></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-legend">
+        <div class="leg-i"><div class="leg-line" style="background:#2c5282"></div>PER</div>
+        <div class="leg-i"><div class="leg-line" style="background:#276749"></div>EV/EBITDA</div>
+        <div class="leg-i"><div class="leg-line" style="background:#975a16"></div>EV/FCF</div>
+      </div>
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Múltiplos históricos</div>
+      <div class="chart-canvas-wrap" style="height:150px"><canvas id="tMultiplos"></canvas></div>
+      <div class="chart-caption"><strong>Múltiplos PER, EV/EBITDA y EV/FCF 2019–2024.</strong> Los tres múltiplos en expansión consistente — reflejo de la re-clasificación del mercado de empresa automotriz a empresa de lujo.</div>
+    </div>
+    <div class="chart-block">
+      <div style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">EPS diluido (€)</div>
+      <div class="chart-canvas-wrap" style="height:130px"><canvas id="tEps"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- 18 SEÑALES -->
+<div class="chapter" id="senales">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">18</span>
+    <div class="ch-title-wrap"><div class="ch-title">Señales automáticas</div><div class="ch-preview">5 verdes · 1 amarilla · Con contadores históricos de años</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div class="flag-list">
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">ROIC 38.2% — Excepcional</div><div class="flag-desc">Muy por encima del umbral de calidad (15%) y de la media del mercado (13%). Top 3% sector automotriz. Sin un solo año por debajo del umbral en los últimos 5.</div><div class="flag-metric fmg">0 años por debajo del umbral en 5A · Sector: 6.4% · Media mercado: 13%</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Caja neta +€824M · Deuda/EBITDA −0.4x</div><div class="flag-desc">Posición de caja neta excepcional para el sector. ICR 18.2x. Sin presión financiera de ningún tipo. 0 años con Deuda/EBITDA &gt;2x en los últimos 5.</div><div class="flag-metric fmg">0 años con deuda/EBITDA &gt;2x · Umbral verde: &lt;2x</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">FCF conversion 84% — Alta calidad de earnings</div><div class="flag-desc">El negocio convierte el 84% del beneficio neto en caja real. 0 años con FCF negativo. Earnings de alta calidad.</div><div class="flag-metric fmg">0 años con FCF negativo · Umbral calidad: 80%</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Recompras netas 5 años consecutivos</div><div class="flag-desc">−9.8% en share count en 5 años. Las recompras superan consistentemente la dilución por stock options. Management alineado.</div><div class="flag-metric fmg">5 años consecutivos de reducción neta del share count</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdg"></div><div><div class="flag-name">Márgenes en expansión 5 años</div><div class="flag-desc">Gross, EBIT y Net margin todos creciendo. 0 años con compresión de margen operativo en los últimos 5. Poder de fijación de precios intacto.</div><div class="flag-metric fmg">0 años con decrecimiento EBIT margin · Expansión consistente</div></div></div>
+      <div class="flag-item"><div class="flag-dot fdy"></div><div><div class="flag-name">Valoración exigente — PER más alta que el 72% de los momentos de su historia</div><div class="flag-desc">PER 46x está en el percentil 72 de su propio histórico. No es señal de venta pero el margen de seguridad en escenario base es de solo +14%. El precio no perdona decepciones.</div><div class="flag-metric fmy">PER media hist.: 38x · Por encima de la media histórica propia · MS escenario base: +14%</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 19 REFLEXIÓN Y CONCLUSIÓN -->
+<div class="chapter" id="reflexion">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">19</span>
+    <div class="ch-title-wrap"><div class="ch-title">Reflexión final y conclusión</div><div class="ch-preview">¿Tiene sentido hoy? · Qué vigilar · ¿Dormiría tranquila aquí?</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <p class="prose">Ferrari es una de las mejores empresas del mundo. ROIC 38.2% consistente, márgenes en expansión, caja neta, management que cumple lo que promete y que compra acciones con su propio dinero. El Índice de Calidad de <span class="dt dt-pos">87/100</span> no es un número arbitrario — es la suma de 10 criterios con evidencia real detrás.</p>
+    <p class="prose">El problema es que el mercado también lo sabe. A <span class="dt dt-warn">$412.80</span> el precio descuenta casi toda la perfección. El margen de seguridad en escenario base es de <span class="dt dt-warn">+14%</span> — positivo pero no generoso. No es zona de compra agresiva.</p>
+    <p class="prose" style="font-style:italic;color:var(--ink2)"><strong style="font-style:normal;color:var(--ink)">¿Dormiría tranquila invertida aquí?</strong> Sí, a precios razonables — por debajo de $380 con margen de seguridad &gt;20%. Es un monopolio del lujo con décadas de runway, un management ejemplar y un modelo de negocio prácticamente irrepetible. Pero el precio de entrada importa siempre, incluso con las mejores empresas.</p>
+    <p class="prose" style="font-style:italic;color:var(--ink2)"><strong style="font-style:normal;color:var(--ink)">Qué vigilar próximos trimestres:</strong> Guidance EBIT margin Q1/Q2 2025, evolución del ASP en el primer reporte de 2025, recepción del primer Ferrari elettrica cuando se desvele completamente, y que la lista de espera se mantenga intacta.</p>
+    <!-- Descarga PDF — solo cuando la tesis esté publicada. Descomentar cuando corresponda. -->
+    <!-- <div class="pdf-cta">
+      <div class="pdf-icon">PDF</div>
+      <div class="pdf-info">
+        <div class="pdf-title">Tesis completa de Ferrari — 80 páginas</div>
+        <div class="pdf-sub">Análisis profundo con la voz editorial completa, contexto histórico, psicología del mercado y reflexión personal. Disponible para suscriptores del newsletter con plan activo.</div>
+      </div>
+      <button class="btn-sm btn-dark">Descargar PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- 20 FUENTES -->
+<div class="chapter" id="fuentes">
+  <div class="ch-header" onclick="toggle(this)">
+    <span class="ch-num">20</span>
+    <div class="ch-title-wrap"><div class="ch-title">Bibliografía y fuentes oficiales</div><div class="ch-preview">8 fuentes verificadas · Última actualización Mar 2025</div></div>
+    <span class="ch-chevron">▾</span>
+  </div>
+  <div class="ch-body">
+    <div>
+      <div class="source-item"><div class="source-tag">AR</div><div><div class="source-name">Annual Report 2024</div><div class="source-url">corporate.ferrari.com/en/investors</div></div><span class="source-date">Feb 2025</span></div>
+      <div class="source-item"><div class="source-tag">20F</div><div><div class="source-name">Form 20-F 2024 (SEC)</div><div class="source-url">sec.gov/cgi-bin/browse-edgar · RACE</div></div><span class="source-date">Mar 2025</span></div>
+      <div class="source-item"><div class="source-tag">CMD</div><div><div class="source-name">Capital Markets Day 2025 — Plan 2030</div><div class="source-url">corporate.ferrari.com · Oct 2025</div></div><span class="source-date">Oct 2025</span></div>
+      <div class="source-item"><div class="source-tag">CMD</div><div><div class="source-name">Capital Markets Day 2022 — Plan 2026</div><div class="source-url">corporate.ferrari.com · Jun 2022</div></div><span class="source-date">Jun 2022</span></div>
+      <div class="source-item"><div class="source-tag">TR</div><div><div class="source-name">Q4 2024 Earnings Call Transcript</div><div class="source-url">Bloomberg Transcripts / IR Ferrari</div></div><span class="source-date">Feb 2025</span></div>
+      <div class="source-item"><div class="source-tag">DB</div><div><div class="source-name">Datos financieros — Financial Modeling Prep</div><div class="source-url">financialmodelingprep.com · API v3/v4</div></div><span class="source-date">Tiempo real</span></div>
+      <div class="source-item"><div class="source-tag">MX</div><div><div class="source-name">Verificación histórica — Macrotrends</div><div class="source-url">macrotrends.net/stocks/charts/RACE</div></div><span class="source-date">Verificado</span></div>
+      <div class="source-item"><div class="source-tag">SEC</div><div><div class="source-name">SEC EDGAR — filings oficiales</div><div class="source-url">sec.gov/cgi-bin/browse-edgar</div></div><span class="source-date">Siempre vigente</span></div>
+    </div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);margin-top:14px;padding-top:12px;border-top:0.5px solid var(--rule2);line-height:1.65"><strong style="color:var(--ink2)">Transparencia de datos:</strong> Las métricas calculadas (ROIC, FCF, Capital Invertido) siguen las fórmulas propias de tesinversion.com, verificadas manualmente contra los filings oficiales para las partidas críticas. Las discrepancias con otras fuentes se documentan. Última verificación manual completa: Mar 2025.</div>
+  </div>
+</div>
+
+</div><!-- /locked -->
+
+<div class="article-footer">
+  <p><strong style="color:var(--ink2)">Disclaimer:</strong> Este contenido es exclusivamente educativo. No constituye recomendación de inversión ni asesoramiento financiero. Cada inversor es responsable de sus propias decisiones. Invertir implica riesgo de pérdida del capital.</p>
+  <p style="margin-top:6px">tesinversión.com · Arquitectura de la Inversión · <a href="index.html" style="color:var(--blue)">Volver al inicio →</a></p>
+</div>
+
+</article>
+</main>
+</div>
+
+<script>
+// Progress
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('prog').style.width=(window.scrollY/h*100)+'%';
+},{passive:true});
+
+// Section toggle
+function toggle(hdr){
+  hdr.classList.toggle('open');
+  const body=hdr.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// Scroll to
+function goTo(id){
+  const el=document.getElementById(id);
+  if(el)window.scrollTo({top:el.getBoundingClientRect().top+window.scrollY-68,behavior:'smooth'});
+}
+
+// Active reading nav
+const secIds=['cover','negocio','historia','sector','moat','estrategia','financieros','rentabilidad','salud','capital','wall'];
+window.addEventListener('scroll',()=>{
+  let active=0;
+  secIds.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<140)active=i;
+  });
+  document.querySelectorAll('.rn-dot').forEach((d,i)=>d.classList.toggle('active',i===active));
+  // Sidebar active
+  document.querySelectorAll('.sb-item').forEach(item=>{item.classList.remove('active')});
+},{passive:true});
+
+// Wall unlock
+function unlockAll(){
+  document.getElementById('wall').style.display='none';
+  document.getElementById('locked').style.display='block';
+}
+
+// Charts
+Chart.defaults.font.family="'DM Sans',-apple-system,sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#9a9a90';
+Chart.defaults.plugins.legend.display=false;
+const YRS=['2019','2020','2021','2022','2023','2024'];
+const lo={tension:0.35,pointRadius:3,pointHoverRadius:5,borderWidth:2};
+const gridOpts={color:'rgba(26,26,24,0.05)'};
+const borderOpts={display:false};
+const baseOpts=(yCb,stacked=false)=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},scales:{x:{stacked,grid:{display:false},border:borderOpts},y:{stacked,grid:gridOpts,border:borderOpts,ticks:{callback:yCb}}}});
+
+// Chart color palette — distinguishable, not garish
+const C1='#2c5282',C2='#276749',C3='#975a16',C4='#742a2a',C5='#4a5568';
+const C1a='rgba(44,82,130,0.12)',C2a='rgba(39,103,73,0.1)';
+
+// Revenue donut
+new Chart(document.getElementById('revDonut'),{type:'doughnut',data:{labels:['Vehículos','Engines','Sponsoring','Otros'],datasets:[{data:[78,9,8,5],backgroundColor:[C1,C2,C3,C5],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
+
+// Moat margin
+new Chart(document.getElementById('moatChart'),{type:'line',data:{labels:YRS,datasets:[{data:[22.8,16.4,25.6,27.3,26.4,27.4],borderColor:C1,backgroundColor:'transparent',...lo},{data:[6.2,4.1,6.8,7.1,6.9,7.2],borderColor:C5,borderDash:[5,5],borderWidth:1.5,pointRadius:2,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
+
+// Margins
+new Chart(document.getElementById('marginsChart'),{type:'line',data:{labels:YRS,datasets:[{data:[46.8,44.1,46.6,47.1,48.4,49.0],borderColor:C1,backgroundColor:'transparent',...lo},{data:[22.8,16.4,25.6,27.3,26.4,27.4],borderColor:C2,backgroundColor:'transparent',...lo},{data:[17.1,10.8,19.8,21.1,20.9,21.6],borderColor:C3,backgroundColor:'transparent',...lo},{data:[16.2,9.4,17.8,19.8,20.1,21.3],borderColor:C4,backgroundColor:'transparent',...lo}]},options:baseOpts(v=>v+'%')});
+
+// ROIC
+new Chart(document.getElementById('roicChart'),{type:'line',data:{labels:YRS,datasets:[{data:[29.4,18.2,28.6,31.4,33.8,38.2],borderColor:C1,backgroundColor:C1a,fill:true,...lo},{data:[null,12.4,24.8,28.2,32.1,29.4],borderColor:C2,backgroundColor:'transparent',...lo},{data:[8.2,8.1,8.0,8.2,8.1,8.2],borderColor:C4,borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
+
+// Capital allocation
+let capMode='abs';let capRef=null;
+function renderCap(){
+  const abs=capMode==='abs';
+  const D=[186,156,198,242,287,341],R=[310,180,420,510,598,682],C=[480,520,560,610,680,720],P=[120,80,60,40,20,0],K=[80,60,120,180,210,240];
+  const tots=YRS.map((_,i)=>D[i]+R[i]+C[i]+P[i]+K[i]);
+  const toV=a=>abs?a:a.map((v,i)=>Math.round(v/tots[i]*100));
+  const suf=abs?'M':'%';
+  if(capRef)capRef.destroy();
+  const ctx=document.getElementById('capChart');if(!ctx)return;
+  capRef=new Chart(ctx,{type:'bar',data:{labels:YRS,datasets:[{data:toV(D),backgroundColor:C1,borderRadius:3},{data:toV(R),backgroundColor:C2,borderRadius:3},{data:toV(C),backgroundColor:C3,borderRadius:3},{data:toV(P),backgroundColor:C4,borderRadius:3},{data:toV(K),backgroundColor:C5,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,grid:{display:false},border:borderOpts},y:{stacked:true,grid:gridOpts,border:borderOpts,ticks:{callback:v=>'€'+v+suf}}}}});
+}
+renderCap();
+function switchCap(mode,btn){
+  capMode=mode;
+  document.getElementById('capBtn1').style.background=mode==='abs'?'var(--ink)':'none';
+  document.getElementById('capBtn1').style.color=mode==='abs'?'var(--cream)':'var(--ink3)';
+  document.getElementById('capBtn1').style.border=mode==='abs'?'none':'0.5px solid var(--rule)';
+  document.getElementById('capBtn2').style.background=mode==='pct'?'var(--ink)':'none';
+  document.getElementById('capBtn2').style.color=mode==='pct'?'var(--cream)':'var(--ink3)';
+  document.getElementById('capBtn2').style.border=mode==='pct'?'none':'0.5px solid var(--rule)';
+  renderCap();
+}
+
+// Tendencias
+new Chart(document.getElementById('tRevFcf'),{type:'bar',data:{labels:YRS,datasets:[{data:[3.46,3.46,4.27,4.97,5.97,6.68],backgroundColor:C1a.replace('0.12','0.5'),borderRadius:3,yAxisID:'y'},{type:'line',data:[0.56,0.33,0.72,0.92,1.18,1.42],borderColor:C2,backgroundColor:'transparent',...lo,yAxisID:'y2'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},border:borderOpts},y:{grid:gridOpts,border:borderOpts,ticks:{callback:v=>'€'+v+'B'}},y2:{position:'right',grid:{display:false},border:borderOpts,ticks:{callback:v=>'€'+v+'B'}}}}});
+new Chart(document.getElementById('tMultiplos'),{type:'line',data:{labels:YRS,datasets:[{data:[28.4,34.2,36.8,32.1,41.4,46.2],borderColor:C1,backgroundColor:'transparent',...lo},{data:[18.2,22.4,24.1,20.8,28.6,34.8],borderColor:C2,backgroundColor:'transparent',...lo},{data:[32.4,48.2,44.8,38.2,50.1,52.6],borderColor:C3,backgroundColor:'transparent',...lo}]},options:baseOpts(v=>v+'x')});
+new Chart(document.getElementById('tEps'),{type:'bar',data:{labels:YRS,datasets:[{data:[2.96,2.14,4.50,5.73,6.90,8.10],backgroundColor:C1,borderRadius:4}]},options:baseOpts(v=>'€'+v)});
+
+// Gauges
+function drawGauge(id,val,mn,mx,segs){
+  const c=document.getElementById(id);if(!c)return;
+  const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H-8,r=Math.min(cx,cy+8)-12;
+  ctx.clearRect(0,0,W,H);
+  segs.forEach(s=>{
+    const a1=Math.PI+(s.f-mn)/(mx-mn)*Math.PI,a2=Math.PI+(s.t-mn)/(mx-mn)*Math.PI;
+    ctx.beginPath();ctx.arc(cx,cy,r,a1,a2);ctx.strokeStyle=s.c;ctx.lineWidth=7;ctx.stroke();
+  });
+  const cv=Math.max(mn,Math.min(mx,val)),na=Math.PI+(cv-mn)/(mx-mn)*Math.PI;
+  ctx.beginPath();ctx.moveTo(cx-5*Math.cos(na-Math.PI/2),cy-5*Math.sin(na-Math.PI/2));ctx.lineTo(cx+r*.76*Math.cos(na),cy+r*.76*Math.sin(na));ctx.lineTo(cx+5*Math.cos(na-Math.PI/2),cy+5*Math.sin(na-Math.PI/2));ctx.fillStyle='#1a1a18';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,5,0,2*Math.PI);ctx.fillStyle='#1a1a18';ctx.fill();
+}
+drawGauge('gaugeDebt',-0.4,-2,6,[{f:-2,t:2,c:'#2d6a4f'},{f:2,t:4,c:'#92400e'},{f:4,t:6,c:'#991b1b'}]);
+drawGauge('gaugeICR',18.2,0,25,[{f:0,t:3,c:'#991b1b'},{f:3,t:5,c:'#92400e'},{f:5,t:25,c:'#2d6a4f'}]);
+</script>
+</body>
+</html>
