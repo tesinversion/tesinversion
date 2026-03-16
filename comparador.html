@@ -113,17 +113,23 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 <body>
 
 <div class="topbar">
-  <a class="brand" href="index.html" style="display:flex;align-items:center;gap:9px;text-decoration:none">
+  <a href="index.html" style="display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0">
     <img src="logo.png" alt="tesinversión" style="width:28px;height:28px;border-radius:50%;flex-shrink:0">
     <div style="display:flex;flex-direction:column;gap:0">
       <span style="font-family:'Lora',serif;font-size:16px;color:var(--ink);line-height:1.1">tes<em style="font-style:italic;color:var(--ink3)">inversión</em></span>
       <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:var(--ink3);letter-spacing:0.04em">by Arquitectura de la Inversión</span>
     </div>
   </a>
-  <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);margin-left:8px">/ Comparador</div>
-  <div class="topbar-right">
-    <button class="btn-sm btn-ghost">Iniciar sesión</button>
-    <button class="btn-sm btn-dark">Crear cuenta</button>
+  <div style="display:flex;gap:2px;margin-left:16px">
+    <button onclick="window.location.href='index.html'" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px">Inicio</button>
+    <button onclick="window.location.href='index.html'" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px">Compañías</button>
+    <button style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);background:var(--cream2);border:none;cursor:pointer;padding:5px 10px;border-radius:6px;font-weight:500">Comparar</button>
+    <button onclick="window.open('https://tesinversion.substack.com/','_blank')" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px">Newsletter</button>
+    <button onclick="window.location.href='sobre.html'" style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px">Sobre el proyecto</button>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:6px">
+    <button style="font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 13px;border-radius:6px;background:none;border:0.5px solid rgba(26,26,24,0.09);color:var(--ink2);cursor:pointer">Iniciar sesión</button>
+    <button style="font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 13px;border-radius:6px;background:var(--ink);border:none;color:#faf9f6;font-weight:500;cursor:pointer">Regístrate gratis</button>
   </div>
 </div>
 
@@ -171,42 +177,59 @@ function buildCompData() {
 }
 
 function buildMockData(co) {
-  // Extract numeric values from metrics strings where possible
+  // Parse metric strings from companies.js format: "ROIC 38.2%", "EBIT 27.4%", "FCF €1.42B"
   const m = co.metrics || [];
-  const parseNum = str => { const n = parseFloat((str||'').replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; };
   const v = co.valuation || {};
-  const basePrice = parseNum(v.base?.price);
-  const curPrice = basePrice ? basePrice * 0.9 : null; // approximate
+  const sigs = co.heroSignals || co.signals || [];
+
+  const parseNum = str => {
+    if(!str) return null;
+    const n = parseFloat(str.replace(/[^0-9.\-]/g,''));
+    return isNaN(n) ? null : n;
+  };
+
+  // Extract values from metric strings
+  const findMetric = keyword => {
+    const found = m.find(x => x.toUpperCase().includes(keyword.toUpperCase()));
+    if(!found) return {val:'—', num:null};
+    const numStr = found.replace(/[A-Za-z\s\/~>]+/g,'').trim();
+    return { val: found.split(' ').slice(1).join(' ') || '—', num: parseNum(numStr) };
+  };
+
+  const roicM = findMetric('ROIC');
+  const ebitM = findMetric('EBIT');
+  const fcfM  = findMetric('FCF');
   const ms = parseNum(v.marginBase);
+
   return {
-    per:{val:co.data?.per?.val||'—',num:co.data?.per?.num||null,sub:''},
-    evEbitda:{val:co.data?.evEbitda?.val||'—',num:co.data?.evEbitda?.num||null,sub:''},
-    evEbit:{val:co.data?.evEbit?.val||'—',num:co.data?.evEbit?.num||null,sub:''},
-    evFcf:{val:co.data?.evFcf?.val||'—',num:co.data?.evFcf?.num||null,sub:''},
-    ps:{val:co.data?.ps?.val||'—',num:co.data?.ps?.num||null,sub:''},
-    pbv:{val:co.data?.pbv?.val||'—',num:co.data?.pbv?.num||null,sub:''},
-    msBase:{val:v.marginBase||'—',num:ms,sub:`Precio base ${v.base?.price||'—'}`},
-    price15:{val:v.price15||'—',num:parseNum(v.price15),sub:'Para retorno ≥15%/año'},
-    roic:{val:co.data?.roic?.val||m.find(x=>x.includes('ROIC'))||'—',num:co.data?.roic?.num||null,sub:''},
-    roicIncr:{val:co.data?.roicIncr?.val||'—',num:co.data?.roicIncr?.num||null,sub:''},
-    roe:{val:co.data?.roe?.val||'—',num:co.data?.roe?.num||null,sub:''},
-    roa:{val:co.data?.roa?.val||'—',num:co.data?.roa?.num||null,sub:''},
-    grossM:{val:co.data?.grossM?.val||'—',num:co.data?.grossM?.num||null,sub:''},
-    ebitM:{val:co.data?.ebitM?.val||m.find(x=>x.includes('EBIT'))||'—',num:co.data?.ebitM?.num||null,sub:''},
-    netM:{val:co.data?.netM?.val||'—',num:co.data?.netM?.num||null,sub:''},
-    fcfM:{val:co.data?.fcfM?.val||'—',num:co.data?.fcfM?.num||null,sub:''},
-    fcfConv:{val:co.data?.fcfConv?.val||'—',num:co.data?.fcfConv?.num||null,sub:''},
-    fcfPs:{val:co.data?.fcfPs?.val||'—',num:co.data?.fcfPs?.num||null,sub:'FCF/acción diluida'},
-    fcfYield:{val:co.data?.fcfYield?.val||'—',num:co.data?.fcfYield?.num||null,sub:'FCF/acción ÷ precio'},
-    payoutDiv:{val:co.data?.payoutDiv?.val||'—',num:co.data?.payoutDiv?.num||null,sub:''},
-    payoutTotal:{val:co.data?.payoutTotal?.val||'—',num:co.data?.payoutTotal?.num||null,sub:''},
-    debtEbitda:{val:co.data?.debtEbitda?.val||'—',num:co.data?.debtEbitda?.num||null,sub:''},
-    icr:{val:co.data?.icr?.val||'—',num:co.data?.icr?.num||null,sub:''},
-    netPos:{val:co.data?.netPos?.val||'—',num:co.data?.netPos?.num||null,sub:''},
-    revCagr:{val:co.data?.revCagr?.val||'—',num:co.data?.revCagr?.num||null,sub:'CAGR 3 años'},
-    epsCagr:{val:co.data?.epsCagr?.val||'—',num:co.data?.epsCagr?.num||null,sub:'CAGR 3 años'},
-    fcfCagr:{val:co.data?.fcfCagr?.val||'—',num:co.data?.fcfCagr?.num||null,sub:'CAGR 3 años'},
-    signals:co.heroSignals||co.signals||[],
+    per:       {val:'—', num:null, sub:'Datos en vivo'},
+    evEbitda:  {val:'—', num:null, sub:''},
+    evEbit:    {val:'—', num:null, sub:''},
+    evFcf:     {val:'—', num:null, sub:''},
+    ps:        {val:'—', num:null, sub:''},
+    pbv:       {val:'—', num:null, sub:''},
+    msBase:    {val:v.marginBase||'—', num:ms, sub:`Base ${v.base?.price||'—'}`},
+    price15:   {val:v.price15||'—', num:parseNum(v.price15), sub:'Para retorno ≥15%/año'},
+    roic:      {val:roicM.val, num:roicM.num, sub:''},
+    roicIncr:  {val:'—', num:null, sub:''},
+    roe:       {val:'—', num:null, sub:''},
+    roa:       {val:'—', num:null, sub:''},
+    grossM:    {val:'—', num:null, sub:''},
+    ebitM:     {val:ebitM.val, num:ebitM.num, sub:''},
+    netM:      {val:'—', num:null, sub:''},
+    fcfM:      {val:'—', num:null, sub:''},
+    fcfConv:   {val:'—', num:null, sub:''},
+    fcfPs:     {val:'—', num:null, sub:'FCF/acción diluida'},
+    fcfYield:  {val:'—', num:null, sub:'FCF/acción ÷ precio'},
+    payoutDiv: {val:'—', num:null, sub:''},
+    payoutTotal:{val:'—', num:null, sub:''},
+    debtEbitda:{val:'—', num:null, sub:''},
+    icr:       {val:'—', num:null, sub:''},
+    netPos:    {val:'—', num:null, sub:''},
+    revCagr:   {val:'—', num:null, sub:'CAGR 3 años'},
+    epsCagr:   {val:'—', num:null, sub:'CAGR 3 años'},
+    fcfCagr:   {val:'—', num:null, sub:'CAGR 3 años'},
+    signals:   sigs,
   };
 }
 
@@ -271,7 +294,7 @@ function renderSelector(){
     const id = selected[i]; // id is ticker string
     const div = document.createElement('div');
     div.className = 'sel-cell ' + (id ? 'selected' : 'empty');
-    if(id && COMPANIES_MAP[id]){
+    if(id && COMPANIES_MAP && COMPANIES_MAP[id]){
       const c = COMPANIES_MAP[id];
       div.innerHTML = `
         <div class="sel-logo" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="${c.logo?.file||''}" style="width:36px;height:36px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\'font-size:11px;font-weight:600;color:#4a4a44\'>${c.ticker}</span>'"></div>

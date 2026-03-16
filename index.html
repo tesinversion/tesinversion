@@ -75,13 +75,13 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .cat-pill:hover,.cat-pill.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 
 /* COMPANY CARDS */
-.carousel-wrap{position:relative;margin-bottom:60px;overflow:visible}
+.carousel-wrap{position:relative;margin-bottom:60px;padding:0 24px}
 .company-grid{display:flex;gap:14px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none}.company-grid::-webkit-scrollbar{display:none}
 .company-card{flex:0 0 calc(25% - 11px);min-width:260px}
 .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--cream);border:0.5px solid var(--rule);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--ink);z-index:10;transition:all 0.15s;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
 .carousel-btn:hover{background:var(--ink);color:var(--cream)}
-.carousel-btn.prev{left:-18px}
-.carousel-btn.next{right:-18px}
+.carousel-btn.prev{left:0}
+.carousel-btn.next{right:0}
 @media(max-width:900px){.company-card{flex:0 0 calc(50% - 7px)}}
 @media(max-width:500px){.company-card{flex:0 0 85%}}
 .company-card{background:var(--cream);border:0.5px solid var(--rule);border-radius:14px;padding:20px 22px;cursor:pointer;transition:all 0.18s;text-decoration:none;display:block;color:inherit;position:relative}
@@ -240,10 +240,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
   <div class="carousel-wrap">
     <button class="carousel-btn prev" onclick="scrollCarousel(-1)">←</button>
     <div class="company-grid" id="companyGrid">
-    <!-- Generado automáticamente desde companies.js -->
+      <!-- Generado automáticamente desde companies.js -->
+    </div>
+    <button class="carousel-btn next" onclick="scrollCarousel(1)">→</button>
   </div>
 
-    <!-- HOW IT WORKS -->
+  <!-- HOW IT WORKS -->
   <div class="sec-head">
     <div class="sec-title">¿Cómo funciona?</div>
   </div>
