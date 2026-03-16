@@ -75,7 +75,15 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .cat-pill:hover,.cat-pill.active{background:var(--ink);color:var(--cream);border-color:var(--ink)}
 
 /* COMPANY CARDS */
-.company-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:60px}
+.carousel-wrap{position:relative;margin-bottom:60px}
+.company-grid{display:flex;gap:14px;overflow:hidden;scroll-behavior:smooth}
+.company-card{flex:0 0 calc(25% - 11px);min-width:260px}
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--cream);border:0.5px solid var(--rule);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--ink);z-index:10;transition:all 0.15s;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.carousel-btn:hover{background:var(--ink);color:var(--cream)}
+.carousel-btn.prev{left:-18px}
+.carousel-btn.next{right:-18px}
+@media(max-width:900px){.company-card{flex:0 0 calc(50% - 7px)}}
+@media(max-width:500px){.company-card{flex:0 0 85%}}
 .company-card{background:var(--cream);border:0.5px solid var(--rule);border-radius:14px;padding:20px 22px;cursor:pointer;transition:all 0.18s;text-decoration:none;display:block;color:inherit;position:relative}
 .company-card:hover{border-color:rgba(26,26,24,0.18);box-shadow:0 4px 20px rgba(26,26,24,0.08);transform:translateY(-1px)}
 .cc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
@@ -155,38 +163,41 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 <div class="topbar">
   <a class="brand" href="index.html" style="display:flex;align-items:center;gap:9px;text-decoration:none">
     <img src="logo.png" alt="tesinversión" style="width:28px;height:28px;border-radius:50%;flex-shrink:0">
-    <span style="font-family:'Lora',serif;font-size:16px;color:var(--ink)">tes<em style="font-style:italic;color:var(--ink3)">inversión</em></span>
+    <div style="display:flex;flex-direction:column;gap:0px">
+      <span style="font-family:'Lora',serif;font-size:16px;color:var(--ink);line-height:1.1">tes<em style="font-style:italic;color:var(--ink3)">inversión</em></span>
+      <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:var(--ink3);letter-spacing:0.04em;line-height:1">by Arquitectura de la Inversión</span>
+    </div>
   </a>
   <div class="nav-links">
-    <button class="nav-link">Empresas</button>
+    <button class="nav-link">Compañías</button>
     <button class="nav-link" onclick="window.location.href='comparador.html'">Comparar</button>
-    <button class="nav-link">Newsletter</button>
-    <button class="nav-link">Sobre el proyecto</button>
+    <button class="nav-link" onclick="window.open('https://tesinversion.substack.com/','_blank')">Newsletter</button>
+    <button class="nav-link" onclick="window.location.href='sobre.html'">Sobre el proyecto</button>
   </div>
   <div class="topbar-right">
     <button class="btn-sm btn-ghost">Iniciar sesión</button>
-    <button class="btn-sm btn-dark">Crear cuenta gratis</button>
+    <button class="btn-sm btn-dark">Regístrate gratis</button>
   </div>
 </div>
 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-eyebrow">Análisis fundamental · Inversores de largo plazo</div>
-  <h1 class="hero-headline">No visualizamos datos.<br><em>Contamos historias con números.</em></h1>
-  <p class="hero-sub">Análisis fundamental profundo de empresas de calidad — combinando el rigor cuantitativo de Bloomberg con la claridad narrativa de un buen newsletter de inversión.</p>
+  <h1 class="hero-headline">Los números importan<br><em>porque cuentan una historia.</em></h1>
+  <p class="hero-sub">Un espacio para analizar empresas con contexto, narrativa y métricas que explican el negocio. Estados financieros, valoración, comparativas, calculadora de valor intrínseco y análisis editorial, integrados en una experiencia profunda, clara e interactiva.</p>
 
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
-    <input class="search-input" type="text" placeholder="Busca una empresa: Ferrari, ASML, Microsoft...">
+    <input class="search-input" type="text" placeholder="Busca por nombre o ticker: Ferrari, RACE, MSFT...">
     <button class="search-btn">Analizar →</button>
   </div>
   <div class="search-hints">Prueba: <span onclick="window.location.href='ferrari_v4.html'">Ferrari</span> · <span>ASML</span> · <span onclick="window.location.href='microsoft.html'">Microsoft</span> · <span>Hermès</span> · <span>Visa</span></div>
 
   <div class="stats-row">
-    <div class="stat-item"><div class="stat-num">15</div><div class="stat-lbl">Empresas analizadas</div></div>
+    <div class="stat-item"><div class="stat-num" id="statEmpresas">20</div><div class="stat-lbl">Compañías analizadas</div></div>
     <div class="stat-item"><div class="stat-num">10</div><div class="stat-lbl">Criterios de calidad</div></div>
-    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Metodología transparente</div></div>
-    <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Métricas de trading</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-lbl">Fórmulas verificadas</div></div>
+    <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Años de datos históricos</div></div>
   </div>
 </div>
 
@@ -226,7 +237,9 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     <button class="cat-pill" onclick="filterCat(this,'consumo')">Consumo</button>
   </div>
 
-  <div class="company-grid" id="companyGrid">
+  <div class="carousel-wrap">
+    <button class="carousel-btn prev" onclick="scrollCarousel(-1)">←</button>
+    <div class="company-grid" id="companyGrid">
     <!-- Generado automáticamente desde companies.js -->
   </div>
 
@@ -238,22 +251,22 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     <div class="how-card">
       <div class="how-num">01 — Datos</div>
       <div class="how-title">Métricas reales y trazables</div>
-      <div class="how-text">FCF, ROIC, Capital Invertido — calculados con fórmulas propias y verificados manualmente contra los filings oficiales. Cada número es trazable hasta su fuente.</div>
+      <div class="how-text">FCF, ROIC, PER y tasas de reinversión calculados con datos confiables y verificados manualmente contra los filings oficiales. Cada cifra es trazable hasta su fuente.</div>
     </div>
     <div class="how-card">
       <div class="how-num">02 — Narrativa</div>
-      <div class="how-title">La historia de la empresa</div>
-      <div class="how-text">No es un dump de métricas. Es una tesis escrita con lógica: modelo de negocio → moat → números → valoración → conclusión. Los datos aparecen cuando la historia los necesita.</div>
+      <div class="how-title">La historia detrás del negocio</div>
+      <div class="how-text">No es una tabla de métricas. Es un análisis con lógica: modelo de negocio → moat → números → valoración → conclusión.</div>
     </div>
     <div class="how-card">
-      <div class="how-num">03 — Índice de Calidad</div>
-      <div class="how-title">Transparente, no una caja negra</div>
-      <div class="how-text">10 criterios, 10 puntos cada uno. Ves exactamente de dónde viene cada punto y por qué. Ningún algoritmo opaco — solo los criterios que aplicaría un inversor de largo plazo riguroso.</div>
+      <div class="how-num">03 — Índice de calidad</div>
+      <div class="how-title">Transparencia total</div>
+      <div class="how-text">10 criterios, 10 puntos cada uno. Puedes ver exactamente de dónde sale cada punto y por qué.</div>
     </div>
     <div class="how-card">
       <div class="how-num">04 — Newsletter</div>
-      <div class="how-title">La plataforma + la tesis completa</div>
-      <div class="how-text">La plataforma monitorea si la tesis sigue vigente. El newsletter mensual es el análisis editorial profundo de 80 páginas. Dos productos que se refuerzan, no que compiten.</div>
+      <div class="how-title">La plataforma + el análisis completo</div>
+      <div class="how-text">Contenido educativo, tesis de inversión y artículos que amplían el análisis con contexto, seguimiento y opinión editorial.</div>
     </div>
   </div>
 
@@ -346,9 +359,13 @@ function filterCat(btn, cat) {
 
 // Búsqueda
 document.querySelector('.search-input').addEventListener('input', function() {
-  const q = this.value.toLowerCase();
+  const q = this.value.toLowerCase().trim();
+  if(!q){ document.querySelectorAll('.company-card[data-cat]').forEach(c=>c.style.display=''); return; }
   document.querySelectorAll('.company-card[data-cat]').forEach(card => {
-    card.style.display = card.textContent.toLowerCase().includes(q) ? '' : 'none';
+    const co = COMPANIES.find(c2 => card.getAttribute('href') && card.getAttribute('href').includes(c2.ticker.toLowerCase()) || card.textContent.toLowerCase().includes(c2.ticker.toLowerCase()) && card.textContent.toLowerCase().includes(c2.name.toLowerCase().split(' ')[0]));
+    const matchName = card.textContent.toLowerCase().includes(q);
+    const matchTicker = co && (co.ticker.toLowerCase().includes(q) || co.name.toLowerCase().includes(q));
+    card.style.display = (matchName || matchTicker) ? '' : 'none';
   });
 });
 
@@ -368,8 +385,16 @@ document.querySelectorAll('.search-hints span').forEach(span => {
 // Renderizar al cargar
 renderCompanyGrid();
 
+// Carousel
+function scrollCarousel(dir) {
+  const grid = document.getElementById('companyGrid');
+  const cardW = grid.querySelector('.company-card');
+  const amount = cardW ? (cardW.offsetWidth + 14) * 4 : 1200;
+  grid.scrollLeft += dir * amount;
+}
+
 // Estadísticas dinámicas
-document.querySelector('.stat-num').textContent = COMPANIES.length;
+if(document.getElementById('statEmpresas')) document.getElementById('statEmpresas').textContent = COMPANIES.length;
 </script>
 </body>
 </html>

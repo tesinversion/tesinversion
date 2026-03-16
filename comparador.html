@@ -115,9 +115,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 <div class="topbar">
   <a class="brand" href="index.html" style="display:flex;align-items:center;gap:9px;text-decoration:none">
     <img src="logo.png" alt="tesinversión" style="width:28px;height:28px;border-radius:50%;flex-shrink:0">
-    <span style="font-family:'Lora',serif;font-size:16px;color:var(--ink)">tes<em style="font-style:italic;color:var(--ink3)">inversión</em></span>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <span style="font-family:'Lora',serif;font-size:16px;color:var(--ink);line-height:1.1">tes<em style="font-style:italic;color:var(--ink3)">inversión</em></span>
+      <span style="font-family:'DM Sans',sans-serif;font-size:9px;color:var(--ink3);letter-spacing:0.04em">by Arquitectura de la Inversión</span>
+    </div>
   </a>
-  <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);margin-left:8px">/ Comparar empresas</div>
+  <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);margin-left:8px">/ Comparador</div>
   <div class="topbar-right">
     <button class="btn-sm btn-ghost">Iniciar sesión</button>
     <button class="btn-sm btn-dark">Crear cuenta</button>
@@ -145,136 +148,70 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────
-const COMPANIES = {
-  ferrari: {
-    id:'ferrari', name:'Ferrari N.V.', ticker:'RACE', exchange:'NYSE · EXM',
-    sector:'Lujo automotriz', logo:{bg:'#fdf5f5',color:'#742a2a',text:'RACE'},
-    qs:87,
-    data:{
-      // Valoración
-      per:{val:'46.2x',num:46.2,sub:'Media hist. 38x'},
-      evEbitda:{val:'34.8x',num:34.8,sub:'Media hist. 28x'},
-      evEbit:{val:'41.1x',num:41.1,sub:''},
-      evFcf:{val:'52.6x',num:52.6,sub:'Media hist. 44x'},
-      ps:{val:'11.2x',num:11.2,sub:''},
-      pbv:{val:'18.4x',num:18.4,sub:''},
-      msBase:{val:'+14%',num:14,sub:'Precio base $480'},
-      price15:{val:'$318',num:318,sub:'Para retorno ≥15%/año'},
-      // Rentabilidad
-      roic:{val:'38.2%',num:38.2,sub:'Media 5A: 32.1%'},
-      roicIncr:{val:'29.4%',num:29.4,sub:'vs WACC 8.2%'},
-      roe:{val:'41.8%',num:41.8,sub:'+3.2pp vs año ant.'},
-      roa:{val:'14.6%',num:14.6,sub:'Sector: 4.2%'},
-      // Márgenes
-      grossM:{val:'49.0%',num:49.0,sub:'+2.4pp en 3 años'},
-      ebitM:{val:'27.4%',num:27.4,sub:'+1.8pp en 3 años'},
-      netM:{val:'21.6%',num:21.6,sub:'+1.8pp en 3 años'},
-      fcfM:{val:'21.3%',num:21.3,sub:''},
-      fcfConv:{val:'84%',num:84,sub:'Umbral calidad: 80%'},
-      // FCF y dividendos
-      fcf:{val:'€1.42B',num:1420,sub:'FCF yield 1.98%'},
-      fcfPs:{val:'€8.16',num:8.16,sub:'FCF/acción diluida'},
-      payoutDiv:{val:'23.7%',num:23.7,sub:'Dividendos / Net Income'},
-      payoutTotal:{val:'71.8%',num:71.8,sub:'(Divid.+Recompras)/FCF'},
-      // Salud
-      debtEbitda:{val:'−0.4x',num:-0.4,sub:'Caja neta'},
-      icr:{val:'18.2x',num:18.2,sub:'EBIT / Intereses'},
-      netPos:{val:'+€824M',num:824,sub:'Caja neta'},
-      // Crecimiento
-      revCagr:{val:'+16.2%',num:16.2,sub:'CAGR 3 años'},
-      epsCagr:{val:'+21.7%',num:21.7,sub:'CAGR 3 años'},
-      fcfCagr:{val:'+25.3%',num:25.3,sub:'CAGR 3 años'},
-      // Señales
-      signals:[
-        {label:'Caja neta',type:'g'},{label:'Recompras 5A',type:'g'},
-        {label:'ROIC >30%',type:'g'},{label:'Márgenes expansión',type:'g'},
-        {label:'Valoración exigente',type:'a'}
-      ]
-    }
-  },
-  msft: {
-    id:'msft', name:'Microsoft', ticker:'MSFT', exchange:'NASDAQ',
-    sector:'Software / Cloud', logo:{bg:'#f0f4f9',color:'#2c5282',text:'MSFT'},
-    qs:92,
-    data:{
-      per:{val:'34.8x',num:34.8,sub:''},
-      evEbitda:{val:'26.4x',num:26.4,sub:''},
-      evEbit:{val:'30.2x',num:30.2,sub:''},
-      evFcf:{val:'38.1x',num:38.1,sub:''},
-      ps:{val:'13.4x',num:13.4,sub:''},
-      pbv:{val:'14.2x',num:14.2,sub:''},
-      msBase:{val:'+22%',num:22,sub:'Escenario base'},
-      price15:{val:'$340',num:340,sub:'Para retorno ≥15%/año'},
-      roic:{val:'28.4%',num:28.4,sub:'Media 5A: 24.1%'},
-      roicIncr:{val:'22.1%',num:22.1,sub:'vs WACC 8.1%'},
-      roe:{val:'38.5%',num:38.5,sub:''},
-      roa:{val:'17.8%',num:17.8,sub:''},
-      grossM:{val:'68.4%',num:68.4,sub:''},
-      ebitM:{val:'43.1%',num:43.1,sub:''},
-      netM:{val:'35.2%',num:35.2,sub:''},
-      fcfM:{val:'32.8%',num:32.8,sub:''},
-      fcfConv:{val:'93%',num:93,sub:''},
-      fcf:{val:'$74.1B',num:74100,sub:'FCF yield 2.4%'},
-      fcfPs:{val:'$9.92',num:9.92,sub:''},
-      payoutDiv:{val:'24.8%',num:24.8,sub:''},
-      payoutTotal:{val:'86.2%',num:86.2,sub:''},
-      debtEbitda:{val:'0.4x',num:0.4,sub:'Deuda muy baja'},
-      icr:{val:'42.8x',num:42.8,sub:''},
-      netPos:{val:'−$18.2B',num:-18200,sub:'Deuda neta'},
-      revCagr:{val:'+14.8%',num:14.8,sub:'CAGR 3 años'},
-      epsCagr:{val:'+18.4%',num:18.4,sub:'CAGR 3 años'},
-      fcfCagr:{val:'+22.1%',num:22.1,sub:'CAGR 3 años'},
-      signals:[
-        {label:'FCF conversion 93%',type:'g'},{label:'Azure +29%',type:'g'},
-        {label:'IA integrada',type:'g'},{label:'Dividendo creciente',type:'g'},
-        {label:'Deuda neta',type:'a'}
-      ]
-    }
-  },
-  asml: {
-    id:'asml', name:'ASML Holding', ticker:'ASML', exchange:'NASDAQ · AMS',
-    sector:'Semiconductores', logo:{bg:'#f0f7f4',color:'#276749',text:'ASML'},
-    qs:91,
-    data:{
-      per:{val:'30.2x',num:30.2,sub:''},
-      evEbitda:{val:'22.8x',num:22.8,sub:''},
-      evEbit:{val:'26.4x',num:26.4,sub:''},
-      evFcf:{val:'34.6x',num:34.6,sub:''},
-      ps:{val:'9.8x',num:9.8,sub:''},
-      pbv:{val:'22.1x',num:22.1,sub:''},
-      msBase:{val:'+31%',num:31,sub:'Escenario base'},
-      price15:{val:'€620',num:620,sub:'Para retorno ≥15%/año'},
-      roic:{val:'44.1%',num:44.1,sub:'Media 5A: 38.2%'},
-      roicIncr:{val:'34.8%',num:34.8,sub:'vs WACC 7.9%'},
-      roe:{val:'51.2%',num:51.2,sub:''},
-      roa:{val:'18.4%',num:18.4,sub:''},
-      grossM:{val:'51.3%',num:51.3,sub:''},
-      ebitM:{val:'32.8%',num:32.8,sub:''},
-      netM:{val:'27.4%',num:27.4,sub:''},
-      fcfM:{val:'24.1%',num:24.1,sub:''},
-      fcfConv:{val:'88%',num:88,sub:''},
-      fcf:{val:'€6.2B',num:6200,sub:'FCF yield 2.1%'},
-      fcfPs:{val:'€15.84',num:15.84,sub:''},
-      payoutDiv:{val:'31.4%',num:31.4,sub:''},
-      payoutTotal:{val:'78.4%',num:78.4,sub:''},
-      debtEbitda:{val:'−0.8x',num:-0.8,sub:'Caja neta'},
-      icr:{val:'62.4x',num:62.4,sub:''},
-      netPos:{val:'+€4.2B',num:4200,sub:'Caja neta'},
-      revCagr:{val:'+18.4%',num:18.4,sub:'CAGR 3 años'},
-      epsCagr:{val:'+24.8%',num:24.8,sub:'CAGR 3 años'},
-      fcfCagr:{val:'+28.2%',num:28.2,sub:'CAGR 3 años'},
-      signals:[
-        {label:'Monopolio EUV',type:'g'},{label:'Backlog €36B',type:'g'},
-        {label:'ROIC >44%',type:'g'},{label:'Caja neta',type:'g'},
-        {label:'Riesgo geopolítico',type:'a'}
-      ]
-    }
-  }
-};
+// ── DATA — loaded from companies.js ──────────────────────────
+// COMPANIES array comes from companies.js (loaded before this script)
+// We convert it to the format expected by this comparador
+
+function buildCompData() {
+  const result = {};
+  (typeof COMPANIES !== 'undefined' ? COMPANIES : []).forEach(co => {
+    result[co.ticker] = {
+      id: co.ticker,
+      name: co.name,
+      ticker: co.ticker,
+      exchange: co.exchange,
+      sector: co.sector,
+      logo: co.logo,
+      qs: co.qs,
+      data: buildMockData(co)
+    };
+  });
+  return result;
+}
+
+function buildMockData(co) {
+  // Extract numeric values from metrics strings where possible
+  const m = co.metrics || [];
+  const parseNum = str => { const n = parseFloat((str||'').replace(/[^0-9.]/g,'')); return isNaN(n)?null:n; };
+  const v = co.valuation || {};
+  const basePrice = parseNum(v.base?.price);
+  const curPrice = basePrice ? basePrice * 0.9 : null; // approximate
+  const ms = parseNum(v.marginBase);
+  return {
+    per:{val:co.data?.per?.val||'—',num:co.data?.per?.num||null,sub:''},
+    evEbitda:{val:co.data?.evEbitda?.val||'—',num:co.data?.evEbitda?.num||null,sub:''},
+    evEbit:{val:co.data?.evEbit?.val||'—',num:co.data?.evEbit?.num||null,sub:''},
+    evFcf:{val:co.data?.evFcf?.val||'—',num:co.data?.evFcf?.num||null,sub:''},
+    ps:{val:co.data?.ps?.val||'—',num:co.data?.ps?.num||null,sub:''},
+    pbv:{val:co.data?.pbv?.val||'—',num:co.data?.pbv?.num||null,sub:''},
+    msBase:{val:v.marginBase||'—',num:ms,sub:`Precio base ${v.base?.price||'—'}`},
+    price15:{val:v.price15||'—',num:parseNum(v.price15),sub:'Para retorno ≥15%/año'},
+    roic:{val:co.data?.roic?.val||m.find(x=>x.includes('ROIC'))||'—',num:co.data?.roic?.num||null,sub:''},
+    roicIncr:{val:co.data?.roicIncr?.val||'—',num:co.data?.roicIncr?.num||null,sub:''},
+    roe:{val:co.data?.roe?.val||'—',num:co.data?.roe?.num||null,sub:''},
+    roa:{val:co.data?.roa?.val||'—',num:co.data?.roa?.num||null,sub:''},
+    grossM:{val:co.data?.grossM?.val||'—',num:co.data?.grossM?.num||null,sub:''},
+    ebitM:{val:co.data?.ebitM?.val||m.find(x=>x.includes('EBIT'))||'—',num:co.data?.ebitM?.num||null,sub:''},
+    netM:{val:co.data?.netM?.val||'—',num:co.data?.netM?.num||null,sub:''},
+    fcfM:{val:co.data?.fcfM?.val||'—',num:co.data?.fcfM?.num||null,sub:''},
+    fcfConv:{val:co.data?.fcfConv?.val||'—',num:co.data?.fcfConv?.num||null,sub:''},
+    fcfPs:{val:co.data?.fcfPs?.val||'—',num:co.data?.fcfPs?.num||null,sub:'FCF/acción diluida'},
+    fcfYield:{val:co.data?.fcfYield?.val||'—',num:co.data?.fcfYield?.num||null,sub:'FCF/acción ÷ precio'},
+    payoutDiv:{val:co.data?.payoutDiv?.val||'—',num:co.data?.payoutDiv?.num||null,sub:''},
+    payoutTotal:{val:co.data?.payoutTotal?.val||'—',num:co.data?.payoutTotal?.num||null,sub:''},
+    debtEbitda:{val:co.data?.debtEbitda?.val||'—',num:co.data?.debtEbitda?.num||null,sub:''},
+    icr:{val:co.data?.icr?.val||'—',num:co.data?.icr?.num||null,sub:''},
+    netPos:{val:co.data?.netPos?.val||'—',num:co.data?.netPos?.num||null,sub:''},
+    revCagr:{val:co.data?.revCagr?.val||'—',num:co.data?.revCagr?.num||null,sub:'CAGR 3 años'},
+    epsCagr:{val:co.data?.epsCagr?.val||'—',num:co.data?.epsCagr?.num||null,sub:'CAGR 3 años'},
+    fcfCagr:{val:co.data?.fcfCagr?.val||'—',num:co.data?.fcfCagr?.num||null,sub:'CAGR 3 años'},
+    signals:co.heroSignals||co.signals||[],
+  };
+}
 
 // ── STATE ─────────────────────────────────────────────────
-let selected = ['ferrari', 'msft', null];
+const COMPANIES_MAP = buildCompData();
+let selected = ['RACE', 'MSFT', null];
 let openPicker = null;
 
 // ── METRIC DEFINITIONS ────────────────────────────────────
@@ -303,6 +240,8 @@ const METRICS = [
   {key:'fcfConv', label:'FCF Conversion', formula:'FCF / Net Income × 100', higherBetter:true},
   {section:'FCF y dividendos'},
   {key:'fcfPs', label:'FCF por acción', formula:'FCF / Acciones diluidas', higherBetter:true},
+  {key:'fcfYield', label:'FCF Yield', formula:'FCF / acción ÷ precio × 100', higherBetter:true},
+  {key:'fcfPs', label:'FCF por acción', formula:'FCF / Acciones diluidas', higherBetter:true},
   {key:'payoutDiv', label:'Payout dividendos', formula:'Dividendos / Net Income × 100', higherBetter:false, noWinner:true},
   {key:'payoutTotal', label:'Payout total', formula:'(Dividendos + Recompras) / FCF × 100', higherBetter:false, noWinner:true},
   {section:'Salud financiera'},
@@ -328,13 +267,13 @@ function renderSelector(){
   row.style.gridTemplateColumns = Array(cols).fill('1fr').join(' ');
   row.innerHTML = '';
   for(let i=0;i<cols;i++){
-    const id = selected[i];
+    const id = selected[i]; // id is ticker string
     const div = document.createElement('div');
     div.className = 'sel-cell ' + (id ? 'selected' : 'empty');
-    if(id){
-      const c = COMPANIES[id];
+    if(id && COMPANIES_MAP[id]){
+      const c = COMPANIES_MAP[id];
       div.innerHTML = `
-        <div class="sel-logo" style="background:${c.logo.bg};color:${c.logo.color}">${c.logo.text}</div>
+        <div class="sel-logo" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);overflow:hidden;display:flex;align-items:center;justify-content:center"><img src="${c.logo?.file||''}" style="width:36px;height:36px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\'font-size:11px;font-weight:600;color:#4a4a44\'>${c.ticker}</span>'"></div>
         <div class="sel-name">${c.name}</div>
         <div class="sel-ticker">${c.exchange}: ${c.ticker}</div>
         <div class="sel-qs">${c.qs}<span>/100</span></div>
@@ -349,7 +288,7 @@ function renderSelector(){
 
 function renderTable(){
   const table = document.getElementById('compTable');
-  const activeIds = selected.filter(Boolean);
+  const activeIds = selected.filter(id => id && COMPANIES_MAP[id]);
   if(!activeIds.length){ table.innerHTML = '<div class="add-notice">Selecciona al menos una empresa para comenzar.</div>'; return; }
 
   const cols = activeIds.length;
@@ -365,8 +304,8 @@ function renderTable(){
 
     // Get values
     const vals = activeIds.map(id => {
-      if(m.isScore) return {val:COMPANIES[id].qs,num:COMPANIES[id].qs,sub:''};
-      return COMPANIES[id].data[m.key] || {val:'—',num:null,sub:''};
+      if(m.isScore) return {val:COMPANIES_MAP[id].qs,num:COMPANIES_MAP[id].qs,sub:''};
+      return (COMPANIES_MAP[id]?.data||{})[m.key] || {val:'—',num:null,sub:''};
     });
 
     // Find best
@@ -388,14 +327,14 @@ function renderTable(){
 
     activeIds.forEach((id, i) => {
       if(m.isSignals){
-        const sigs = COMPANIES[id].data.signals || [];
+        const sigs = (COMPANIES_MAP[id]?.data||{}).signals || [];
         html += `<div class="comp-cell" style="flex-direction:column;gap:2px;padding:10px 8px">`;
         sigs.forEach(s => {
           html += `<span class="comp-sig sig-${s.type}"><span class="sig-dot" style="background:${s.type==='g'?'var(--green)':s.type==='a'?'var(--amber)':'var(--red)'}"></span>${s.label}</span>`;
         });
         html += `</div>`;
       } else if(m.isScore){
-        const qs = COMPANIES[id].qs;
+        const qs = COMPANIES_MAP[id].qs;
         const cls = qs>=85?'sc-hi':qs>=70?'sc-mid':'sc-lo';
         html += `<div class="comp-cell"><div class="score-visual"><div class="score-circle ${cls}">${qs}</div></div></div>`;
       } else {
@@ -431,16 +370,16 @@ function togglePicker(slotIdx, btn){
   const picker = document.createElement('div');
   picker.className = 'picker';
 
-  const available = Object.values(COMPANIES).filter(c => !selected.includes(c.id) || selected[slotIdx]===c.id);
+  const available = Object.values(COMPANIES_MAP).filter(c => !selected.includes(c.ticker) || selected[slotIdx]===c.ticker);
 
   picker.innerHTML = `<input class="picker-search" placeholder="Buscar empresa..." oninput="filterPicker(this)" autofocus>
     <div class="picker-list" id="pickerList">
       ${available.map(c=>`
-        <div class="picker-item" onclick="selectCompany(${slotIdx},'${c.id}')">
-          <div class="picker-logo" style="background:${c.logo.bg};color:${c.logo.color}">${c.logo.text}</div>
+        <div class="picker-item" onclick="selectCompany(${slotIdx},'${c.ticker}')">
+          <div class="picker-logo" style="background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;width:28px;height:28px"><img src="${c.logo?.file||''}" style="width:22px;height:22px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\'font-family:monospace;font-size:9px;font-weight:600;color:#4a4a44\'>${c.ticker}</span>'"></div>
           <span class="picker-name">${c.name}</span>
           <span class="picker-ticker">${c.ticker}</span>
-          <span class="picker-qs">${c.qs}</span>
+          <span class="picker-qs">${c.qs||'—'}</span>
         </div>`).join('')}
     </div>`;
 
@@ -466,7 +405,7 @@ function filterPicker(input){
 }
 
 function selectCompany(slot, id){
-  selected[slot] = id;
+  selected[slot] = id.toUpperCase();
   openPicker = null;
   document.querySelectorAll('.picker').forEach(p=>p.remove());
   render();
@@ -481,5 +420,6 @@ function removeCompany(slot, e){
 // ── INIT ─────────────────────────────────────────────────
 render();
 </script>
+<script src="companies.js"></script>
 </body>
 </html>

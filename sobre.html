@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre el proyecto — tesinversión</title>
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#faf9f6;--cream2:#f4f3ef;--cream3:#ece9e0;
+  --ink:#1a1a18;--ink2:#4a4a44;--ink3:#9a9a90;--ink4:#c8c8c0;
+  --rule:rgba(26,26,24,0.09);--rule2:rgba(26,26,24,0.05);
+  --green:#16a34a;--gbg:#f0fdf4;--gborder:rgba(22,163,74,0.2);
+  --blue:#2563eb;--bbg:#eff6ff;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;height:50px;background:rgba(250,249,246,0.95);backdrop-filter:blur(20px);border-bottom:0.5px solid var(--rule);display:flex;align-items:center;padding:0 28px;gap:16px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+.brand img{width:28px;height:28px;border-radius:50%;flex-shrink:0}
+.brand-text{display:flex;flex-direction:column;gap:0}
+.brand-name{font-family:'Lora',serif;font-size:16px;color:var(--ink);line-height:1.1}
+.brand-name em{font-style:italic;color:var(--ink3)}
+.brand-sub{font-family:'DM Sans',sans-serif;font-size:9px;color:var(--ink3);letter-spacing:0.04em}
+.nav-links{display:flex;gap:2px;margin-left:16px}
+.nav-link{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink2);background:none;border:none;cursor:pointer;padding:5px 10px;border-radius:6px;transition:background 0.12s}
+.nav-link:hover{background:var(--cream2)}
+.nav-link.active{color:var(--ink);font-weight:500}
+.topbar-right{margin-left:auto;display:flex;gap:6px}
+.btn-sm{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 13px;border-radius:6px;cursor:pointer;transition:all 0.12s}
+.btn-ghost{background:none;border:0.5px solid var(--rule);color:var(--ink2)}
+.btn-ghost:hover{background:var(--cream2)}
+.btn-dark{background:var(--ink);border:none;color:var(--cream);font-weight:500}
+.btn-dark:hover{opacity:0.84}
+
+/* LAYOUT */
+.page{max-width:640px;margin:0 auto;padding:64px 28px 100px}
+
+/* EYEBROW */
+.eyebrow{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:24px;height:0.5px;background:var(--ink3)}
+
+/* HEADLINE */
+.page-title{font-family:'Lora',serif;font-size:clamp(28px,4vw,40px);font-weight:600;line-height:1.15;letter-spacing:-0.02em;color:var(--ink);margin-bottom:12px}
+
+/* DECK */
+.page-deck{font-family:'Lora',serif;font-size:17px;font-style:italic;color:var(--ink2);line-height:1.65;margin-bottom:48px;padding-bottom:40px;border-bottom:0.5px solid var(--rule)}
+
+/* PROSE */
+.prose{font-family:'Lora',serif;font-size:17px;line-height:1.82;color:var(--ink);margin-bottom:26px}
+.prose em{font-style:italic;color:var(--ink2)}
+.prose strong{font-weight:600}
+.prose a{color:var(--blue);text-decoration:none}
+.prose a:hover{text-decoration:underline}
+
+/* FIRMA */
+.firma{margin-top:48px;padding-top:32px;border-top:0.5px solid var(--rule);font-family:'Lora',serif;font-size:16px;font-style:italic;color:var(--ink2)}
+.firma strong{font-style:normal;font-weight:600;color:var(--ink);display:block;margin-bottom:2px}
+.firma span{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);font-style:normal}
+
+/* DISCLAIMER */
+.disclaimer{margin-top:48px;background:var(--cream2);border-radius:10px;padding:18px 20px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);line-height:1.65}
+.disclaimer strong{color:var(--ink2)}
+
+/* NL CTA */
+.nl-cta{margin-top:48px;background:var(--ink);border-radius:14px;padding:32px 36px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.nl-text{flex:1;min-width:200px}
+.nl-eyebrow{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.09em;text-transform:uppercase;color:rgba(250,249,246,0.45);margin-bottom:6px}
+.nl-title{font-family:'Lora',serif;font-size:20px;color:var(--cream);margin-bottom:6px;font-weight:600}
+.nl-sub{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(250,249,246,0.6);line-height:1.5}
+.nl-btn{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:11px 22px;border:none;border-radius:8px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.nl-btn:hover{opacity:0.9}
+
+/* FOOTER */
+.footer{margin-top:64px;padding-top:24px;border-top:0.5px solid var(--rule);font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3);line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="brand" href="index.html">
+    <img src="logo.png" alt="tesinversión">
+    <div class="brand-text">
+      <span class="brand-name">tes<em>inversión</em></span>
+      <span class="brand-sub">by Arquitectura de la Inversión</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link" onclick="window.location.href='index.html'">Compañías</button>
+    <button class="nav-link" onclick="window.location.href='comparador.html'">Comparar</button>
+    <button class="nav-link" onclick="window.open('https://tesinversion.substack.com/','_blank')">Newsletter</button>
+    <button class="nav-link active">Sobre el proyecto</button>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-sm btn-ghost">Iniciar sesión</button>
+    <button class="btn-sm btn-dark">Regístrate gratis</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="eyebrow">Sobre el proyecto</div>
+  <h1 class="page-title">Una herramienta para pensar mejor sobre negocios.</h1>
+  <p class="page-deck">No para adivinar el mercado. Para entender qué hay detrás de los números.</p>
+
+  <p class="prose">Invertir bien no depende de adivinar, improvisar ni navegar entre miles de datos sin contexto.</p>
+
+  <p class="prose">Cuando empecé a invertir de manera activa buscaba herramientas confiables para analizar empresas. Encontré muchas plataformas con dashboards, ratios y screeners, pero los datos no siempre eran confiables, las métricas aparecían sin explicar de dónde venían y existía muy poco contexto para entender realmente un negocio. Solo datos flotando sin historia detrás.</p>
+
+  <p class="prose">tesinversión nace para resolver exactamente eso. Es un complemento de mi newsletter donde los estados financieros, la valoración y el análisis fundamental se integran en una estructura de análisis clara. Todo en una experiencia diseñada para que el análisis tenga lógica, profundidad y trazabilidad.</p>
+
+  <p class="prose">Porque con el simple hecho de ver los números podremos discernir si estamos ante una empresa de calidad o no. Y eso, bien explicado, cambia la manera en que tomamos decisiones de inversión.</p>
+
+  <p class="prose">Estos análisis parten de mi perspectiva como inversora individual y no constituyen una recomendación de inversión. Lo que hago es aplicar mis propios criterios e intentar explicar con claridad la lógica detrás de cada análisis, mostrando tanto lo bueno como lo débil de cada tesis, junto con sus riesgos reales.</p>
+
+  <p class="prose">Invertir de manera individual es un camino solitario. Requiere tiempo, estudio, paciencia y la capacidad de pensar con criterio propio incluso cuando el mercado empuja en otra dirección. Por eso esta plataforma busca ofrecer herramientas para analizar con mayor convicción, contexto para entender con más claridad y una forma más estructurada de pensar negocios.</p>
+
+  <p class="prose">No es un generador de señales de compra y venta ni una página para visualizar datos aislados. Es una herramienta para pensar mejor sobre negocios, entender qué hay detrás de los números y mirar más allá del precio de la acción.</p>
+
+  <p class="prose">La educación a través de la práctica es una de las formas más valiosas de aprender. Cada análisis que publico aquí es un ejercicio de pensamiento que espero te sea útil, independientemente de la decisión que tomes después.</p>
+
+  <div class="firma">
+    <strong>Mariana</strong>
+    <span>Fundadora de tesinversión · Arquitectura de la Inversión</span>
+  </div>
+
+  <div class="nl-cta">
+    <div class="nl-text">
+      <div class="nl-eyebrow">Arquitectura de la Inversión</div>
+      <div class="nl-title">El newsletter mensual</div>
+      <div class="nl-sub">Tesis de inversión completas, análisis editorial y seguimiento de empresas de calidad. Un análisis al mes, hecho con rigor.</div>
+    </div>
+    <button class="nl-btn" onclick="window.open('https://tesinversion.substack.com/','_blank')">Suscribirse →</button>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> Todo el contenido de tesinversión.com es exclusivamente educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero de ningún tipo. Cada inversor es responsable de sus propias decisiones. Invertir implica riesgo de pérdida del capital.
+  </div>
+
+</div>
+
+<div class="footer">
+  tesinversión.com · by Arquitectura de la Inversión · <a href="https://tesinversion.substack.com/" target="_blank" style="color:var(--ink2)">Newsletter →</a>
+</div>
+
+</body>
+</html>
