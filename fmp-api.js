@@ -1,6 +1,7 @@
 // ============================================================
-// tesinversion.com — FMP API Module v2.0
+// tesinversion.com — FMP API Module v3.0
 // Endpoints /stable/ — compatibles con cuentas creadas desde sep 2025
+// v3.0: sistema de overrides por empresa + alias de campos
 // ============================================================
 
 const FMP = (() => {
@@ -24,7 +25,7 @@ const FMP = (() => {
     }
   }
 
-  // ── ENDPOINTS /stable/ (nuevos) ───────────────────────────
+  // ── ENDPOINTS /stable/ ────────────────────────────────────
   const ep = {
     profile:       (t) => `${BASE}/profile?symbol=${t}&apikey=${API_KEY}`,
     income:        (t) => `${BASE}/income-statement?symbol=${t}&period=annual&limit=7&apikey=${API_KEY}`,
@@ -62,20 +63,39 @@ const FMP = (() => {
     return { profile, income, balance, cashflow, metrics, quote, earnings, institutional, insider };
   }
 
-  // ── FÓRMULAS TESINVERSION.COM ─────────────────────────────
+  // ── FÓRMULAS tesinversion.com ─────────────────────────────
+  // Todas las fórmulas vienen del documento FORMULAS.docx de la autora.
+  // NO modificar sin autorización.
+
+  // ROIC = EBIT × (1-t) / Capital Invertido × 100
+  // Capital Invertido = Equity + DeudaTotal + OperatingLeases − MarketableSecurities
   function calcROIC(ebit, taxRate, equity, debtST, debtLT, leaseCurr, leaseNonCurr, mktSec) {
     const nopat = ebit * (1 - taxRate);
     const ci = equity + (debtST||0) + (debtLT||0) + (leaseCurr||0) + (leaseNonCurr||0) - (mktSec||0);
     return ci > 0 ? (nopat / ci) * 100 : null;
   }
 
+  // FCF = EBITDA − CapEx mantenimiento − Intereses − Taxes − Variación WC
+  // CapEx mantenimiento = PP&E (purchase of property, plant and equipment)
   function calcFCF(ebitda, capexMaint, intNet, taxPaid, deltaWC) {
     return ebitda - Math.abs(capexMaint) - intNet - taxPaid - deltaWC;
   }
 
+  // Posición financiera = Deuda financiera − Caja total
+  // (positivo = deuda neta, negativo = caja neta)
   function calcNetPos(cash, mktSec, debtST, debtLT, leaseCurr, leaseNonCurr) {
     const debt = (debtST||0)+(debtLT||0)+(leaseCurr||0)+(leaseNonCurr||0);
     return debt - (cash||0) - (mktSec||0);
+  }
+
+  // Growth Capex (orgánico) = Capex Total − D&A
+  function calcGrowthCapex(capexTotal, da) {
+    return Math.max(0, Math.abs(capexTotal) - da);
+  }
+
+  // Tasa de reinversión orgánica = Growth Capex / FCF × 100
+  function calcReinvRate(growthCapex, fcf) {
+    return fcf > 0 ? (growthCapex / fcf) * 100 : null;
   }
 
   // ── TRANSFORMAR DATOS ─────────────────────────────────────
@@ -124,29 +144,47 @@ const FMP = (() => {
       const prevWC= (prevB.inventory||0)+(prevB.netReceivables||0)-(prevB.accountPayables||0);
       const deltaWC = i>0 ? wc-prevWC : 0;
 
-      const fcf     = calcFCF(ebitda, da, intNet, taxPaid, deltaWC);
-      const roic    = calcROIC(ebit, taxRate, equity, debtST, debtLT, leaseCurr, leaseNonCurr, mktSec);
-      const netPos  = calcNetPos(cash, mktSec, debtST, debtLT, leaseCurr, leaseNonCurr);
+      const fcf        = calcFCF(ebitda, da, intNet, taxPaid, deltaWC);
+      const roic       = calcROIC(ebit, taxRate, equity, debtST, debtLT, leaseCurr, leaseNonCurr, mktSec);
+      const netPos     = calcNetPos(cash, mktSec, debtST, debtLT, leaseCurr, leaseNonCurr);
+      const growthCapex= calcGrowthCapex(capexTotal, da);
+      const reinvRate  = calcReinvRate(growthCapex, fcf);
+
       const isLast  = i === inc.length-1;
       const price   = isLast ? (q?.price||p.price||0) : 0;
       const mktCap  = isLast ? (q?.marketCap||p.mktCap||0) : (m.marketCap||0);
       const ev      = mktCap + netPos;
-      const growthCapex = Math.max(0, Math.abs(capexTotal)-da);
 
-      return {
-        year:years[i], rev, gp, ebit, ebitda, da, ni, eps, shares, intNet, taxPaid,
+      const rowData = {
+        year:years[i],
+        // ── Ingresos y márgenes ──
+        rev, gp, ebit, ebitda, da, ni, eps, shares, intNet, taxPaid,
+        taxRate:taxRate*100,
+        // ── CapEx y caja ──
         capexTotal, growthCapex, acqNet, buybacks, divPaid, fcf, wc, deltaWC,
-        cash, mktSec, debtST, debtLT, equity, assets, netPos, ev, mktCap, price,
-        roic, icr:intExp>0?ebit/intExp:null,
-        roe:equity>0?(ni/equity)*100:null, roa:assets>0?(ni/assets)*100:null,
+        // ── Balance ──
+        cash, mktSec, debtST, debtLT, equity, assets, netPos,
+        // ── Mercado ──
+        ev, mktCap, price,
+        // ── Retornos ──
+        roic, reinvRate,
+        icr:intExp>0?ebit/intExp:null,
+        roe:equity>0?(ni/equity)*100:null,
+        roa:assets>0?(ni/assets)*100:null,
+        // ── FCF metrics ──
         fcfPS:shares>0?fcf/shares:null,
         fcfYield:shares>0&&price>0?(fcf/shares/price)*100:null,
+        fcfConv:ni>0?(fcf/ni)*100:null,
+        // ── Distribución ──
         payoutDiv:ni>0?(Math.abs(divPaid)/ni)*100:null,
         payoutTotal:fcf>0?((Math.abs(divPaid)+Math.abs(buybacks))/fcf)*100:null,
-        fcfConv:ni>0?(fcf/ni)*100:null,
-        grossMargin:rev?(gp/rev)*100:0, ebitMargin:rev?(ebit/rev)*100:0,
-        ebitdaMargin:rev?(ebitda/rev)*100:0, netMargin:rev?(ni/rev)*100:0,
+        // ── Márgenes % ──
+        grossMargin:rev?(gp/rev)*100:0,
+        ebitMargin:rev?(ebit/rev)*100:0,
+        ebitdaMargin:rev?(ebitda/rev)*100:0,
+        netMargin:rev?(ni/rev)*100:0,
         fcfMargin:rev?(fcf/rev)*100:0,
+        // ── Múltiplos ──
         per:eps>0&&price>0?price/eps:(m.peRatio||null),
         evEbitda:ebitda>0&&ev>0?ev/ebitda:null,
         evEbit:ebit>0&&ev>0?ev/ebit:null,
@@ -154,11 +192,21 @@ const FMP = (() => {
         ps:rev>0&&mktCap>0?mktCap/rev:null,
         pbv:m.priceToBookRatio||null,
         debtEbitda:ebitda>0?netPos/ebitda:null,
-        taxRate:taxRate*100,
       };
+
+      // ── ALIAS para compatibilidad con dashboard-connect.js ─
+      // Algunos nombres históricos que puede usar el HTML
+      rowData.revenue     = rowData.rev;
+      rowData.grossProfit = rowData.gp;
+      rowData.netIncome   = rowData.ni;
+      rowData.netPosition = rowData.netPos;
+      rowData.marketSec   = rowData.mktSec;
+      rowData.dilutedShares = rowData.shares;
+
+      return rowData;
     });
 
-    // ROIC Incremental
+    // ── ROIC Incremental ──────────────────────────────────
     const roicIncremental = computed.map((row, i) => {
       if (i===0) return null;
       const prev=computed[i-1];
@@ -169,7 +217,7 @@ const FMP = (() => {
       return Math.abs(dCI)>1000 ? (dNOPAT/dCI)*100 : null;
     });
 
-    // Red flags
+    // ── Red flags ─────────────────────────────────────────
     const rf = {revDecline:0,ebitMarginDec:0,fcfNeg:0,roicBelow10:0,debtHigh:0,epsDecline:0};
     computed.forEach((r,i)=>{
       if(i===0)return; const p2=computed[i-1];
@@ -212,7 +260,7 @@ const FMP = (() => {
       isBuy:(t.transactionType||'').toLowerCase().includes('purchase')||(t.securitiesTransacted||0)>0,
     }));
 
-    return {
+    const base = {
       ticker:p.symbol||ticker, name:p.companyName, description:p.description,
       sector:p.sector, industry:p.industry, exchange:p.exchangeShortName,
       ceo:p.ceo, country:p.country, website:p.website,
@@ -225,13 +273,96 @@ const FMP = (() => {
       redFlags:rf, last:computed[computed.length-1]||{},
       earningsHistory, topInstitutional, recentInsiders,
     };
+
+    return applyOverrides(base, ticker);
   }
 
+  // ── SISTEMA DE OVERRIDES ──────────────────────────────────
+  // Aplica datos verificados manualmente contra Annual Reports.
+  // Los archivos de override van en /data/<ticker>-overrides.js
+  // y deben cargarse ANTES de fmp-api.js en el HTML.
+  // Estructura del archivo: const RACE_OVERRIDES = { _meta:{...}, 2023:{...}, ... }
+  //
+  // Regla: si hay override para un campo, gana sobre el dato de FMP.
+  // Si no hay override, el dato de FMP pasa sin cambios.
+  // Los márgenes (%) se recalculan automáticamente si hay override de rev/ebit/etc.
+  // Los ROIC overrides se almacenan en _roic:{año:valor} por separado.
+
+  function applyOverrides(transformed, ticker) {
+    const key = ticker.toUpperCase() + '_OVERRIDES';
+    const co  = window[key];
+    if (!co) return transformed;  // sin override → datos FMP puros
+
+    const result = { ...transformed };
+
+    result.computed = transformed.computed.map(row => {
+      const yr = parseInt(row.year);
+      const yearData = co[yr];
+
+      // ROIC override (se guarda separado en _roic)
+      const roicOverride = co._roic ? co._roic[yr] : null;
+
+      if (!yearData && !roicOverride) return row;  // año sin overrides
+
+      const patched = { ...row };
+
+      // Aplicar overrides campo por campo
+      if (yearData) {
+        Object.entries(yearData).forEach(([field, value]) => {
+          if (field.startsWith('_')) return;  // ignorar metadatos
+          patched[field] = value;
+          patched[`${field}_verified`] = true;  // marca de auditoría
+        });
+      }
+
+      // ROIC override separado
+      if (roicOverride !== null && roicOverride !== undefined) {
+        patched.roic = roicOverride;
+        patched.roic_verified = true;
+      }
+
+      // Recalcular márgenes derivados para que sean consistentes
+      // con los valores overrideados
+      const r = patched.rev || row.rev;
+      if (r) {
+        patched.grossMargin   = patched.gp      ? (patched.gp      / r) * 100 : row.grossMargin;
+        patched.ebitMargin    = patched.ebit     ? (patched.ebit    / r) * 100 : row.ebitMargin;
+        patched.ebitdaMargin  = patched.ebitda   ? (patched.ebitda  / r) * 100 : row.ebitdaMargin;
+        patched.netMargin     = patched.ni       ? (patched.ni      / r) * 100 : row.netMargin;
+        patched.fcfMargin     = patched.fcf      ? (patched.fcf     / r) * 100 : row.fcfMargin;
+        patched.fcfConv       = patched.ni && patched.fcf ? (patched.fcf / patched.ni) * 100 : row.fcfConv;
+      }
+
+      // Actualizar alias también
+      patched.revenue      = patched.rev;
+      patched.grossProfit  = patched.gp;
+      patched.netIncome    = patched.ni;
+      patched.netPosition  = patched.netPos;
+      patched.marketSec    = patched.mktSec;
+      patched.dilutedShares = patched.shares;
+
+      return patched;
+    });
+
+    // Actualizar el último año (last) con los datos parchados
+    result.last = result.computed[result.computed.length - 1] || {};
+
+    // Guardar metadata del override para mostrar en UI si se desea
+    result._overrideMeta = co._meta || null;
+
+    return result;
+  }
+
+  // ── FUNCIÓN PRINCIPAL ─────────────────────────────────────
   async function load(ticker) {
     const raw = await fetchAll(ticker);
-    return raw ? transform(raw, ticker) : null;
+    if (!raw) return null;
+    return transform(raw, ticker);
+    // Nota: applyOverrides() se llama dentro de transform()
+    // Los overrides se aplican automáticamente si existe window[TICKER_OVERRIDES]
   }
 
+  // ── FORMATEADORES ─────────────────────────────────────────
   const fmt = {
     big:(n,dec=1,cur='')=>{
       if(n===null||n===undefined||isNaN(n))return'—';

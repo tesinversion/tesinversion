@@ -7,6 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="data/race-overrides.js"></script>
+<script src="fmp-api.js"></script>
+<script src="dashboard-connect.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -1054,6 +1057,7 @@ Chart.defaults.font.family="'DM Sans',-apple-system,sans-serif";
 Chart.defaults.font.size=11;
 Chart.defaults.color='#9a9a90';
 Chart.defaults.plugins.legend.display=false;
+window.chartInstances = window.chartInstances || {};
 const YRS=['2019','2020','2021','2022','2023','2024'];
 const lo={tension:0.35,pointRadius:3,pointHoverRadius:5,borderWidth:2};
 const gridOpts={color:'rgba(26,26,24,0.05)'};
@@ -1068,13 +1072,13 @@ const C1a='rgba(59,130,246,0.1)',C2a='rgba(16,185,129,0.1)';
 new Chart(document.getElementById('revDonut'),{type:'doughnut',data:{labels:['Vehículos','Engines','Sponsoring','Otros'],datasets:[{data:[78,9,8,5],backgroundColor:[C1,C2,C3,C5],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false}}}});
 
 // Moat margin
-new Chart(document.getElementById('moatChart'),{type:'line',data:{labels:YRS,datasets:[{data:[22.8,16.4,25.6,27.3,26.4,27.4],borderColor:C1,backgroundColor:'transparent',...lo},{data:[6.2,4.1,6.8,7.1,6.9,7.2],borderColor:C5,borderDash:[5,5],borderWidth:1.5,pointRadius:2,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
+window.chartInstances['moatChart']=new Chart(document.getElementById('moatChart'),{type:'line',data:{labels:YRS,datasets:[{data:[22.8,16.4,25.6,27.3,26.4,27.4],borderColor:C1,backgroundColor:'transparent',...lo},{data:[6.2,4.1,6.8,7.1,6.9,7.2],borderColor:C5,borderDash:[5,5],borderWidth:1.5,pointRadius:2,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
 
 // Margins
-new Chart(document.getElementById('marginsChart'),{type:'line',data:{labels:YRS,datasets:[{data:[46.8,44.1,46.6,47.1,48.4,49.0],borderColor:C1,backgroundColor:'transparent',...lo},{data:[22.8,16.4,25.6,27.3,26.4,27.4],borderColor:C2,backgroundColor:'transparent',...lo},{data:[17.1,10.8,19.8,21.1,20.9,21.6],borderColor:C3,backgroundColor:'transparent',...lo},{data:[16.2,9.4,17.8,19.8,20.1,21.3],borderColor:C4,backgroundColor:'transparent',...lo}]},options:baseOpts(v=>v+'%')});
+window.chartInstances['marginsChart']=new Chart(document.getElementById('marginsChart'),{type:'line',data:{labels:YRS,datasets:[{data:[46.8,44.1,46.6,47.1,48.4,49.0],borderColor:C1,backgroundColor:'transparent',...lo},{data:[22.8,16.4,25.6,27.3,26.4,27.4],borderColor:C2,backgroundColor:'transparent',...lo},{data:[17.1,10.8,19.8,21.1,20.9,21.6],borderColor:C3,backgroundColor:'transparent',...lo},{data:[16.2,9.4,17.8,19.8,20.1,21.3],borderColor:C4,backgroundColor:'transparent',...lo}]},options:baseOpts(v=>v+'%')});
 
 // ROIC
-new Chart(document.getElementById('roicChart'),{type:'line',data:{labels:YRS,datasets:[{data:[29.4,18.2,28.6,31.4,33.8,38.2],borderColor:C1,backgroundColor:C1a,fill:true,...lo},{data:[null,12.4,24.8,28.2,32.1,29.4],borderColor:C2,backgroundColor:'transparent',...lo},{data:[8.2,8.1,8.0,8.2,8.1,8.2],borderColor:C4,borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
+window.chartInstances['roicChart']=new Chart(document.getElementById('roicChart'),{type:'line',data:{labels:YRS,datasets:[{data:[29.4,18.2,28.6,31.4,33.8,38.2],borderColor:C1,backgroundColor:C1a,fill:true,...lo},{data:[null,12.4,24.8,28.2,32.1,29.4],borderColor:C2,backgroundColor:'transparent',...lo},{data:[8.2,8.1,8.0,8.2,8.1,8.2],borderColor:C4,borderDash:[5,5],borderWidth:1.5,pointRadius:0,backgroundColor:'transparent'}]},options:baseOpts(v=>v+'%')});
 
 // Capital allocation
 let capMode='abs';let capRef=null;

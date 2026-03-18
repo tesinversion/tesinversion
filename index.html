@@ -104,10 +104,26 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
 .cc-sig .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:0.5px solid var(--rule2);font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)}
 .cc-tesis-badge{font-family:'DM Sans',sans-serif;font-size:10px;background:var(--bbg);color:var(--blue);padding:2px 8px;border-radius:10px;font-weight:500}
+/* Tesis publicada — borde verde sutil */
+.cc-tesis{border-color:var(--gborder);background:var(--cream)}
+.cc-tesis:hover{border-color:rgba(22,163,74,0.35);box-shadow:0 4px 20px rgba(22,163,74,0.08);transform:translateY(-1px)}
+.cc-tesis-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:5px;flex-shrink:0}
+
+/* Sin tesis — apariencia normal pero badge claro */
+.cc-live{border-color:var(--rule)}
+
+/* Sección separadora */
+.section-divider{display:flex;align-items:center;gap:14px;margin:40px 0 24px}
+.section-divider-line{flex:1;height:0.5px;background:var(--rule)}
+.section-divider-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;color:var(--ink3);white-space:nowrap}
+
 /* Soon card */
-.cc-soon{opacity:0.5;cursor:default}
+.cc-soon{opacity:0.45;cursor:default;pointer-events:none}
 .cc-soon:hover{transform:none;box-shadow:none;border-color:var(--rule)}
 .cc-soon-badge{position:absolute;top:14px;right:14px;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;background:var(--cream3);color:var(--ink3);padding:3px 9px;border-radius:10px}
+
+/* Grid de empresas próximamente (no carousel) */
+.coming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-bottom:60px}
 
 /* HOW IT WORKS */
 .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:60px}
@@ -220,11 +236,10 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
   </div>
 
 
-  <!-- FEATURED COMPANIES -->
-
+  <!-- SECCIÓN 1: EMPRESAS CON DATOS EN VIVO ──────────────── -->
   <div class="sec-head">
-    <div class="sec-title">Empresas destacadas</div>
-    <a class="sec-link">Ver todas →</a>
+    <div class="sec-title">Empresas analizadas</div>
+    <a class="sec-link" onclick="document.getElementById('comingSoon').scrollIntoView({behavior:'smooth'})">Ver próximamente →</a>
   </div>
 
   <div class="cat-row">
@@ -232,16 +247,36 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--cream);colo
     <button class="cat-pill" onclick="filterCat(this,'lujo')">Lujo</button>
     <button class="cat-pill" onclick="filterCat(this,'tech')">Tecnología</button>
     <button class="cat-pill" onclick="filterCat(this,'semi')">Semiconductores</button>
-    <button class="cat-pill" onclick="filterCat(this,'salud')">Consumo defensivo</button>
-    <button class="cat-pill" onclick="filterCat(this,'consumo')">Minorista</button>
+    <button class="cat-pill" onclick="filterCat(this,'salud')">Salud</button>
+    <button class="cat-pill" onclick="filterCat(this,'consumo')">Consumo</button>
   </div>
 
   <div class="carousel-wrap">
     <button class="carousel-btn prev" onclick="scrollCarousel(-1)">←</button>
     <div class="company-grid" id="companyGrid">
-      <!-- Generado automáticamente desde companies.js -->
+      <!-- Generado automáticamente desde companies.js — solo empresas activas -->
     </div>
     <button class="carousel-btn next" onclick="scrollCarousel(1)">→</button>
+  </div>
+
+  <!-- SECCIÓN 2: PRÓXIMAMENTE ─────────────────────────────── -->
+  <div id="comingSoon">
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-label">En construcción</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="sec-head" style="margin-bottom:16px">
+      <div>
+        <div class="sec-title">Próximamente</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink3);margin-top:4px">Una empresa nueva con cada tesis publicada en el newsletter.</div>
+      </div>
+    </div>
+
+    <div class="coming-grid" id="comingGrid">
+      <!-- Generado automáticamente desde companies.js — empresas próximas -->
+    </div>
   </div>
 
   <!-- HOW IT WORKS -->
@@ -306,85 +341,131 @@ function filterCat(btn, cat) {
 <script src="companies.js"></script>
 <script src="fmp-api.js"></script>
 <script>
-// ── GENERAR TARJETAS DE EMPRESAS AUTOMÁTICAMENTE ──────────
-function renderCompanyGrid(cat='all') {
-  const grid = document.getElementById('companyGrid');
-  const companies = getByCategory(cat);
-  
-  grid.innerHTML = companies.map(c => {
-    const logo = logoHTML(c, 40);
-    const badge = c.tesis.published
-      ? `<span class="cc-tesis-badge">PDF disponible</span>`
-      : `<span class="cc-tesis-badge" style="background:#f0fdf4;color:#16a34a">✓ Datos en vivo</span>`;
-    
-    const signals = (c.heroSignals || c.signals).slice(0,3).map(s =>
-      `<div class="cc-sig cs-${s.type}"><span class="dot" style="background:${s.type==='g'?'var(--green)':s.type==='a'?'var(--amber)':'var(--red)'}"></span>${s.label}</div>`
-    ).join('');
 
-    const ACTIVE = ['RACE','MSFT','META'];
-    const isComingSoon = !ACTIVE.includes(c.ticker);
-    const href = isComingSoon ? '#' : (c.ticker === 'RACE' ? 'ferrari_v4.html' : `${c.ticker.toLowerCase()}.html`);
-    const soonBadge = isComingSoon ? `<span class="cc-soon-badge">Próximamente</span>` : '';
-    const cardClass = `company-card${isComingSoon ? ' cc-soon' : ''}`;
-    
-    return `<a href="${href}" class="${cardClass}" data-cat="${c.cat[0]}">
-      ${soonBadge}
-      <div class="cc-top">
-        ${logo}
-        <div class="cc-meta">
-          <div class="cc-name">${c.name}</div>
-          <div class="cc-ticker">${c.exchange}: ${c.ticker} &nbsp;·&nbsp; ${c.sector}</div>
-        </div>
-        <div class="cc-qs"><div class="cc-qs-num">${c.qs}</div><div class="cc-qs-lbl">Calidad</div></div>
-      </div>
-      <div class="cc-metrics">
-        ${c.metrics.map(m => `<div class="cc-m"><div class="cc-m-val">${m.split(' ')[0]}</div><div class="cc-m-lbl">${m.split(' ').slice(1).join(' ')}</div></div>`).join('')}
-      </div>
-      <div class="cc-signals">${signals}</div>
-      <div class="cc-footer">
-        <span>${c.sector}</span>
-        ${badge}
-      </div>
-    </a>`;
-  }).join('');
+// ── EMPRESAS ACTIVAS (con página y datos en vivo) ─────────
+// Para activar una empresa: agrégala a este array con su ticker
+// y asegúrate de que su HTML exista (o use el template company.html)
+const ACTIVE_TICKERS = ['RACE', 'MSFT', 'META'];
+
+// Mapeo ticker → archivo HTML (para cuando uses template único en el futuro)
+function companyHref(ticker) {
+  if (ticker === 'RACE')  return 'ferrari_v4.html';
+  if (ticker === 'MSFT')  return 'microsoft.html';
+  if (ticker === 'META')  return 'meta.html';
+  return `company.html?ticker=${ticker}`;  // template futuro
 }
 
-// Filtrar por categoría
+// ── CONSTRUIR CARD HTML ───────────────────────────────────
+function buildCard(c, isActive) {
+  const logo = logoHTML(c, 40);
+
+  // Badge inferior según estado
+  const badge = c.tesis?.published
+    ? `<div style="display:flex;align-items:center;gap:4px"><span class="cc-tesis-dot"></span><span style="font-family:'DM Sans',sans-serif;font-size:10px;color:var(--green);font-weight:500">Tesis publicada</span></div>`
+    : `<span style="font-family:'DM Sans',sans-serif;font-size:10px;background:var(--gbg);color:var(--green);padding:2px 8px;border-radius:10px;font-weight:500">Datos en vivo</span>`;
+
+  const signals = (c.heroSignals || c.signals || []).slice(0,3).map(s =>
+    `<div class="cc-sig cs-${s.type}"><span class="dot" style="background:${s.type==='g'?'var(--green)':s.type==='a'?'var(--amber)':'var(--red)'}"></span>${s.label}</div>`
+  ).join('');
+
+  const href = companyHref(c.ticker);
+
+  return `<a href="${href}" class="company-card cc-live" data-cat="${c.cat[0]}" data-ticker="${c.ticker}">
+    <div class="cc-top">
+      ${logo}
+      <div class="cc-meta">
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-ticker">${c.exchange}: ${c.ticker} &nbsp;·&nbsp; ${c.sector}</div>
+      </div>
+      <div class="cc-qs">
+        <div class="cc-qs-num">${c.qs}</div>
+        <div class="cc-qs-lbl">Calidad</div>
+      </div>
+    </div>
+    <div class="cc-metrics">
+      ${c.metrics.map(m => `<div class="cc-m"><div class="cc-m-val">${m.split(' ')[0]}</div><div class="cc-m-lbl">${m.split(' ').slice(1).join(' ')}</div></div>`).join('')}
+    </div>
+    <div class="cc-signals">${signals}</div>
+    <div class="cc-footer">
+      <span style="font-family:'DM Sans',sans-serif;font-size:11px;color:var(--ink3)">${c.sector}</span>
+      ${badge}
+    </div>
+  </a>`;
+}
+
+// ── CARD PRÓXIMAMENTE (sin enlace, compacta) ──────────────
+function buildComingSoonCard(c) {
+  const logo = logoHTML(c, 36);
+  return `<div class="company-card cc-soon" data-cat="${c.cat[0]}" data-ticker="${c.ticker}" style="opacity:0.55;cursor:default;pointer-events:none">
+    <span class="cc-soon-badge">Próximamente</span>
+    <div class="cc-top" style="margin-bottom:10px">
+      ${logo}
+      <div class="cc-meta">
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-ticker">${c.exchange}: ${c.ticker} &nbsp;·&nbsp; ${c.sector}</div>
+      </div>
+      <div class="cc-qs" style="opacity:0.5">
+        <div class="cc-qs-num">${c.qs}</div>
+        <div class="cc-qs-lbl">Calidad</div>
+      </div>
+    </div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:12px;color:var(--ink3);line-height:1.5;font-style:italic">
+      ${(c.deck || '').split('.')[0]}.
+    </div>
+  </div>`;
+}
+
+// ── RENDER PRINCIPAL ──────────────────────────────────────
+function renderAll() {
+  const activeGrid  = document.getElementById('companyGrid');
+  const comingGrid  = document.getElementById('comingGrid');
+
+  const active  = COMPANIES.filter(c => ACTIVE_TICKERS.includes(c.ticker));
+  const coming  = COMPANIES.filter(c => !ACTIVE_TICKERS.includes(c.ticker));
+
+  activeGrid.innerHTML = active.map(c => buildCard(c, true)).join('');
+  comingGrid.innerHTML = coming.map(c => buildComingSoonCard(c)).join('');
+
+  // Estadísticas dinámicas
+  const statEl = document.getElementById('statEmpresas');
+  if (statEl) statEl.textContent = COMPANIES.length;
+}
+
+// ── FILTRO POR CATEGORÍA ──────────────────────────────────
 function filterCat(btn, cat) {
   document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  renderCompanyGrid(cat);
+  document.querySelectorAll('#companyGrid .company-card').forEach(card => {
+    const match = cat === 'all' || card.dataset.cat === cat;
+    card.style.display = match ? '' : 'none';
+  });
 }
 
-// Búsqueda
+// ── BÚSQUEDA ──────────────────────────────────────────────
 document.querySelector('.search-input').addEventListener('input', function() {
   const q = this.value.toLowerCase().trim();
-  if(!q){ document.querySelectorAll('.company-card[data-cat]').forEach(c=>c.style.display=''); return; }
-  document.querySelectorAll('.company-card[data-cat]').forEach(card => {
-    const co = COMPANIES.find(c2 => card.getAttribute('href') && card.getAttribute('href').includes(c2.ticker.toLowerCase()) || card.textContent.toLowerCase().includes(c2.ticker.toLowerCase()) && card.textContent.toLowerCase().includes(c2.name.toLowerCase().split(' ')[0]));
-    const matchName = card.textContent.toLowerCase().includes(q);
-    const matchTicker = co && (co.ticker.toLowerCase().includes(q) || co.name.toLowerCase().includes(q));
-    card.style.display = (matchName || matchTicker) ? '' : 'none';
+  document.querySelectorAll('.company-card').forEach(card => {
+    if (!q) { card.style.display = ''; return; }
+    const ticker  = (card.dataset.ticker || '').toLowerCase();
+    const text    = card.textContent.toLowerCase();
+    const company = COMPANIES.find(c => c.ticker.toLowerCase() === ticker);
+    const match   = text.includes(q) || (company && company.name.toLowerCase().includes(q));
+    card.style.display = match ? '' : 'none';
   });
 });
 
 // Hints de búsqueda
 document.querySelectorAll('.search-hints span').forEach(span => {
   span.onclick = () => {
-    const name = span.textContent;
-    const company = COMPANIES.find(c => c.name.includes(name) || c.ticker === name.toUpperCase());
-    if(company) {
-      const ticker = company.ticker;
-      const href = ticker === 'RACE' ? 'ferrari_v4.html' : `${ticker.toLowerCase()}.html`;
-      window.location.href = href;
+    const q = span.textContent;
+    const company = COMPANIES.find(c => c.name.includes(q) || c.ticker === q.toUpperCase());
+    if (company && ACTIVE_TICKERS.includes(company.ticker)) {
+      window.location.href = companyHref(company.ticker);
     }
   };
 });
 
-// Renderizar al cargar
-renderCompanyGrid();
-
-// Carousel
+// Carousel (solo para el grid activo)
 function scrollCarousel(dir) {
   const grid = document.getElementById('companyGrid');
   const card = grid.querySelector('.company-card');
@@ -392,8 +473,9 @@ function scrollCarousel(dir) {
   grid.scrollBy({ left: dir * amount, behavior: 'smooth' });
 }
 
-// Estadísticas dinámicas
-if(document.getElementById('statEmpresas')) document.getElementById('statEmpresas').textContent = COMPANIES.length;
+// Inicializar
+renderAll();
+
 </script>
 </body>
 </html>
