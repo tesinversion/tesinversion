@@ -3232,50 +3232,260 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
   }
 }
 
-/* AJUSTE FINAL SUBSTACK EN COVER */
-#coverSubscribeBox{
-  max-width:860px;
-  margin:14px auto 22px;
-}
-
-#coverSubscribeBox .substack-subscribe-box{
-  padding:22px 28px;
-  border:1px solid rgba(244,199,106,.55);
-  box-shadow:
-    0 0 0 1px rgba(244,199,106,.14),
-    0 0 36px rgba(244,199,106,.16),
-    0 24px 60px rgba(0,0,0,.34);
-}
-
-#coverSubscribeBox .substack-subscribe-inner{
-  grid-template-columns:1fr 360px;
-  gap:34px;
-}
-
+/* SUBSTACK COVER - SIN CORTAR */
 #coverSubscribeBox .substack-form-wrap{
-  max-width:360px;
-  height:78px;
-  border-radius:16px;
+  max-width:390px;
+  height:320px;
+  border-radius:18px;
   overflow:hidden;
   background:#fff;
 }
 
 #coverSubscribeBox .substack-form-wrap iframe{
   width:100%;
-  height:78px;
+  height:320px;
   display:block;
   border:0;
   background:#fff;
 }
 
-#coverSubscribeBox .substack-subscribe-box h3{
-  font-size:27px;
-  margin-bottom:8px;
+/* COVER SUBSTACK BUTTON VERSION */
+#coverSubscribeBox .cover-subscribe-action{
+  min-height:150px;
+  height:auto !important;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(244,199,106,.18), transparent 36%),
+    linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.045));
+  border:1px solid rgba(244,199,106,.34);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:22px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    0 16px 34px rgba(0,0,0,.22);
 }
 
-#coverSubscribeBox .substack-subscribe-box p{
-  font-size:13.5px;
-  line-height:1.55;
+#coverSubscribeBox .cover-subscribe-action a{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:100px;
+  padding:13px 22px;
+  background:#F4C76A;
+  color:#0B1B3E;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  font-weight:850;
+  text-decoration:none;
+  box-shadow:0 12px 26px rgba(244,199,106,.25);
+  transition:all .16s ease;
+}
+
+#coverSubscribeBox .cover-subscribe-action a:hover{
+  transform:translateY(-2px);
+  box-shadow:0 18px 36px rgba(244,199,106,.34);
+}
+
+#coverSubscribeBox .cover-subscribe-action span{
+  max-width:260px;
+  text-align:center;
+  color:rgba(255,255,255,.72);
+  font-size:12.5px;
+  line-height:1.5;
+}
+
+@media(max-width:700px){
+  #coverSubscribeBox .cover-subscribe-action{
+    min-height:auto;
+    padding:20px;
+  }
+
+  #coverSubscribeBox .cover-subscribe-action a{
+    width:100%;
+  }
+}
+
+/* COVER BUTTONS FINAL STYLE */
+#coverSubscribeBox .cover-subscribe-action a,
+.cover-btn{
+  background:linear-gradient(135deg,#F4C76A 0%,#E0A915 100%) !important;
+  color:#0B1B3E !important;
+  border:1px solid rgba(244,199,106,.75) !important;
+  box-shadow:
+    0 10px 24px rgba(244,199,106,.22),
+    0 0 0 1px rgba(255,255,255,.08) inset !important;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease !important;
+}
+
+#coverSubscribeBox .cover-subscribe-action a:hover,
+.cover-btn:hover{
+  transform:translateY(-4px) scale(1.035) !important;
+  filter:brightness(1.04);
+  box-shadow:
+    0 0 0 2px rgba(244,199,106,.18),
+    0 0 36px rgba(244,199,106,.26),
+    0 18px 42px rgba(0,0,0,.34) !important;
+}
+
+#coverSubscribeBox .cover-subscribe-action a:active,
+.cover-btn:active{
+  transform:translateY(-1px) scale(.99) !important;
+}
+
+/* WELCOME CTA - SAME STYLE AS COVER */
+.welcome-cta{
+  background:
+    radial-gradient(circle at 88% 10%, rgba(244,199,106,.18), transparent 34%),
+    linear-gradient(145deg, rgba(24,40,78,.98), rgba(8,22,55,.98)) !important;
+  border:1px solid rgba(244,199,106,.46) !important;
+  border-radius:24px !important;
+  box-shadow:
+    0 0 0 1px rgba(244,199,106,.12),
+    0 0 34px rgba(244,199,106,.14),
+    0 24px 58px rgba(0,0,0,.34) !important;
+  color:#FFFFFF !important;
+  padding:38px 44px !important;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+.welcome-cta:hover{
+  transform:translateY(-4px);
+  border-color:rgba(244,199,106,.76) !important;
+  box-shadow:
+    0 0 0 1px rgba(244,199,106,.18),
+    0 0 44px rgba(244,199,106,.20),
+    0 28px 70px rgba(0,0,0,.42) !important;
+}
+
+.welcome-cta h3{
+  color:#FFF8EA !important;
+}
+
+.welcome-cta p{
+  color:rgba(255,255,255,.86) !important;
+}
+
+.welcome-cta p strong{
+  color:#FFFFFF !important;
+}
+
+/* WELCOME BUTTON - SAME STYLE AS COVER BUTTON */
+.welcome-start-btn,
+.welcome-cta a,
+.welcome-cta button{
+  background:linear-gradient(135deg,#F4C76A 0%,#E0A915 100%) !important;
+  color:#0B1B3E !important;
+  border:1px solid rgba(244,199,106,.75) !important;
+  border-radius:100px !important;
+  box-shadow:
+    0 10px 24px rgba(244,199,106,.22),
+    0 0 0 1px rgba(255,255,255,.08) inset !important;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease !important;
+}
+
+.welcome-start-btn:hover,
+.welcome-cta a:hover,
+.welcome-cta button:hover{
+  transform:translateY(-4px) scale(1.035) !important;
+  filter:brightness(1.04);
+  box-shadow:
+    0 0 0 2px rgba(244,199,106,.18),
+    0 0 36px rgba(244,199,106,.26),
+    0 18px 42px rgba(0,0,0,.34) !important;
+}
+
+.welcome-start-btn:active,
+.welcome-cta a:active,
+.welcome-cta button:active{
+  transform:translateY(-1px) scale(.99) !important;
+}
+
+@media(max-width:600px){
+  .welcome-cta{
+    padding:28px 22px !important;
+    border-radius:22px !important;
+  }
+}
+
+/* WELCOME BACK BUTTON */
+.welcome-back-cover-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:28px;
+  padding:10px 16px;
+  border-radius:100px;
+  border:1px solid rgba(244,199,106,.34);
+  background:rgba(255,255,255,.055);
+  color:#F4C76A;
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:750;
+  cursor:pointer;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease,
+    background .16s ease,
+    border-color .16s ease;
+}
+
+.welcome-back-cover-btn:hover{
+  transform:translateY(-2px);
+  background:rgba(244,199,106,.10);
+  border-color:rgba(244,199,106,.58);
+  box-shadow:0 16px 34px rgba(0,0,0,.26);
+}
+
+.welcome-back-cover-btn:active{
+  transform:translateY(0);
+}
+
+@media(max-width:600px){
+  .welcome-back-cover-btn{
+    width:100%;
+    max-width:280px;
+    margin-bottom:24px;
+  }
+}
+
+/* HEADER NEWSLETTER SEPARATED */
+.header-newsletter-btn{
+  margin-left:14px !important;
+  border-color:rgba(244,199,106,.45) !important;
+  color:#F4C76A !important;
+  background:rgba(244,199,106,.08) !important;
+  position:relative;
+}
+
+.header-newsletter-btn::before{
+  content:'';
+  position:absolute;
+  left:-12px;
+  top:50%;
+  transform:translateY(-50%);
+  width:2px;
+  height:24px;
+  background:rgba(255,255,255,.75);
+}
+
+.header-newsletter-btn:hover{
+  background:rgba(244,199,106,.14) !important;
+  border-color:rgba(244,199,106,.70) !important;
 }
 
 /* SCROLLBAR */
@@ -3366,6 +3576,8 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 <button class="nav-btn" id="btnFavorites" onclick="showFavorites()">Guardados</button>
 <button class="nav-btn" id="compactToggle" type="button" onclick="toggleCompactMode()" aria-pressed="false">Vista compacta</button>
 <button class="nav-btn" id="studyToggle" onclick="toggleStudyMode()">Modo estudio</button>
+<button class="nav-btn header-newsletter-btn" onclick="window.open('https://tesinversion.substack.com/archive', '_blank', 'noopener')">Newsletter ↗️</button>
+
 </div>
     </div>
   </header>
@@ -4825,7 +5037,20 @@ function injectCoverSubscribeBox() {
 
   const wrapper = document.createElement('div');
   wrapper.id = 'coverSubscribeBox';
-  wrapper.innerHTML = renderSubstackSubscribeBox('cover');
+  wrapper.innerHTML = '' +
+  '<div class="substack-subscribe-box cover-subscribe-box">' +
+    '<div class="substack-subscribe-inner">' +
+      '<div>' +
+        '<div class="substack-kicker">Newsletter gratuita</div>' +
+        '<h3>Sobre inversión</h3>' +
+        '<p>Únete gratis y recibe contenido sobre conceptos financieros, analizar empresas y aprender a invertir con más criterio.</p>' +
+      '</div>' +
+      '<div class="substack-form-wrap cover-subscribe-action">' +
+        '<a href="https://tesinversion.substack.com/subscribe" target="_blank" rel="noopener noreferrer">Suscribirme gratis</a>' +
+        '<span>Recibe nuevos artículos y guías en tu correo.</span>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
 
  const coverButton = cover.querySelector('.cover-btn');
 
@@ -4836,6 +5061,31 @@ if (coverButton) {
 }
 }
 
+function injectWelcomeBackButton() {
+  const welcome = document.getElementById('welcome');
+
+  if (!welcome) return;
+
+  const existingButton = document.getElementById('welcomeBackToCover');
+
+  if (existingButton) {
+    existingButton.remove();
+  }
+
+  const button = document.createElement('button');
+  button.id = 'welcomeBackToCover';
+  button.className = 'welcome-back-cover-btn';
+  button.type = 'button';
+  button.innerHTML = '← Volver a la portada';
+
+  button.addEventListener('click', function () {
+    showCover();
+  });
+
+  const welcomeInner = welcome.querySelector('.welcome-inner') || welcome;
+
+  welcomeInner.insertAdjacentElement('afterbegin', button);
+}
 
 function showWelcome() {
   saveLastScreen('welcome');
@@ -4846,6 +5096,7 @@ function showWelcome() {
 
 updateDynamicCopy();
 buildWelcome();
+injectWelcomeBackButton();
 
 window.scrollTo(0,0);
   updateBackToTopVisibility();
