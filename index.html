@@ -6353,7 +6353,7 @@ function drawInvestorProfileCard(ctx, profile, width, height, profileImage) {
 
   // Línea de referencia
   ctx.fillStyle = 'rgba(255,255,255,.78)';
-  ctx.font = '500 28px Inter, Arial, sans-serif';
+  ctx.font = '600 34px Inter, Arial, sans-serif';
 
   const introEndY = wrapCanvasText(
     ctx,
@@ -6380,9 +6380,9 @@ function drawInvestorProfileCard(ctx, profile, width, height, profileImage) {
 
 // Retrato del inversor de referencia
 if (profileImage) {
-  const imageSize = 170;
+  const imageSize = 350;
   const imageX = (width / 2) - (imageSize / 2);
-  const imageY = referenceEndY + 34;
+  const imageY = referenceEndY + 5;
 
   ctx.save();
 
@@ -6410,7 +6410,7 @@ if (profileImage) {
 
   // Caja de frase
   const quoteBoxX = 110;
-  const quoteBoxY = referenceEndY + 205 + 68;
+  const quoteBoxY = referenceEndY + 340 + 50;
   const quoteBoxW = width - 220;
   const quoteBoxH = 225;
 
