@@ -3232,6 +3232,52 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
   }
 }
 
+/* AJUSTE FINAL SUBSTACK EN COVER */
+#coverSubscribeBox{
+  max-width:860px;
+  margin:14px auto 22px;
+}
+
+#coverSubscribeBox .substack-subscribe-box{
+  padding:22px 28px;
+  border:1px solid rgba(244,199,106,.55);
+  box-shadow:
+    0 0 0 1px rgba(244,199,106,.14),
+    0 0 36px rgba(244,199,106,.16),
+    0 24px 60px rgba(0,0,0,.34);
+}
+
+#coverSubscribeBox .substack-subscribe-inner{
+  grid-template-columns:1fr 360px;
+  gap:34px;
+}
+
+#coverSubscribeBox .substack-form-wrap{
+  max-width:360px;
+  height:78px;
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
+}
+
+#coverSubscribeBox .substack-form-wrap iframe{
+  width:100%;
+  height:78px;
+  display:block;
+  border:0;
+  background:#fff;
+}
+
+#coverSubscribeBox .substack-subscribe-box h3{
+  font-size:27px;
+  margin-bottom:8px;
+}
+
+#coverSubscribeBox .substack-subscribe-box p{
+  font-size:13.5px;
+  line-height:1.55;
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
