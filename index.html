@@ -69,7 +69,7 @@ body{
 }
 .cover-logo{width:100px;height:100px;border-radius:50%;border:3px solid rgba(212,160,23,.45);margin-bottom:20px;box-shadow:0 0 50px rgba(212,160,23,.18)}
 .cover-brand{font-family:'Crimson Pro',serif;font-size:20px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
-.cover-title{font-family:'Crimson Pro',serif;font-size:clamp(42px,7vw,76px);font-weight:700;color:#fff;line-height:1.08;margin-bottom:8px}
+.cover-title{font-family:'Crimson Pro',serif;font-size:clamp(38px,5.8vw,68px);font-weight:700;color:#fff;line-height:1.08;margin-bottom:8px;text-shadow:0 2px 12px rgba(0,0,0,.18);white-space:nowrap;letter-spacing:-.02em;}
 .cover-sub{font-family:'Crimson Pro',serif;font-size:clamp(18px,3vw,26px);font-style:italic;color:var(--gold);margin-bottom:22px}
 .cover-desc{font-size:15px;color:rgba(255,255,255,.92);max-width:560px;line-height:1.75;margin-bottom:36px}
 .cover-pill{
@@ -2977,6 +2977,261 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
   }
 }
 
+/* COVER SUBSTACK COMPACT VERSION */
+#coverSubscribeBox{
+  width:100%;
+  max-width:760px;
+  margin:0px auto 22px;
+}
+
+#coverSubscribeBox .substack-subscribe-box{
+  margin:0;
+  padding:18px 22px;
+  border-radius:22px;
+}
+
+#coverSubscribeBox .substack-subscribe-inner{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:18px;
+  align-items:center;
+}
+
+#coverSubscribeBox .substack-kicker{
+  font-size:10px;
+  margin-bottom:6px;
+}
+
+#coverSubscribeBox .substack-subscribe-box h3{
+  font-size:23px;
+  line-height:1.12;
+  margin-bottom:6px;
+}
+
+#coverSubscribeBox .substack-subscribe-box p{
+  font-size:12.5px;
+  line-height:1.55;
+  max-width:420px;
+}
+
+#coverSubscribeBox .substack-form-wrap{
+  max-width:340px;
+  height:150px;
+  border-radius:16px;
+}
+
+#coverSubscribeBox .substack-form-wrap iframe{
+  width:100%;
+  height:150px;
+  transform:scale(.82);
+  transform-origin:top left;
+  width:122%;
+  height:184px;
+}
+
+@media(max-width:700px){
+  #coverSubscribeBox{
+    max-width:360px;
+    margin:24px auto 22px;
+  }
+
+  #coverSubscribeBox .substack-subscribe-inner{
+    grid-template-columns:1fr;
+  }
+
+  #coverSubscribeBox .substack-form-wrap{
+    max-width:100%;
+    height:160px;
+  }
+
+  #coverSubscribeBox .substack-form-wrap iframe{
+    transform:scale(.86);
+    width:116%;
+    height:186px;
+  }
+}
+
+@media(max-width:600px){
+  .cover-title{
+    font-size:clamp(25px,7.2vw,34px);
+    white-space:nowrap;
+    letter-spacing:-.035em;
+  }
+
+  #coverSubscribeBox{
+    margin:8px auto 20px;
+  }
+}
+
+@media(max-width:380px){
+  .cover-title{
+    font-size:24px;
+  }
+}
+
+/* WELCOME TITLE ONE LINE */
+.welcome-title .welcome-title-nowrap{
+  display:inline-block;
+  white-space:nowrap;
+  letter-spacing:-.035em;
+}
+
+@media(max-width:600px){
+  .welcome-title{
+    font-size:clamp(30px,8vw,44px);
+  }
+
+  .welcome-title .welcome-title-nowrap{
+    white-space:nowrap;
+    letter-spacing:-.045em;
+  }
+}
+
+@media(max-width:380px){
+  .welcome-title{
+    font-size:28px;
+  }
+}
+
+/* COVER TITLE ONE LINE */
+.cover-title{
+  white-space:nowrap !important;
+  font-size:clamp(38px,5.4vw,66px) !important;
+  letter-spacing:-.035em !important;
+  line-height:1.05 !important;
+  max-width:100% !important;
+}
+
+@media(max-width:600px){
+  .cover-title{
+    font-size:clamp(25px,7.4vw,34px) !important;
+    white-space:nowrap !important;
+    letter-spacing:-.045em !important;
+  }
+}
+
+@media(max-width:380px){
+  .cover-title{
+    font-size:23px !important;
+  }
+}
+
+/* COVER SUBSTACK PREMIUM BOX */
+#coverSubscribeBox{
+  width:100%;
+  max-width:760px;
+  margin:14px auto 24px;
+  position:relative;
+  z-index:4;
+}
+
+#coverSubscribeBox .substack-subscribe-box{
+  margin:0;
+  padding:20px 24px;
+  border-radius:24px;
+  border:1px solid rgba(244,199,106,.42);
+  background:
+    radial-gradient(circle at 85% 8%, rgba(244,199,106,.18), transparent 34%),
+    linear-gradient(145deg, rgba(24,40,78,.98), rgba(8,22,55,.98));
+  box-shadow:
+    0 0 0 1px rgba(244,199,106,.12),
+    0 0 34px rgba(244,199,106,.13),
+    0 24px 60px rgba(0,0,0,.34);
+  overflow:hidden;
+}
+
+#coverSubscribeBox .substack-subscribe-box::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.06), transparent 42%);
+  pointer-events:none;
+}
+
+#coverSubscribeBox .substack-subscribe-inner{
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:24px;
+  align-items:center;
+  position:relative;
+  z-index:2;
+}
+
+#coverSubscribeBox .substack-kicker{
+  font-size:10.5px;
+  margin-bottom:8px;
+  color:#F4C76A;
+}
+
+#coverSubscribeBox .substack-subscribe-box h3{
+  font-size:26px;
+  line-height:1.1;
+  margin-bottom:8px;
+  color:#FFF8EA;
+}
+
+#coverSubscribeBox .substack-subscribe-box p{
+  font-size:13px;
+  line-height:1.6;
+  max-width:420px;
+  color:rgba(255,255,255,.84);
+}
+
+#coverSubscribeBox .substack-form-wrap{
+  width:100%;
+  max-width:360px;
+  height:168px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(244,199,106,.32);
+  background:#fff;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.10),
+    0 14px 34px rgba(0,0,0,.24);
+}
+
+#coverSubscribeBox .substack-form-wrap iframe{
+  display:block;
+  width:100%;
+  height:168px;
+  border:0;
+  background:#fff;
+}
+
+#coverSubscribeBox .substack-subscribe-box:hover{
+  border-color:rgba(244,199,106,.68);
+  box-shadow:
+    0 0 0 1px rgba(244,199,106,.18),
+    0 0 42px rgba(244,199,106,.18),
+    0 28px 70px rgba(0,0,0,.40);
+}
+
+@media(max-width:700px){
+  #coverSubscribeBox{
+    max-width:360px;
+    margin:12px auto 22px;
+  }
+
+  #coverSubscribeBox .substack-subscribe-inner{
+    grid-template-columns:1fr;
+    gap:16px;
+  }
+
+  #coverSubscribeBox .substack-form-wrap{
+    max-width:100%;
+    height:190px;
+  }
+
+  #coverSubscribeBox .substack-form-wrap iframe{
+    height:190px;
+  }
+
+  #coverSubscribeBox .substack-subscribe-box h3{
+    font-size:23px;
+  }
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -2989,7 +3244,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 <div id="cover">
   <img src="assets/logo-ai.png" class="cover-logo" alt="Logo Arquitectura de la Inversión" width="150" height="150" decoding="async">
   <div class="cover-brand">Arquitectura de la Inversión</div>
-  <div class="cover-title">Diccionario<br>del Inversor</div>
+  <div class="cover-title">Diccionario del Inversor</div>
   <div class="cover-sub">Conceptos, fórmulas y ejemplos para entender mejor los mercados financiero</div>
   <p class="cover-desc">Una guía interactiva con conceptos clave de inversión, estados financieros, valoración y mercado bursátil, explicados de manera sencilla, con ejemplos y fórmulas para entender mejor cualquier análisis financiero.</p>
   <div class="cover-pill">
@@ -3016,8 +3271,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
         <span>Boletín financiero</span>
       </div>
     </div>
-    <h1 class="welcome-title">Bienvenido al<br><em>Diccionario del Inversor</em></h1>
-    <div class="welcome-divider"></div>
+<h1 class="welcome-title">Bienvenido al<br><em class="welcome-title-nowrap">Diccionario del Inversor</em></h1>    <div class="welcome-divider"></div>
     <div class="welcome-body">
       <p>Si alguna vez empezaste a leer un análisis financiero y a mitad del camino te perdiste por no entender los términos, este recurso es para ti.</p>
       <p>Este diccionario nació pensando en <strong>las barreras de entrada en la inversión, no tanto por la complejidad del tema, porque realmente es sencillo, sino pensando en todo el lenguaje técnico </strong> que lo rodea y eso termina alejando a mucha gente de aprender de verdad. Aquí vas a encontrar más de 100 términos que se repiten una y otra vez en cualquier análisis de empresas, informes financieros y conversaciones sobre mercados, explicados de la manera más sencilla y clara posible.</p>
@@ -4397,18 +4651,18 @@ const LAST_APP_VIEW_KEY = 'adi_last_app_view_v1';
 
 function saveLastAppView(view, cat) {
   try {
-    localStorage.setItem(LAST_APP_VIEW_KEY, JSON.stringify({
+    sessionStorage.setItem(LAST_APP_VIEW_KEY, JSON.stringify({
       view: view,
       cat: cat || null
     }));
   } catch (error) {
-    // localStorage may be unavailable.
+    // sessionStorage may be unavailable.
   }
 }
 
 function getLastAppView() {
   try {
-    const raw = localStorage.getItem(LAST_APP_VIEW_KEY);
+    const raw = sessionStorage.getItem(LAST_APP_VIEW_KEY);
 
     if (!raw) return null;
 
@@ -4451,15 +4705,15 @@ function restoreLastAppView(savedView) {
 
 function saveLastScreen(screen) {
   try {
-    localStorage.setItem(LAST_SCREEN_KEY, screen);
+    sessionStorage.setItem(LAST_SCREEN_KEY, screen);
   } catch (error) {
-    // localStorage may be unavailable in some browsers or private windows.
+    // sessionStorage may be unavailable in some browsers or private windows.
   }
 }
 
 function getLastScreen() {
   try {
-    return localStorage.getItem(LAST_SCREEN_KEY) || '';
+    return sessionStorage.getItem(LAST_SCREEN_KEY) || '';
   } catch (error) {
     return '';
   }
@@ -4482,6 +4736,8 @@ function showCover() {
   document.getElementById('cover').style.display = 'flex';
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('app').style.display = 'none';
+injectCoverSubscribeBox();
+
 
   updateBackToTopVisibility();
 }
@@ -4491,11 +4747,11 @@ function renderSubstackSubscribeBox(context = 'welcome') {
 
   const title = isProfile
     ? 'Sigue aprendiendo según tu perfil inversor'
-    : 'Aprende inversión en palabras simples';
+    : 'Sobre inversión';
 
   const text = isProfile
-    ? 'Suscríbete gratis y recibe ideas, guías y conceptos para seguir desarrollando tu criterio como inversor.'
-    : 'Únete gratis a Tes Inversión y recibe contenido para entender conceptos financieros, analizar empresas y aprender a invertir con más criterio.';
+    ? 'Suscríbete para recibir ideas, guías y conceptos para seguir desarrollando tu criterio como inversor.'
+    : 'Únete gratis y recibe contenido sobre conceptos financieros, analizar empresas y aprender a invertir con más criterio.';
 
   return '' +
     '<section class="substack-subscribe-box">' +
@@ -4512,26 +4768,26 @@ function renderSubstackSubscribeBox(context = 'welcome') {
     '</section>';
 }
 
-function injectWelcomeSubscribeBox() {
-  const welcome = document.getElementById('welcome');
+function injectCoverSubscribeBox() {
+  const cover = document.getElementById('cover');
 
-  if (!welcome) return;
+  if (!cover) return;
 
-  const existingBox = document.getElementById('welcomeSubscribeBox');
+  const existingBox = document.getElementById('coverSubscribeBox');
 
   if (existingBox) return;
 
   const wrapper = document.createElement('div');
-  wrapper.id = 'welcomeSubscribeBox';
-  wrapper.innerHTML = renderSubstackSubscribeBox('welcome');
+  wrapper.id = 'coverSubscribeBox';
+  wrapper.innerHTML = renderSubstackSubscribeBox('cover');
 
-  const welcomeCats = document.getElementById('welcomeCats');
+ const coverButton = cover.querySelector('.cover-btn');
 
-  if (welcomeCats) {
-    welcomeCats.insertAdjacentElement('afterend', wrapper);
-  } else {
-    welcome.appendChild(wrapper);
-  }
+if (coverButton) {
+  coverButton.insertAdjacentElement('beforebegin', wrapper);
+} else {
+  cover.appendChild(wrapper);
+}
 }
 
 
@@ -4544,7 +4800,6 @@ function showWelcome() {
 
 updateDynamicCopy();
 buildWelcome();
-injectWelcomeSubscribeBox();
 
 window.scrollTo(0,0);
   updateBackToTopVisibility();
@@ -7950,9 +8205,10 @@ if (shouldOpenTermDirectly()) {
     showWelcome();
     resetScrollTopSoon();
 
-  } else {
-    resetScrollTopSoon();
-  }
+ } else {
+  showCover();
+  resetScrollTopSoon();
+}
 }
 
 </script>
