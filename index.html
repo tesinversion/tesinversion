@@ -2881,6 +2881,102 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
   }
 }
 
+/* SUBSTACK SUBSCRIBE BOX */
+.substack-subscribe-box{
+  margin:34px 0;
+  padding:28px;
+  border-radius:var(--radius);
+  border:1px solid rgba(244,199,106,.30);
+  background:
+    radial-gradient(circle at 88% 8%, rgba(244,199,106,.14), transparent 34%),
+    linear-gradient(145deg, rgba(19,36,72,.98), rgba(9,24,58,.98));
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+
+.substack-subscribe-box::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,.05), transparent 42%);
+  pointer-events:none;
+}
+
+.substack-subscribe-inner{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:1fr 430px;
+  gap:24px;
+  align-items:center;
+}
+
+.substack-kicker{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#F4C76A;
+  margin-bottom:10px;
+}
+
+.substack-subscribe-box h3{
+  font-family:'Crimson Pro',serif;
+  font-size:30px;
+  line-height:1.15;
+  color:#FFF8EA;
+  margin-bottom:10px;
+}
+
+.substack-subscribe-box p{
+  max-width:620px;
+  color:rgba(255,255,255,.82);
+  font-size:14px;
+  line-height:1.75;
+  margin-bottom:0;
+}
+
+.substack-form-wrap{
+  width:100%;
+  background:#FFFFFF;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(244,199,106,.25);
+  box-shadow:0 16px 34px rgba(0,0,0,.24);
+}
+
+.substack-form-wrap iframe{
+  display:block;
+  width:100%;
+  height:320px;
+}
+
+@media(max-width:900px){
+  .substack-subscribe-inner{
+    grid-template-columns:1fr;
+  }
+
+  .substack-form-wrap{
+    max-width:480px;
+  }
+}
+
+@media(max-width:600px){
+  .substack-subscribe-box{
+    padding:24px 20px;
+    margin:28px 0;
+  }
+
+  .substack-subscribe-box h3{
+    font-size:25px;
+  }
+
+  .substack-form-wrap iframe{
+    height:340px;
+  }
+}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -4389,6 +4485,56 @@ function showCover() {
 
   updateBackToTopVisibility();
 }
+
+function renderSubstackSubscribeBox(context = 'welcome') {
+  const isProfile = context === 'profile';
+
+  const title = isProfile
+    ? 'Sigue aprendiendo según tu perfil inversor'
+    : 'Aprende inversión en palabras simples';
+
+  const text = isProfile
+    ? 'Suscríbete gratis y recibe ideas, guías y conceptos para seguir desarrollando tu criterio como inversor.'
+    : 'Únete gratis a Tes Inversión y recibe contenido para entender conceptos financieros, analizar empresas y aprender a invertir con más criterio.';
+
+  return '' +
+    '<section class="substack-subscribe-box">' +
+      '<div class="substack-subscribe-inner">' +
+        '<div>' +
+          '<div class="substack-kicker">Newsletter gratuita</div>' +
+          '<h3>' + escapeHTML(title) + '</h3>' +
+          '<p>' + escapeHTML(text) + '</p>' +
+        '</div>' +
+        '<div class="substack-form-wrap">' +
+          '<iframe src="https://tesinversion.substack.com/embed?transparent=1&light=1" width="100%" height="320" style="border:0;background:transparent;" frameborder="0" scrolling="no"></iframe>' +
+        '</div>' +
+      '</div>' +
+    '</section>';
+}
+
+function injectWelcomeSubscribeBox() {
+  const welcome = document.getElementById('welcome');
+
+  if (!welcome) return;
+
+  const existingBox = document.getElementById('welcomeSubscribeBox');
+
+  if (existingBox) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.id = 'welcomeSubscribeBox';
+  wrapper.innerHTML = renderSubstackSubscribeBox('welcome');
+
+  const welcomeCats = document.getElementById('welcomeCats');
+
+  if (welcomeCats) {
+    welcomeCats.insertAdjacentElement('afterend', wrapper);
+  } else {
+    welcome.appendChild(wrapper);
+  }
+}
+
+
 function showWelcome() {
   saveLastScreen('welcome');
 
@@ -4396,10 +4542,11 @@ function showWelcome() {
   document.getElementById('welcome').style.display = 'block';
   document.getElementById('app').style.display = 'none';
 
-  updateDynamicCopy();
-  buildWelcome();
+updateDynamicCopy();
+buildWelcome();
+injectWelcomeSubscribeBox();
 
-  window.scrollTo(0,0);
+window.scrollTo(0,0);
   updateBackToTopVisibility();
 }
 function showApp() {
