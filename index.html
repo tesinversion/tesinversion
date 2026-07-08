@@ -4810,7 +4810,154 @@ function getTermIdFromHash() {
   }
 }
 
+// ── APP SECTION DIRECT LINKS ──
+const APP_ROUTES = {
+  diccionario: '#diccionario',
+  formulas: '#formulas',
+  test: '#test-conocimiento',
+  testBasico: '#test-basico',
+  testIntermedio: '#test-intermedio',
+  testAvanzado: '#test-avanzado',
+  perfil: '#perfil-inversor',
+  guardados: '#guardados'
+};
+
+function getAppRouteFromHash() {
+  const hash = window.location.hash || '';
+
+  if (!hash) return '';
+
+  try {
+    const decodedHash = decodeURIComponent(hash).trim().toLowerCase();
+
+    if (decodedHash === APP_ROUTES.diccionario) return 'diccionario';
+    if (decodedHash === APP_ROUTES.formulas) return 'formulas';
+    if (decodedHash === APP_ROUTES.test) return 'test';
+    if (decodedHash === APP_ROUTES.testBasico) return 'testBasico';
+    if (decodedHash === APP_ROUTES.testIntermedio) return 'testIntermedio';
+    if (decodedHash === APP_ROUTES.testAvanzado) return 'testAvanzado';
+    if (decodedHash === APP_ROUTES.perfil) return 'perfil';
+    if (decodedHash === APP_ROUTES.guardados) return 'guardados';
+
+if (decodedHash === '#todos') return 'categoria:all';
+
+if (decodedHash.startsWith('#categoria-')) {
+  const catKey = decodedHash.replace('#categoria-', '').trim();
+
+  if (CATS[catKey]) {
+    return 'categoria:' + catKey;
+  }
+}
+
+return '';
+
+    return '';
+  } catch (error) {
+    return '';
+  }
+}
+
+function shouldOpenAppRouteDirectly() {
+  return Boolean(getAppRouteFromHash());
+}
+
+function updateAppRouteHash(route) {
+  const newHash = APP_ROUTES[route];
+
+  if (!newHash) return;
+
+  if (window.location.hash !== newHash) {
+    history.replaceState(null, '', newHash);
+  }
+}
+
+function updateCategoryHash(catKey) {
+  if (!catKey) return;
+
+  const newHash = catKey === 'all'
+    ? '#todos'
+    : '#categoria-' + encodeURIComponent(catKey);
+
+  if (window.location.hash !== newHash) {
+    history.replaceState(null, '', newHash);
+  }
+}
+
+function clearAppRouteHash() {
+  const route = getAppRouteFromHash();
+
+  if (!route) return;
+
+  const cleanUrl = window.location.href.split('#')[0];
+
+  history.replaceState(null, '', cleanUrl);
+}
+
+function openAppRouteFromHash() {
+  const route = getAppRouteFromHash();
+
+  if (!route) return false;
+
+  const appIsVisible = document.getElementById('app').style.display === 'block';
+
+  if (!appIsVisible) {
+    showApp();
+    return true;
+  }
+
+  if (route === 'diccionario') {
+    showIndex({ updateHash: false });
+    return true;
+  }
+
+  if (route === 'formulas') {
+    showFormulas({ updateHash: false });
+    return true;
+  }
+
+  if (route === 'test') {
+    showQuiz({ updateHash: false });
+    return true;
+  }
+
+  if (route === 'testBasico') {
+    startQuizLevel('basico', { updateHash: false });
+    return true;
+  }
+
+  if (route === 'testIntermedio') {
+    startQuizLevel('intermedio', { updateHash: false });
+    return true;
+  }
+
+  if (route === 'testAvanzado') {
+    startQuizLevel('avanzado', { updateHash: false });
+    return true;
+  }
+
+  if (route === 'perfil') {
+    startInvestorProfileTest({ updateHash: false });
+    return true;
+  }
+
+if (route === 'guardados') {
+  showFavorites({ updateHash: false });
+  return true;
+}
+
+if (route.startsWith('categoria:')) {
+  const catKey = route.replace('categoria:', '');
+
+  showAllCat(catKey, { updateHash: false });
+
+  return true;
+}
+
+return false;
+}
+
 function updateUrlForTerm(id) {
+
   if (!id) return;
 
   const newHash = getTermHash(id);
@@ -5133,11 +5280,12 @@ function showApp() {
   createBackToTopButton();
 
   const openedFromHash = openTermFromHash();
+const openedRouteFromHash = !openedFromHash && openAppRouteFromHash();
 
-  if (!openedFromHash) {
-    showIndex();
-    window.scrollTo(0,0);
-  }
+if (!openedFromHash && !openedRouteFromHash) {
+  showIndex();
+  window.scrollTo(0,0);
+}
 
   updateBackToTopVisibility();
 }
@@ -5407,7 +5555,7 @@ function renderFormulaCard(term) {
   return html;
 }
 
-function showQuiz() {
+function showQuiz(options = {}) {
 saveLastAppView('quiz');
   closeAc();
 
@@ -5415,7 +5563,13 @@ saveLastAppView('quiz');
   currentCat = null;
 
   clearTermHash();
-  syncMobileCategorySelect('quiz');
+clearAppRouteHash();
+
+if (options.updateHash !== false) {
+  updateAppRouteHash('test');
+}
+
+syncMobileCategorySelect('quiz');
 
   document.querySelectorAll('.cat-btn').forEach(button => button.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(button => button.classList.remove('active'));
@@ -6534,7 +6688,13 @@ const PROFILE_QUESTIONS = [
 let activeProfileTest = null;
 let lastProfileResult = null;
 
-function startInvestorProfileTest() {
+function startInvestorProfileTest(options = {}) {
+  clearTermHash();
+  clearAppRouteHash();
+
+  if (options.updateHash !== false) {
+    updateAppRouteHash('perfil');
+  }
   activeProfileTest = {
     questions: PROFILE_QUESTIONS,
     answers: new Array(PROFILE_QUESTIONS.length).fill(null),
@@ -7259,8 +7419,17 @@ function downloadInvestorProfileCard() {
   showInvestorProfileCardPreview();
 }
 
-function startQuizLevel(level) {
+function startQuizLevel(level, options = {}) {
   const bank = QUIZ_QUESTIONS[level] || [];
+
+  clearTermHash();
+  clearAppRouteHash();
+
+  if (options.updateHash !== false) {
+    if (level === 'basico') updateAppRouteHash('testBasico');
+    if (level === 'intermedio') updateAppRouteHash('testIntermedio');
+    if (level === 'avanzado') updateAppRouteHash('testAvanzado');
+  }
 
   if (!bank.length) {
     activeQuiz = null;
@@ -7470,7 +7639,7 @@ function renderQuizResult() {
   return html;
 }
 
-function showFormulas() {
+function showFormulas(options = {}) {
 saveLastAppView('formulas');
   closeAc();
 
@@ -7478,7 +7647,13 @@ saveLastAppView('formulas');
   currentCat = null;
 
   clearTermHash();
-  syncMobileCategorySelect('formulas');
+clearAppRouteHash();
+
+if (options.updateHash !== false) {
+  updateAppRouteHash('formulas');
+}
+
+syncMobileCategorySelect('formulas');
 
   document.querySelectorAll('.cat-btn').forEach(button => button.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(button => button.classList.remove('active'));
@@ -7505,7 +7680,7 @@ saveLastAppView('formulas');
   updateBackToTopVisibility();
 }
 
-function showFavorites() {
+function showFavorites(options = {}) {
 saveLastAppView('favorites');
   closeAc();
 
@@ -7513,6 +7688,11 @@ saveLastAppView('favorites');
   currentCat = null;
 
   clearTermHash();
+clearAppRouteHash();
+
+if (options.updateHash !== false) {
+  updateAppRouteHash('guardados');
+}
   syncMobileCategorySelect('favorites');
 
   document.querySelectorAll('.cat-btn').forEach(button => button.classList.remove('active'));
@@ -7553,12 +7733,18 @@ saveLastAppView('favorites');
   refreshFavoriteButtons();
   updateBackToTopVisibility();
 }
-function showIndex() {
+function showIndex(options = {}) {
 saveLastAppView('index');
   currentView = 'index';
   currentCat = null;
   clearTermHash();
-  setActiveBtn('index');
+clearAppRouteHash();
+
+if (options.updateHash !== false) {
+  updateAppRouteHash('diccionario');
+}
+
+setActiveBtn('index');
   document.getElementById('btnIndex').classList.add('active');
   document.getElementById('btnAll').classList.remove('active');
   const content = document.getElementById('mainContent');
@@ -7590,8 +7776,13 @@ function showAllCat(catKey, options = {}) {
   currentCat = catKey;
 
   if (options.clearHash !== false) {
-    clearTermHash();
-  }
+  clearTermHash();
+  clearAppRouteHash();
+}
+
+if (options.updateHash !== false) {
+  updateCategoryHash(catKey);
+}
   setActiveBtn(catKey === 'all' ? 'all' : catKey);
   document.getElementById('btnAll').classList.add('active');
   document.getElementById('btnIndex').classList.remove('active');
@@ -8513,15 +8704,19 @@ window.addEventListener('scroll', updateBackToTopVisibility);
 window.addEventListener('hashchange', () => {
   const termId = getTermIdFromHash();
 
-  if (!termId) return;
+  if (termId) {
+    const appIsVisible = document.getElementById('app').style.display === 'block';
 
-  const appIsVisible = document.getElementById('app').style.display === 'block';
+    if (appIsVisible) {
+      goToTerm(termId, { updateHash: false });
+    } else {
+      showApp();
+    }
 
-  if (appIsVisible) {
-    goToTerm(termId, { updateHash: false });
-  } else {
-    showApp();
+    return;
   }
+
+  openAppRouteFromHash();
 });
 
 // ── INIT ──
@@ -8531,7 +8726,7 @@ loadFavorites();
 loadCompactMode();
 updateFavoriteNavLabel();
 
-if (shouldOpenTermDirectly()) {
+if (shouldOpenTermDirectly() || shouldOpenAppRouteDirectly()) {
   showApp();
 } else {
   const lastScreen = getLastScreen();
