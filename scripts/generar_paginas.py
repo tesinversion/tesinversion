@@ -30,7 +30,7 @@ def paragraphs(text: str) -> str:
 
 def main() -> None:
     terms = json.loads(DATA.read_text(encoding="utf-8"))
-    assert isinstance(terms, list) and len(terms) == 167, "Esperaba 167 términos"
+    assert isinstance(terms, list) and len(terms) >= 167, "El catálogo tiene menos de 167 términos"
     ids = [term["id"] for term in terms]
     assert len(set(ids)) == len(ids), "Existen identificadores duplicados"
     roic = next(term for term in terms if term["id"] == "roic")
