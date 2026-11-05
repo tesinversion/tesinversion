@@ -3,7 +3,7 @@
 <head>
 <meta name="google-site-verification" content="B-8Jdy1FEVdShoxo1Id4FF80Ez3zDYjIDDkD9nxMaJU" />
 <title>Diccionario del Inversor | Términos y conceptos financieros explicados</title>
-<meta name="description" content="Consulta más de 160 de términos de inversión con definiciones claras, fórmulas y ejemplos. Incluye buscador y test de conocimiento.">
+<meta name="description" content="Diccionario gratuito de inversión con definiciones claras, fórmulas, ejemplos reales, buscador y test de conocimiento.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://tesinversion.com/">
 <link rel="icon" type="image/png" href="assets/favicon.png?v=1">
@@ -20,8 +20,7 @@
 
   gtag('config', 'G-VCZWBBCFV7');
 </script>
-<title>Diccionario del Inversor | Términos y conceptos financieros explicados</title>
-<meta name="description" content="Diccionario financiero con los conceptos esenciales para invertir. Definiciones claras, ejemplos reales y test para evaluar tu nivel de conocimiento.">
+
 <meta name="author" content="Arquitectura de la Inversión">
 <meta name="theme-color" content="#1B2B6B">
 
@@ -123,6 +122,9 @@ body{
   margin-bottom:38px;
 }
 .cover-btn:hover{background:#bf8e0e;transform:translateY(-2px);box-shadow:0 8px 30px rgba(212,160,23,.42)}
+.cover-intro-link{background:transparent;border:0;color:rgba(255,255,255,.85);text-decoration:underline;text-underline-offset:4px;font:inherit;font-size:13px;cursor:pointer;margin:-23px 0 22px;padding:4px 8px}
+.cover-intro-link:hover{color:#F4C76A}
+.cover-intro-link:focus-visible{outline:2px solid #F4C76A;outline-offset:4px;border-radius:4px}
 .cover-footer{
   position:relative;
   z-index:2;
@@ -2966,6 +2968,46 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
   width:100%;
   height:320px;
 }
+/* Formulario integrado reemplazado por CTA externo: evita el espacio blanco y problemas del iframe. */
+.substack-form-wrap.substack-direct-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  padding:36px 24px;
+  min-height:180px;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(244,199,106,.28);
+  box-shadow:none;
+  text-align:center;
+}
+.substack-direct-link{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  max-width:300px;
+  min-height:52px;
+  border-radius:100px;
+  background:#F4C76A;
+  color:#101F3F;
+  font:700 15px 'Inter',sans-serif;
+  text-decoration:none;
+  padding:14px 24px;
+  transition:background .2s,transform .2s;
+}
+.substack-direct-link:hover{background:#ffdb8b;transform:translateY(-2px)}
+.substack-direct-link:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.substack-subscribe-box .substack-direct-note{
+  font-size:12px;
+  line-height:1.5;
+  color:rgba(255,255,255,.72);
+  margin:0;
+}
+@media(max-width:600px){
+  .substack-form-wrap.substack-direct-wrap{min-height:150px;padding:24px 18px}
+}
 
 @media(max-width:900px){
   .substack-subscribe-inner{
@@ -3526,7 +3568,8 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
   <span id="coverFormulaCount">Fórmulas incluidas</span>
 </div>
   <div class="cover-cats" id="coverCats"></div>
-  <button class="cover-btn" onclick="showWelcome()">Ir al diccionario →</button>
+  <button class="cover-btn" onclick="showApp()">Ir al diccionario →</button>
+  <button type="button" class="cover-intro-link" onclick="showWelcome()">¿Primera vez aquí? Conoce el recurso</button>
   <div class="cover-footer">
   © 2026 · Arquitectura de la Inversión · 
   <a href="https://tesinversion.substack.com/" target="_blank" rel="noopener noreferrer">tesinversion.substack.com</a>
@@ -3560,7 +3603,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
     <div class="welcome-cta">
   <h3>Aprende a analizar empresas con más criterio</h3>
   <p>Este diccionario es solo el punto de partida. En <strong>Arquitectura de la Inversión</strong> publico contenido educativo sobre análisis fundamental, estados financieros y valoración explicado de manera clara, con datos y fórmulas.</p>
-  <a href="https://tesinversion.substack.com/" target="_blank">Suscríbete gratis →</a>
+  <a href="https://tesinversion.substack.com/subscribe" target="_blank" rel="noopener noreferrer">Suscríbete gratis →</a>
 </div>
     
  <div class="welcome-page-footer">
@@ -3593,7 +3636,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 <button class="nav-btn" id="btnFavorites" onclick="showFavorites()">Guardados</button>
 <button class="nav-btn" id="compactToggle" type="button" onclick="toggleCompactMode()" aria-pressed="false">Vista compacta</button>
 <button class="nav-btn" id="studyToggle" onclick="toggleStudyMode()">Modo estudio</button>
-<button class="nav-btn header-newsletter-btn" onclick="window.open('https://tesinversion.substack.com/archive', '_blank', 'noopener')">Newsletter ↗️</button>
+<button class="nav-btn header-newsletter-btn" onclick="trackNewsletterOutbound('header','archive');window.open('https://tesinversion.substack.com/archive', '_blank', 'noopener')">Artículos ↗️</button>
 
 </div>
     </div>
@@ -3622,6 +3665,29 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 </div>
 
 <script>
+// Seguimiento de enlaces hacia Substack (sin recopilar datos personales).
+// El iframe de Substack funciona en otro dominio: sus envíos no se observan aquí.
+function trackNewsletterOutbound(placement, destination) {
+  if (typeof window.gtag !== 'function') return;
+  window.gtag('event', 'newsletter_outbound_click', {
+    placement: placement,
+    destination: destination
+  });
+}
+document.addEventListener('click', function (event) {
+  const target = event.target && event.target.nodeType === 1
+    ? event.target : event.target && event.target.parentElement;
+  const link = target && typeof target.closest === 'function'
+    ? target.closest('a[href*="tesinversion.substack.com"]') : null;
+  if (!link) return;
+  const url = link.getAttribute('href') || '';
+  const destination = url.includes('/subscribe') ? 'subscribe'
+    : url.includes('/archive') ? 'archive' : 'home';
+  const placement = link.closest('#cover') ? 'cover'
+    : link.closest('#welcome') ? 'welcome'
+    : link.closest('#app') ? 'dictionary' : 'other';
+  trackNewsletterOutbound(placement, destination);
+});
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
@@ -5183,8 +5249,9 @@ function renderSubstackSubscribeBox(context = 'welcome') {
           '<h3>' + escapeHTML(title) + '</h3>' +
           '<p>' + escapeHTML(text) + '</p>' +
         '</div>' +
-        '<div class="substack-form-wrap">' +
-          '<iframe src="https://tesinversion.substack.com/embed?transparent=1&light=1" width="100%" height="320" style="border:0;background:transparent;" frameborder="0" scrolling="no"></iframe>' +
+        '<div class="substack-form-wrap substack-direct-wrap">' +
+          '<a class="substack-direct-link" href="https://tesinversion.substack.com/subscribe" target="_blank" rel="noopener noreferrer">Suscríbete gratis →</a>' +
+          '<p class="substack-direct-note">La suscripción se realiza directamente en Substack.</p>' +
         '</div>' +
       '</div>' +
     '</section>';
