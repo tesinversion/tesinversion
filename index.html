@@ -603,6 +603,19 @@ body{
   font-size:10px;font-weight:600;padding:4px 10px;
   border-radius:100px;white-space:nowrap;flex-shrink:0;margin-top:4px;
 }
+.tc-guide-link{
+  display:inline-flex;
+  align-items:center;
+  margin:12px 0 16px;
+  color:#F4C76A;
+  font-size:14px;
+  font-weight:650;
+  text-decoration:underline;
+  text-decoration-color:rgba(244,199,106,.65);
+  text-underline-offset:4px;
+}
+.tc-guide-link:hover{color:#FFE5A2;text-decoration-color:currentColor}
+.tc-guide-link:focus-visible{outline:2px solid #F4C76A;outline-offset:4px;border-radius:3px}
 .tc-actions{
   display:flex;
   align-items:center;
@@ -4414,7 +4427,6 @@ function getFooterHTML() {
       '<p class="page-footer-text">En Arquitectura de la Inversión publico contenido educativo sobre análisis fundamental, estados financieros y valoración explicadas de manera sencilla.</p>' +
       '<div class="page-footer-actions">' +
         '<a class="page-footer-btn page-footer-btn-primary" href="https://tesinversion.substack.com/archive" target="_blank" rel="noopener noreferrer">Ver artículos gratis →</a>' +
-        '<a class="page-footer-btn" href="/roic/">Guía del ROIC →</a>' +
       '</div>' +
       '<div class="page-footer-disclaimer">© 2026 · Arquitectura de la Inversión · Documento educativo. No constituye asesoramiento financiero, recomendación de compra o venta, ni análisis personalizado.</div>' +
     '</div>'
@@ -7870,6 +7882,10 @@ html += '</div>';
 
     if (t.example) {
     html += '<div class="tc-example"><div class="tc-example-label">💡 Ejemplo</div><div class="tc-example-text tc-rich-text">' + formatRichText(t.example, 'example') + '</div></div>';
+  }
+
+  if (t.id === 'roic') {
+    html += '<a class="tc-guide-link" href="/roic/">Leer la guía completa del ROIC →</a>';
   }
 
   html += renderRelatedTerms(t);
