@@ -42,7 +42,7 @@ def render(term, info, template):
         "alternateName": term.get("en") or term["es"],
         "description": term["definition"],
         "url": url,
-        "inDefinedTermSet": "https://tesinversion.com/"
+        "inDefinedTermSet": "https://tesinversion.com/diccionario/"
     }
     fields = {
         "__TITLE__": esc(info["title"]),
