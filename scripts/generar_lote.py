@@ -90,7 +90,7 @@ def main():
         "window.SEO_PAGES = " + json.dumps(page_index, ensure_ascii=False, separators=(",", ":")) + ";\n",
         encoding="utf-8"
     )
-    urls = ["https://tesinversion.com/"] + [
+    urls = ["https://tesinversion.com/", "https://tesinversion.com/diccionario/"] + [
         "https://tesinversion.com/" + slug + "/" for slug in slugs
     ]
     sitemap = ('<?xml version="1.0" encoding="UTF-8"?>\n'
