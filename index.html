@@ -3678,6 +3678,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 </div>
 
 <script src="assets/terminos.js"></script>
+<script src="assets/paginas-seo.js"></script>
 <script>
 // Seguimiento de enlaces hacia Substack (sin recopilar datos personales).
 // El iframe de Substack funciona en otro dominio: sus envíos no se observan aquí.
@@ -7884,8 +7885,9 @@ html += '</div>';
     html += '<div class="tc-example"><div class="tc-example-label">💡 Ejemplo</div><div class="tc-example-text tc-rich-text">' + formatRichText(t.example, 'example') + '</div></div>';
   }
 
-  if (t.id === 'roic') {
-    html += '<a class="tc-guide-link" href="/roic/">Leer la guía completa del ROIC →</a>';
+  const guide = window.SEO_PAGES && window.SEO_PAGES[t.id];
+  if (guide) {
+    html += '<a class="tc-guide-link" href="/' + escapeHTML(guide.slug) + '/">Leer la guía completa de ' + escapeHTML(t.es) + ' →</a>';
   }
 
   html += renderRelatedTerms(t);
