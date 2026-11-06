@@ -95,3 +95,22 @@
 .terms-list:has(.term-card-in-focus) .term-card:not(.term-card-in-focus):hover{opacity:1;filter:none}
 .term-card.term-card-in-focus{transform:none;box-shadow:0 0 0 1px rgba(244,199,106,.24),0 12px 36px rgba(0,0,0,.24)}
 @media(max-width:600px){.term-card.term-card-in-focus{transform:none}}
+
+/* Inicio simplificado: primero una duda real, luego los términos. */
+.home-search{max-width:760px;margin-top:22px}
+.home-search label{display:block;font:600 13px/1.5 Inter,sans-serif;color:#f7e3ad;margin-bottom:9px}
+.home-search-controls{display:flex;gap:9px}
+.home-search input{width:100%;min-width:0;flex:1;border:1px solid rgba(255,255,255,.37);outline:none;background:#fff;color:#14264c;border-radius:11px;padding:15px 17px;font:500 14px Inter,sans-serif;min-height:51px}
+.home-search input::placeholder{color:#687692}
+.home-search input:focus{box-shadow:0 0 0 3px rgba(244,199,106,.38);border-color:#f4c76a}
+.home-search-controls button{min-width:110px;padding:13px 19px;background:#f4c76a;color:#122344;border:1px solid #f4c76a;border-radius:11px;font:700 13px Inter,sans-serif;cursor:pointer}
+.home-search-controls button:hover{background:#ffe1a0}
+.learning-hero .home-search-help{font-size:11px;line-height:1.5;color:#b5c8e6;margin:9px 0 0}
+.learning-question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.learning-question{min-height:168px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:10px;padding:23px 23px;border:1px solid rgba(255,255,255,.17);border-radius:15px;background:rgba(255,255,255,.06);color:#f8f1de;cursor:pointer;font-family:Inter,sans-serif;transition:background .2s,border-color .2s}
+.learning-question:hover{background:rgba(244,199,106,.12);border-color:rgba(244,199,106,.6)}
+.learning-question .question-title{font:700 23px/1.2 'Crimson Pro',serif;color:#fff}
+.learning-question .question-context{font-size:12px;line-height:1.6;color:#c9d7ed;flex:1}
+.learning-question .question-action{font-size:12px;color:#f4c76a;font-weight:700}
+.learning-question:focus-visible,.home-search-controls button:focus-visible{outline:3px solid #f4c76a;outline-offset:3px}
+@media(max-width:650px){.learning-question-grid{grid-template-columns:1fr}.learning-question{min-height:0;padding:20px}.home-search-controls{flex-direction:column}.home-search-controls button{width:100%}.learning-hero{padding:25px 19px}.learning-question .question-title{font-size:22px}}
