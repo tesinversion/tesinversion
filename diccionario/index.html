@@ -3673,8 +3673,15 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
       <div class="sb-title">Categorías</div>
       <div id="sidebarCats"></div>
     </aside>
-    <main class="content" id="mainContent">
-      <!-- dynamic content here -->
+    <main class="content">
+      <nav class="dictionary-breadcrumb" aria-label="Ruta de navegación">
+        <a href="/" title="Volver a la página principal de Arquitectura de la Inversión">← Página principal</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Diccionario del Inversor</span>
+      </nav>
+      <div id="mainContent">
+        <!-- dynamic content here -->
+      </div>
     </main>
   </div>
 </div>
@@ -7641,7 +7648,7 @@ function getLearningProgressHTML() {
         '<div class="learning-progress-text" id="learningProgressText">' + getLearningProgressText() + '</div>' +
         '<button class="learning-progress-reset" type="button" onclick="resetLearnedTerms(event)">Reiniciar progreso</button>' +
       '</div>' +
-      '<div class="learning-progress-bar">' +
+      '<div class="learning-progress-bar" role="progressbar" aria-label="Términos entendidos" aria-valuemin="0" aria-valuemax="' + stats.total + '" aria-valuenow="' + stats.learned + '">' +
         '<div class="learning-progress-fill" id="learningProgressFill" style="width:' + stats.percent + '%"></div>' +
       '</div>' +
     '</div>'
@@ -7653,6 +7660,7 @@ function refreshLearningProgress() {
 
   const text = document.getElementById('learningProgressText');
   const fill = document.getElementById('learningProgressFill');
+  const progressBar = document.querySelector('.learning-progress-bar[role="progressbar"]');
 
   if (text) {
     text.textContent = getLearningProgressText();
@@ -7660,6 +7668,10 @@ function refreshLearningProgress() {
 
   if (fill) {
     fill.style.width = stats.percent + '%';
+  }
+  if (progressBar) {
+    progressBar.setAttribute('aria-valuenow', String(stats.learned));
+    progressBar.setAttribute('aria-valuemax', String(stats.total));
   }
 }
 
