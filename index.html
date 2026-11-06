@@ -3643,10 +3643,10 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
         <div class="autocomplete" id="autocomplete" role="listbox" aria-label="Sugerencias de búsqueda"></div>
       </div>
       <div class="h-actions">
- <button class="nav-btn active" id="btnIndex" onclick="showIndex()">Índice</button>
-<button class="nav-btn" id="btnAll" onclick="showAllCat('all')">Todos</button>
+ <button class="nav-btn active" id="btnIndex" onclick="showIndex()">Inicio</button>
+<button class="nav-btn" id="btnAll" onclick="showAllCat('all')">Términos</button>
 <button class="nav-btn" id="btnFormulas" onclick="showFormulas()">Fórmulas</button>
-<button class="nav-btn" id="btnQuiz" onclick="showQuiz()">Test</button>
+<button class="nav-btn" id="btnQuiz" onclick="showQuiz()">Practicar</button>
 <button class="nav-btn" id="btnFavorites" onclick="showFavorites()">Guardados</button>
 <button class="nav-btn" id="compactToggle" type="button" onclick="toggleCompactMode()" aria-pressed="false">Vista compacta</button>
 <button class="nav-btn" id="studyToggle" onclick="toggleStudyMode()">Modo estudio</button>
@@ -4926,7 +4926,7 @@ function buildMobileCategoryNav() {
 
   const indexOption = document.createElement('option');
   indexOption.value = 'index';
-  indexOption.textContent = 'Índice';
+  indexOption.textContent = 'Inicio';
   select.appendChild(indexOption);
 
   const allOption = document.createElement('option');
@@ -7392,7 +7392,7 @@ function showIndex(options = {}) {
   const learned = getLearningStats();
   let html = '<section class="learning-hero" aria-labelledby="learningHeroTitle">' +
     '<div class="learning-eyebrow">Arquitectura de la Inversión · Diccionario interactivo</div>' +
-    '<h2 id="learningHeroTitle">Aprende a invertir, un concepto a la vez.</h2>' +
+    '<h1 id="learningHeroTitle">Diccionario del Inversor: aprende un concepto a la vez.</h1>' +
     '<p>No necesitas entender todos los términos financieros de golpe. Elige una ruta para empezar, busca una duda concreta o explora el diccionario a tu ritmo.</p>' +
     '<div class="learning-actions">' +
       '<button class="learning-button primary" type="button" onclick="showLearningRoute(\'principiante\')">Empezar desde cero →</button>' +
@@ -8448,7 +8448,9 @@ if (shouldOpenTermDirectly() || shouldOpenAppRouteDirectly()) {
     resetScrollTopSoon();
 
  } else {
-  showCover();
+  // El primer visitante accede directamente al contenido útil.
+  // La portada editorial sigue disponible desde el logotipo.
+  showApp();
   resetScrollTopSoon();
 }
 }
