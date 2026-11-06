@@ -415,28 +415,7 @@ body{
     box-shadow:0 0 0 3px rgba(212,160,23,.15);
   }
 
-.mobile-compact-btn{
-  flex-shrink:0;
-  background:var(--navy);
-  color:#fff;
-  border:none;
-  border-radius:100px;
-  padding:9px 13px;
-  font-family:'Inter',sans-serif;
-  font-size:12px;
-  font-weight:600;
-  cursor:pointer;
-  box-shadow:var(--shadow);
-  transition:all .15s;
-}
 
-.mobile-compact-btn:hover{
-  background:var(--gold);
-}
-
-.mobile-compact-btn.is-active{
-  background:var(--gold);
-}
 }
 
 @media(max-width:520px){
@@ -797,52 +776,6 @@ body{
   color:#F7F0DF;
   line-height:1.7;
   text-align:justify;
-}
-
-/* COMPACT MODE */
-.compact-mode .term-card{
-  padding:18px 20px;
-}
-
-.compact-mode .tc-aliases,
-.compact-mode .tc-example,
-.compact-mode .tc-related{
-  display:none;
-}
-
-.compact-mode .tc-def{
-  display:block;
-  max-height:7.4em;
-  overflow:hidden;
-  text-align:left;
-  margin-bottom:12px;
-  position:relative;
-}
-
-.compact-mode .tc-def::after{
-  content:'';
-  position:absolute;
-  left:0;right:0;bottom:0;
-  height:2.8em;
-  background:linear-gradient(to bottom, rgba(10,23,52,0), rgba(10,23,52,.98));
-  pointer-events:none;
-}
-
-.compact-mode .tc-rich-text p,
-.compact-mode .tc-rich-text li{
-  margin-bottom:6px;
-}
-
-.compact-mode .tc-formula{
-  margin-bottom:0;
-}
-
-.compact-mode .tc-es{
-  font-size:20px;
-}
-
-.compact-mode .tc-en{
-  font-size:12px;
 }
 
 /* LEARNED TERMS */
@@ -2310,78 +2243,6 @@ body{
   }
 }
 
-/* COMPACT / FULL VIEW STATE */
-.nav-btn.is-active#compactToggle,
-.mobile-compact-btn.is-active{
-  background:rgba(244,199,106,.14);
-  border-color:rgba(244,199,106,.60);
-  color:#F4C76A;
-  font-weight:800;
-  box-shadow:0 4px 16px rgba(212,160,23,.12);
-}
-
-.nav-btn.is-active#compactToggle:hover,
-.mobile-compact-btn.is-active:hover{
-  background:rgba(244,199,106,.22);
-  color:#FFF4D6;
-}
-
-.nav-btn.is-full-view#compactToggle,
-.mobile-compact-btn.is-full-view{
-  background:rgba(255,255,255,.10);
-  border-color:rgba(255,255,255,.18);
-  color:rgba(255,255,255,.82);
-}
-
-/* COMPACT CARD READ MORE HINT */
-.compact-mode .term-card{
-  padding-bottom:50px;
-}
-
-/* COMPACT READ MORE BUTTON */
-.tc-read-more-btn{
-  display:none;
-}
-
-.compact-mode .term-card{
-  padding-bottom:54px;
-}
-
-.compact-mode .tc-read-more-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  position:absolute;
-  right:18px;
-  bottom:14px;
-  z-index:3;
-  border:1px solid rgba(244,199,106,.42);
-  background:rgba(244,199,106,.14);
-  color:#F4C76A;
-  border-radius:100px;
-  padding:7px 13px;
-  font-family:'Inter',sans-serif;
-  font-size:11px;
-  font-weight:800;
-  cursor:pointer;
-  transition:all .15s;
-  box-shadow:0 6px 16px rgba(0,0,0,.16);
-}
-
-.compact-mode .tc-read-more-btn:hover{
-  background:#F4C76A;
-  color:#0B1B3E;
-  transform:translateY(-1px);
-}
-
-@media(max-width:600px){
-  .compact-mode .tc-read-more-btn{
-    left:18px;
-    right:auto;
-    bottom:14px;
-  }
-}
-
 /* ACTIVE CARD WHILE SCROLLING */
 .term-card{
   transform-origin:center center;
@@ -2544,170 +2405,6 @@ body{
   .terms-list:has(.term-card-in-focus) .term-card:not(.term-card-in-focus){
     opacity:.66;
     filter:brightness(.78) saturate(.90);
-  }
-}
-
-/* STUDY MODE / FLASHCARDS */
-.tc-study-front,
-.tc-study-close-btn{
-  display:none;
-}
-
-.nav-btn.is-study-active#studyToggle,
-.mobile-compact-btn.is-study-active#mobileStudyToggle{
-  background:rgba(244,199,106,.16);
-  border-color:rgba(244,199,106,.62);
-  color:#F4C76A;
-  font-weight:800;
-  box-shadow:0 4px 16px rgba(212,160,23,.12);
-}
-
-.nav-btn.is-study-active#studyToggle:hover,
-.mobile-compact-btn.is-study-active#mobileStudyToggle:hover{
-  background:rgba(244,199,106,.24);
-  color:#FFF4D6;
-}
-
-body.study-mode .term-card:not(.study-flipped){
-  min-height:260px;
-  padding:0;
-  overflow:hidden;
-  cursor:pointer;
-}
-
-body.study-mode .term-card:not(.study-flipped) > :not(.tc-study-front){
-  display:none !important;
-}
-
-body.study-mode .term-card:not(.study-flipped) .tc-study-front{
-  display:flex;
-  min-height:260px;
-  padding:34px 36px;
-  position:relative;
-  z-index:3;
-  flex-direction:column;
-  justify-content:center;
-  align-items:flex-start;
-  background:
-    radial-gradient(circle at 85% 10%, rgba(244,199,106,.18), transparent 32%),
-    linear-gradient(145deg, rgba(21,37,76,.98), rgba(9,24,58,.98));
-}
-
-.tc-study-kicker{
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.13em;
-  text-transform:uppercase;
-  color:#F4C76A;
-  margin-bottom:18px;
-}
-
-.tc-study-title{
-  font-family:'Crimson Pro',serif;
-  font-size:clamp(31px,4vw,48px);
-  font-weight:700;
-  color:#FFF8EA;
-  line-height:1.05;
-  margin-bottom:8px;
-}
-
-.tc-study-subtitle{
-  font-size:15px;
-  font-style:italic;
-  color:rgba(255,255,255,.70);
-  margin-bottom:24px;
-}
-
-.tc-study-question{
-  font-size:14px;
-  color:rgba(255,255,255,.76);
-  line-height:1.65;
-  margin-bottom:22px;
-}
-
-.tc-study-reveal{
-  border:1px solid rgba(244,199,106,.50);
-  background:rgba(244,199,106,.13);
-  color:#F4C76A;
-  border-radius:100px;
-  padding:10px 16px;
-  font-family:'Inter',sans-serif;
-  font-size:12px;
-  font-weight:850;
-  cursor:pointer;
-  transition:all .15s;
-}
-
-.tc-study-reveal:hover{
-  background:#F4C76A;
-  color:#0B1B3E;
-  transform:translateY(-1px);
-}
-
-.tc-study-hint{
-  margin-top:16px;
-  font-size:11.5px;
-  color:rgba(255,255,255,.46);
-}
-
-body.study-mode .term-card.study-flipped{
-  padding-bottom:76px;
-  animation:studyReveal .28s ease both;
-}
-
-body.study-mode .term-card.study-flipped .tc-study-close-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  position:absolute;
-  right:22px;
-  bottom:18px;
-  z-index:5;
-  border:1px solid rgba(244,199,106,.38);
-  background:rgba(244,199,106,.10);
-  color:#F4C76A;
-  border-radius:100px;
-  padding:8px 13px;
-  font-family:'Inter',sans-serif;
-  font-size:11.5px;
-  font-weight:800;
-  cursor:pointer;
-  transition:all .15s;
-}
-
-body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
-  background:#F4C76A;
-  color:#0B1B3E;
-}
-
-@keyframes studyReveal{
-  from{
-    opacity:.82;
-    filter:brightness(.82);
-  }
-  to{
-    opacity:1;
-    filter:brightness(1);
-  }
-}
-
-@media(max-width:600px){
-  body.study-mode .term-card:not(.study-flipped){
-    min-height:230px;
-  }
-
-  body.study-mode .term-card:not(.study-flipped) .tc-study-front{
-    min-height:230px;
-    padding:28px 24px;
-  }
-
-  .tc-study-title{
-    font-size:32px;
-  }
-
-  body.study-mode .term-card.study-flipped .tc-study-close-btn{
-    left:20px;
-    right:auto;
   }
 }
 
@@ -3649,8 +3346,6 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 <button class="nav-btn" id="btnFormulas" onclick="showFormulas()">Fórmulas</button>
 <button class="nav-btn" id="btnQuiz" onclick="showQuiz()">Test</button>
 <button class="nav-btn" id="btnFavorites" onclick="showFavorites()">Favoritos</button>
-<button class="nav-btn" id="compactToggle" type="button" onclick="toggleCompactMode()" aria-pressed="false">Vista compacta</button>
-<button class="nav-btn" id="studyToggle" onclick="toggleStudyMode()">Modo estudio</button>
 <button class="nav-btn header-newsletter-btn" onclick="trackNewsletterOutbound('header','archive');window.open('https://tesinversion.substack.com/archive', '_blank', 'noopener')">Artículos ↗️</button>
 
 </div>
@@ -3663,8 +3358,6 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 <select class="mobile-cat-select" id="mobileCatSelect" aria-label="Abrir menú de secciones">
   <!-- dynamic options here -->
 </select>
-  <button class="mobile-compact-btn" id="mobileCompactToggle" type="button" onclick="toggleCompactMode()" aria-pressed="false">Compacta</button>
-<button class="mobile-compact-btn" id="mobileStudyToggle" onclick="toggleStudyMode()">Estudio</button>
 </div>
   </div>
 
@@ -3803,97 +3496,6 @@ refreshLearnedUI();
     showFavorites();
   }
 }
-let compactModeEnabled = false;
-
-function getStoredCompactMode() {
-  try {
-    return localStorage.getItem('dictionaryCompactMode') === '1';
-  } catch (error) {
-    return false;
-  }
-}
-
-function storeCompactMode(enabled) {
-  try {
-    localStorage.setItem('dictionaryCompactMode', enabled ? '1' : '0');
-  } catch (error) {
-    // localStorage may be unavailable in some browsers or private windows.
-  }
-}
-
-function updateCompactToggleButtons() {
-  const desktopButton = document.getElementById('compactToggle');
-  const mobileButton = document.getElementById('mobileCompactToggle');
-
-  const desktopText = compactModeEnabled ? 'Vista compacta' : 'Vista completa';
-  const mobileText = compactModeEnabled ? 'Compacta' : 'Completa';
-
-  [desktopButton, mobileButton].forEach(button => {
-    if (!button) return;
-
-    button.setAttribute('aria-pressed', compactModeEnabled ? 'true' : 'false');
-    button.classList.toggle('is-active', compactModeEnabled);
-    button.classList.toggle('is-full-view', !compactModeEnabled);
-  });
-
-  if (desktopButton) {
-    desktopButton.textContent = desktopText;
-    desktopButton.setAttribute('title', compactModeEnabled ? 'Cambiar a vista completa' : 'Cambiar a vista compacta');
-  }
-
-  if (mobileButton) {
-    mobileButton.textContent = mobileText;
-    mobileButton.setAttribute('title', compactModeEnabled ? 'Cambiar a vista completa' : 'Cambiar a vista compacta');
-  }
-}
-
-function applyCompactMode(enabled) {
-  compactModeEnabled = Boolean(enabled);
-
-  document.body.classList.toggle('compact-mode', compactModeEnabled);
-
-  storeCompactMode(compactModeEnabled);
-  updateCompactToggleButtons();
-}
-
-function toggleCompactMode() {
-  const nextMode = !compactModeEnabled;
-if (nextMode && typeof applyStudyMode === 'function') {
-  applyStudyMode(false);
-}
-
-  applyCompactMode(nextMode);
-
-  const compactUsefulViews = ['cat', 'favorites', 'search'];
-
-  if (nextMode && !compactUsefulViews.includes(currentView)) {
-    showAllCat('all');
-    syncMobileCategorySelect('all');
-  }
-}
-
-function expandCompactTerm(id, event) {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  applyCompactMode(false);
-
-  setTimeout(() => {
-    const el = document.getElementById('term-' + id);
-
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      el.classList.add('term-highlight');
-
-      setTimeout(() => {
-        el.classList.remove('term-highlight');
-      }, 1600);
-    }
-  }, 80);
-}
-
 let termCardFocusRaf = null;
 let termCardFocusInitialized = false;
 
@@ -3968,116 +3570,6 @@ if (document.readyState === 'loading') {
   initTermCardFocusEffect();
 }
 
-let studyModeEnabled = false;
-let studyFlippedTerms = new Set();
-
-function updateStudyModeButtons() {
-  const desktopButton = document.getElementById('studyToggle');
-  const mobileButton = document.getElementById('mobileStudyToggle');
-
-  [desktopButton, mobileButton].forEach(button => {
-    if (!button) return;
-
-    button.classList.toggle('is-study-active', studyModeEnabled);
-    button.setAttribute('aria-pressed', studyModeEnabled ? 'true' : 'false');
-    button.setAttribute('title', studyModeEnabled ? 'Salir del modo estudio' : 'Activar modo estudio');
-  });
-
-  if (desktopButton) {
-    desktopButton.textContent = studyModeEnabled ? 'Modo estudio' : 'Modo estudio';
-  }
-
-  if (mobileButton) {
-    mobileButton.textContent = studyModeEnabled ? 'Estudio' : 'Estudio';
-  }
-}
-
-function applyStudyMode(enabled) {
-  studyModeEnabled = enabled;
-
-  document.body.classList.toggle('study-mode', studyModeEnabled);
-
-  if (!studyModeEnabled) {
-    studyFlippedTerms.clear();
-
-    document.querySelectorAll('.term-card.study-flipped').forEach(card => {
-      card.classList.remove('study-flipped');
-    });
-  }
-
-  updateStudyModeButtons();
-
-  if (typeof scheduleFocusedTermCardUpdate === 'function') {
-    scheduleFocusedTermCardUpdate();
-  }
-}
-
-function toggleStudyMode() {
-  const nextMode = !studyModeEnabled;
-
-  if (nextMode) {
-    applyCompactMode(false);
-    studyFlippedTerms.clear();
-
-    if (!['cat', 'favorites', 'search'].includes(currentView)) {
-      applyStudyMode(true);
-      showAllCat('all');
-      return;
-    }
-  }
-
-  applyStudyMode(nextMode);
-}
-
-function flipStudyCard(id, event) {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  studyFlippedTerms.add(id);
-
-  const el = document.getElementById('term-' + id);
-
-  if (el) {
-    el.classList.add('study-flipped');
-
-    setTimeout(() => {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 80);
-  }
-}
-
-function unflipStudyCard(id, event) {
-  if (event) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-
-  studyFlippedTerms.delete(id);
-
-  const el = document.getElementById('term-' + id);
-
-  if (el) {
-    el.classList.remove('study-flipped');
-  }
-}
-
-function renderStudyFront(t) {
-  return '' +
-    '<div class="tc-study-front" onclick="flipStudyCard(\'' + escapeHTML(t.id) + '\', event)">' +
-      '<div class="tc-study-kicker">Modo estudio</div>' +
-      '<div class="tc-study-title">' + escapeHTML(t.es) + '</div>' +
-      '<div class="tc-study-subtitle">' + escapeHTML(t.en || '') + '</div>' +
-      '<div class="tc-study-question">¿Sabes qué significa este concepto?</div>' +
-      '<button class="tc-study-reveal" type="button">Ver definición</button>' +
-      '<div class="tc-study-hint">Toca la tarjeta para revelar la explicación completa</div>' +
-    '</div>';
-}
-
-function loadCompactMode() {
-  applyCompactMode(getStoredCompactMode());
-}
 // ── DICTIONARY VALIDATION ──
 function validateDictionary() {
   if (dictionaryValidated) return true;
@@ -7734,11 +7226,9 @@ function resetLearnedTerms(event) {
 function renderCard(t) {
   const c = CATS[t.cat];
 
-const studyFlippedClass = studyFlippedTerms.has(t.id) ? ' study-flipped' : '';
-let html = '<div class="term-card' + (isLearnedTerm(t.id) ? ' term-learned' : '') + studyFlippedClass + '" id="term-' + escapeHTML(t.id) + '" style="border-left-color:' + escapeHTML(c.color) + '">';
+let html = '<div class="term-card' + (isLearnedTerm(t.id) ? ' term-learned' : '') + '" id="term-' + escapeHTML(t.id) + '" style="border-left-color:' + escapeHTML(c.color) + '">';
 
-html += renderStudyFront(t);
-html += '<button class="tc-study-close-btn" type="button" onclick="unflipStudyCard(\'' + escapeHTML(t.id) + '\', event)">Ocultar definición</button>';  html += '<div class="tc-head">';
+html += '<div class="tc-head">';
 
   html += '<div class="tc-titles"><div class="tc-es">' + escapeHTML(t.es) + '</div>';
 
@@ -7777,8 +7267,6 @@ html += '</div>';
   }
 
   html += renderRelatedTerms(t);
-
-html += '<button class="tc-read-more-btn" type="button" onclick="expandCompactTerm(\'' + escapeHTML(t.id) + '\', event)" title="Ver término completo">Leer más</button>';
 
 html += '</div>';
 
@@ -8302,7 +7790,6 @@ window.addEventListener('hashchange', () => {
 buildCoverCats();
 updateDynamicCopy();
 loadFavorites();
-loadCompactMode();
 updateFavoriteNavLabel();
 
 const initialHomeSearch = new URLSearchParams(window.location.search).get('q') || '';
