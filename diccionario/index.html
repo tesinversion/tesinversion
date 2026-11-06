@@ -4421,7 +4421,8 @@ function buildMobileCategoryNav() {
 
   const menuOption = document.createElement('option');
   menuOption.value = 'menu';
-  menuOption.textContent = 'Menú';
+  menuOption.textContent = 'Selecciona una sección';
+  menuOption.disabled = true;
   select.appendChild(menuOption);
 
   const indexOption = document.createElement('option');
@@ -4463,55 +4464,55 @@ function buildMobileCategoryNav() {
     select.appendChild(option);
   });
 
-  select.value = 'menu';
+  // Opción informativa para indicar que se están viendo resultados de búsqueda.
+  const searchOption = document.createElement('option');
+  searchOption.value = 'search';
+  searchOption.textContent = 'Resultados de búsqueda';
+  searchOption.disabled = true;
+  select.appendChild(searchOption);
+
+  select.value = 'index';
   select.onchange = () => handleMobileCategoryChange(select.value);
 }
 
 function handleMobileCategoryChange(value) {
-  if (value === 'menu') {
-    return;
-  }
+  if (value === 'menu' || value === 'search') return;
 
-  if (value === 'index') {
-    showIndex();
-    syncMobileCategorySelect('menu');
-    return;
-  }
-
-  if (value === 'favorites') {
-    showFavorites();
-    syncMobileCategorySelect('menu');
-    return;
-  }
-
-  if (value === 'formulas') {
-    showFormulas();
-    syncMobileCategorySelect('menu');
-    return;
-  }
-
-  if (value === 'quiz') {
-    showQuiz();
-    syncMobileCategorySelect('menu');
-    return;
-  }
+  if (value === 'index') return showIndex();
+  if (value === 'favorites') return showFavorites();
+  if (value === 'formulas') return showFormulas();
+  if (value === 'quiz') return showQuiz();
 
   if (value === 'newsletter') {
     window.open('https://tesinversion.substack.com/archive', '_blank', 'noopener');
-    syncMobileCategorySelect('menu');
+    syncMobileCategorySelect();
     return;
   }
 
-  showAllCat(value);
-  syncMobileCategorySelect('menu');
+  if (value === 'all' || Object.prototype.hasOwnProperty.call(CATS, value)) {
+    showAllCat(value);
+  } else {
+    syncMobileCategorySelect();
+  }
+}
+
+function getCurrentMobileSection() {
+  if (currentView === 'cat') return currentCat || 'all';
+  if (currentView === 'search') return 'search';
+  if (currentView === 'favorites') return 'favorites';
+  if (currentView === 'quiz') return 'quiz';
+  if (currentView === 'formulas') return 'formulas';
+  return 'index';
 }
 
 function syncMobileCategorySelect(value) {
   const select = document.getElementById('mobileCatSelect');
-
   if (!select) return;
 
-  select.value = 'menu';
+  const requested = value && value !== 'menu' ? value : getCurrentMobileSection();
+  const valid = Array.from(select.options).some(option => option.value === requested);
+  select.value = valid ? requested : getCurrentMobileSection();
+  if (select.selectedIndex < 0) select.value = 'index';
 }
 
 function setActiveBtn(catKey) {
@@ -7748,7 +7749,7 @@ function doSearch(q) {
   currentCat = null;
 
   clearTermHash();
-  syncMobileCategorySelect('index');
+  syncMobileCategorySelect('search');
 
   const matches = getSearchResults(q);
   const content = document.getElementById('mainContent');
