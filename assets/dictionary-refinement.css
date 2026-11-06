@@ -100,3 +100,18 @@ body,#app{background:#F6F8FB;color:#253451}
 .page-footer .page-footer-disclaimer{color:#D3DDEC;opacity:1}
 .page-footer .page-footer-btn-primary{background:#F1C46B;color:#18284C}
 .page-footer .page-footer-btn-primary:hover{background:#F6D48D;color:#18284C}
+
+/* Regreso explícito a la web principal, independiente del botón Inicio del diccionario. */
+.dictionary-breadcrumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 22px;font:500 12px/1.5 'Inter',sans-serif;color:#65758E}
+.dictionary-breadcrumb a{color:#1B2B6B;text-decoration:none;font-weight:700;padding:4px 0}
+.dictionary-breadcrumb a:hover{text-decoration:underline;text-underline-offset:3px}
+.dictionary-breadcrumb a:focus-visible{outline:2px solid #C79A3F;outline-offset:4px}
+@media(max-width:600px){.dictionary-breadcrumb{gap:8px;margin-bottom:20px;font-size:12px}}
+
+/* Progreso de aprendizaje: fondo blanco, texto oscuro y barra visible. */
+#app .learning-progress{background:#FFFFFF;border:1px solid #DCE4F0;box-shadow:0 5px 18px rgba(21,43,77,.045)}
+#app .learning-progress-text{color:#1B2B6B;font-size:14px;font-weight:650}
+#app .learning-progress-reset{background:#F6F8FC;color:#1B2B6B;border:1px solid #CCD6E7}
+#app .learning-progress-reset:hover{background:#E9EEF8;color:#142458;border-color:#94A9CF}
+#app .learning-progress-bar{background:#DDE6F1;height:9px}
+#app .learning-progress-fill{background:linear-gradient(90deg,#243C7A,#3D5DA6)}
