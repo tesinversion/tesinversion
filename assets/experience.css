@@ -89,3 +89,9 @@
   .learning-path-card,.learning-button,.learning-topic-button{transition:none}
   .learning-path-card:hover,.learning-button:hover{transform:none}
 }
+
+/* Las tarjetas secundarias siguen siendo legibles durante el desplazamiento. */
+.terms-list:has(.term-card-in-focus) .term-card:not(.term-card-in-focus),
+.terms-list:has(.term-card-in-focus) .term-card:not(.term-card-in-focus):hover{opacity:1;filter:none}
+.term-card.term-card-in-focus{transform:none;box-shadow:0 0 0 1px rgba(244,199,106,.24),0 12px 36px rgba(0,0,0,.24)}
+@media(max-width:600px){.term-card.term-card-in-focus{transform:none}}
