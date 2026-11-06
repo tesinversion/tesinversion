@@ -3644,11 +3644,11 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
         <div class="autocomplete" id="autocomplete"></div>
       </div>
       <div class="h-actions">
- <button class="nav-btn active" id="btnIndex" onclick="showIndex()">Índice</button>
+ <button class="nav-btn active" id="btnIndex" onclick="showIndex()">Inicio</button>
 <button class="nav-btn" id="btnAll" onclick="showAllCat('all')">Todos</button>
 <button class="nav-btn" id="btnFormulas" onclick="showFormulas()">Fórmulas</button>
 <button class="nav-btn" id="btnQuiz" onclick="showQuiz()">Test</button>
-<button class="nav-btn" id="btnFavorites" onclick="showFavorites()">Guardados</button>
+<button class="nav-btn" id="btnFavorites" onclick="showFavorites()">Favoritos</button>
 <button class="nav-btn" id="compactToggle" type="button" onclick="toggleCompactMode()" aria-pressed="false">Vista compacta</button>
 <button class="nav-btn" id="studyToggle" onclick="toggleStudyMode()">Modo estudio</button>
 <button class="nav-btn header-newsletter-btn" onclick="trackNewsletterOutbound('header','archive');window.open('https://tesinversion.substack.com/archive', '_blank', 'noopener')">Artículos ↗️</button>
@@ -3750,9 +3750,9 @@ function updateFavoriteButton(button, id) {
 
   button.classList.toggle('is-favorite', isFavorite);
   button.setAttribute('aria-pressed', isFavorite ? 'true' : 'false');
-  button.setAttribute('title', isFavorite ? 'Quitar de guardados' : 'Guardar término');
-  button.setAttribute('aria-label', isFavorite ? 'Quitar de guardados' : 'Guardar término');
-  button.textContent = '⭐';
+  button.setAttribute('title', isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos');
+  button.setAttribute('aria-label', isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos');
+  button.textContent = isFavorite ? '♥' : '♡';
 }
 
 function refreshFavoriteButtons() {
@@ -3773,7 +3773,7 @@ function updateFavoriteNavLabel() {
 
   if (!button) return;
 
-  button.textContent = count ? 'Guardados (' + count + ')' : 'Guardados';
+  button.textContent = count ? 'Favoritos (' + count + ')' : 'Favoritos';
 }
 
 function toggleFavorite(id, event) {
@@ -4927,7 +4927,7 @@ function buildMobileCategoryNav() {
 
   const indexOption = document.createElement('option');
   indexOption.value = 'index';
-  indexOption.textContent = 'Índice';
+  indexOption.textContent = 'Inicio';
   select.appendChild(indexOption);
 
   const allOption = document.createElement('option');
@@ -4947,7 +4947,7 @@ function buildMobileCategoryNav() {
 
   const favoritesOption = document.createElement('option');
   favoritesOption.value = 'favorites';
-  favoritesOption.textContent = '☆ Guardados';
+  favoritesOption.textContent = '♡ Favoritos';
   select.appendChild(favoritesOption);
 
   const newsletterOption = document.createElement('option');
@@ -7272,9 +7272,9 @@ if (options.updateHash !== false) {
   if (!favoriteTerms.length) {
     content.innerHTML =
       '<div class="favorites-empty">' +
-        '<div class="favorites-empty-icon">☆</div>' +
-        '<h3>No tienes términos guardados todavía</h3>' +
-        '<p>Cuando encuentres un concepto importante, toca la estrella en la tarjeta para guardarlo aquí y consultarlo más rápido después.</p>' +
+        '<div class="favorites-empty-icon">♡</div>' +
+        '<h3>Todavía no tienes favoritos</h3>' +
+        '<p>Cuando encuentres un concepto que quieras consultar después, toca el corazón de su tarjeta para agregarlo a favoritos.</p>' +
         '<button type="button" onclick="showIndex()">Explorar diccionario</button>' +
       '</div>';
 
@@ -7284,8 +7284,8 @@ if (options.updateHash !== false) {
 
   content.innerHTML =
     '<div class="view-header">' +
-      '<h2>Mis términos guardados</h2>' +
-      '<p>' + favoriteTerms.length + ' término' + (favoriteTerms.length === 1 ? '' : 's') + ' guardado' + (favoriteTerms.length === 1 ? '' : 's') + '.</p>' +
+      '<h2>Mis favoritos</h2>' +
+      '<p>' + favoriteTerms.length + ' término' + (favoriteTerms.length === 1 ? '' : 's') + ' en favoritos.</p>' +
     '</div>' +
     '<div class="terms-list">' +
       favoriteTerms.map(renderCard).join('') +
@@ -7737,7 +7737,7 @@ html += '<button class="tc-study-close-btn" type="button" onclick="unflipStudyCa
 html += '</div>';
 
 html += '<div class="tc-actions">';
-html += '<button class="tc-fav-btn' + (isFavoriteTerm(t.id) ? ' is-favorite' : '') + '" type="button" data-fav-id="' + escapeHTML(t.id) + '" onclick="toggleFavorite(\'' + escapeHTML(t.id) + '\', event)" aria-pressed="' + (isFavoriteTerm(t.id) ? 'true' : 'false') + '" title="' + (isFavoriteTerm(t.id) ? 'Quitar de guardados' : 'Guardar término') + '" aria-label="' + (isFavoriteTerm(t.id) ? 'Quitar de guardados' : 'Guardar término') + '">⭐</button>';
+html += '<button class="tc-fav-btn' + (isFavoriteTerm(t.id) ? ' is-favorite' : '') + '" type="button" data-fav-id="' + escapeHTML(t.id) + '" onclick="toggleFavorite(\'' + escapeHTML(t.id) + '\', event)" aria-pressed="' + (isFavoriteTerm(t.id) ? 'true' : 'false') + '" title="' + (isFavoriteTerm(t.id) ? 'Quitar de favoritos' : 'Agregar a favoritos') + '" aria-label="' + (isFavoriteTerm(t.id) ? 'Quitar de favoritos' : 'Agregar a favoritos') + '">' + (isFavoriteTerm(t.id) ? '♥' : '♡') + '</button>';
 html += '<button class="tc-link-btn" type="button" onclick="copyTermLink(\'' + escapeHTML(t.id) + '\', event)" title="Copiar enlace directo" aria-label="Copiar enlace directo">🔗</button>';
 html += '<button class="tc-learned-btn' + (isLearnedTerm(t.id) ? ' is-learned' : '') + '" type="button" data-learned-id="' + escapeHTML(t.id) + '" onclick="toggleLearnedTerm(\'' + escapeHTML(t.id) + '\', event)" aria-pressed="' + (isLearnedTerm(t.id) ? 'true' : 'false') + '" title="' + (isLearnedTerm(t.id) ? 'Marcar como pendiente' : 'Marcar como entendido') + '" aria-label="' + (isLearnedTerm(t.id) ? 'Marcar como pendiente' : 'Marcar como entendido') + '">' + (isLearnedTerm(t.id) ? '✓ Entendido' : 'Lo entendí') + '</button>';
 html += '<span class="tc-badge" style="background:' + escapeHTML(c.bg) + ';color:' + escapeHTML(c.color) + '">' + escapeHTML(c.icon) + ' ' + escapeHTML(c.label) + '</span>';
@@ -7988,7 +7988,7 @@ function renderNoResults(query) {
         '</ul>' +
       '</div>' +
       '<div class="nr-actions">' +
-        '<button class="nr-btn nr-btn-primary" type="button" onclick="clearSearch()">Volver al índice</button>' +
+        '<button class="nr-btn nr-btn-primary" type="button" onclick="clearSearch()">Volver al inicio</button>' +
         '<button class="nr-btn nr-btn-secondary" type="button" onclick="focusSearch()">Buscar otro término</button>' +
       '</div>' +
     '</div>'
