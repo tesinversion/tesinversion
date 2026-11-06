@@ -234,9 +234,9 @@
         <div class="section-label">Lecturas de la newsletter</div>
         <div class="section-heading">
           <h2 id="articlesTitle">Artículos y análisis publicados</h2>
-          <p class="section-intro">Escribo sobre empresas, modelos de negocio, riesgos, valoración y errores comunes al invertir. Estos son algunos de los artículos que puedes leer en Substack.</p>
+          <p class="section-intro">Escribo sobre empresas, modelos de negocio, riesgos, valoración y errores comunes al invertir. Aquí verás tres artículos de una selección de guías educativas que puedes leer en Substack.</p>
         </div>
-        <div class="articles">
+        <div class="articles" id="featuredArticles">
           <a class="article" href="https://tesinversion.substack.com/p/resiste-realmente-el-sector-lujo" target="_blank" rel="noopener noreferrer">
             <div><div class="article-category">Análisis de negocios</div><h3>¿Resiste realmente el sector lujo en las crisis?</h3><p>La diferencia entre el consumidor aspiracional y el ultra premium.</p></div><span class="article-arrow" aria-hidden="true">↗</span>
           </a>
@@ -274,5 +274,51 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    // Selección editorial: artículos educativos con buena participación pública.
+    // Para actualizar esta lista, añadir o quitar elementos sin tocar el diseño.
+    (function () {
+      const posts = [
+        {category: "GUÍA DE INVERSIÓN", title: "Cómo analizar una empresa sin ser contador", desc: "Los tres estados financieros que conviene revisar primero y qué puedes aprender de ellos.", url: "https://tesinversion.substack.com/p/como-analizar-una-empresa-sin-ser"},
+        {category: "RECURSO GRATUITO", title: "25 preguntas antes de analizar una empresa", desc: "Un filtro inicial para detectar riesgos y decidir si vale la pena seguir investigando un negocio.", url: "https://tesinversion.substack.com/p/pdf-plantilla-gratuita-25-preguntas"},
+        {category: "ANÁLISIS FUNDAMENTAL", title: "Análisis técnico vs. análisis fundamental", desc: "Qué estudia cada enfoque y para qué sirve cuando analizas una inversión.", url: "https://tesinversion.substack.com/p/analisis-tecnico-vs-analisis-fundamental"},
+        {category: "GUÍA PRÁCTICA", title: "Cómo analizar una empresa en bolsa: guía para principiantes", desc: "Ingresos, márgenes, deuda, flujo de caja y valoración, explicados paso a paso.", url: "https://tesinversion.substack.com/p/como-analizar-una-empresa-en-bolsa"},
+        {category: "ESTADOS FINANCIEROS", title: "Cómo analizar el balance general de una empresa paso a paso", desc: "Aprende a revisar la deuda, la liquidez y la situación financiera de un negocio.", url: "https://tesinversion.substack.com/p/como-analizar-el-balance-general"},
+        {category: "ESTADOS FINANCIEROS", title: "Cómo analizar el Estado de Flujo de Efectivo sin ser experto", desc: "Cómo leer el flujo de efectivo y saber si una empresa genera caja real.", url: "https://tesinversion.substack.com/p/como-analizar-el-estado-de-flujo"},
+        {category: "ESTADOS FINANCIEROS", title: "Cómo analizar un estado de resultados paso a paso", desc: "Cómo entender los ingresos, los costos, los márgenes y el beneficio de una empresa.", url: "https://tesinversion.substack.com/p/como-analizar-un-estado-de-resultados"}
+      ];
+      // Fisher-Yates: cambia la selección al cargar, sin repetir artículos en la misma visita.
+      for (let i = posts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [posts[i], posts[j]] = [posts[j], posts[i]];
+      }
+      const list = document.getElementById("featuredArticles");
+      if (!list) return;
+      const items = posts.slice(0, 3).map(function (post) {
+        const link = document.createElement("a");
+        link.className = "article";
+        link.href = post.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        const details = document.createElement("div");
+        const category = document.createElement("div");
+        category.className = "article-category";
+        category.textContent = post.category;
+        const title = document.createElement("h3");
+        title.textContent = post.title;
+        const desc = document.createElement("p");
+        desc.textContent = post.desc;
+        details.append(category, title, desc);
+        const arrow = document.createElement("span");
+        arrow.className = "article-arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "↗";
+        link.append(details, arrow);
+        return link;
+      });
+      list.replaceChildren(...items);
+    })();
+  </script>
 </body>
 </html>
