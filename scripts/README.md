@@ -25,3 +25,27 @@ La lista `FORMULA_UPDATES` dentro del HTML se mantiene para preservar el comport
 5. Verificar GA4 sin contabilizar clics hacia Substack como suscripciones.
 
 Los cambios deben revisarse primero en un **Deploy Preview de Netlify**. No fusionar la rama sin aprobación.
+
+
+## Lote SEO piloto (noviembre de 2026)
+
+La configuración editorial de las páginas publicables se guarda en `data/paginas-seo.json`.
+Ahora contiene ROIC, FCF, WACC, DCF y margen de seguridad. Cada página dispone de una URL
+individual, pero utiliza la definición y los ejemplos del mismo archivo `data/terminos.json`.
+
+El comando `python3 scripts/generar_paginas.py` actualiza en orden:
+
+1. `assets/terminos.js`, con el catálogo del diccionario interactivo.
+2. `roic/index.html`, conservando su presentación piloto ya aprobada.
+3. Las otras cuatro páginas desde la plantilla `scripts/plantilla-seo.html`.
+4. `assets/paginas-seo.js`, para mostrar un enlace contextual solo en los términos con guía.
+5. `sitemap.xml`, con todas las páginas configuradas.
+
+**No editar manualmente los archivos generados.** Para añadir una página, se incorpora su
+configuración en `data/paginas-seo.json`, se revisa la calidad editorial del término
+y se ejecuta el generador. Las páginas individuales no dependen de JavaScript para
+mostrar su definición principal.
+
+Nota editorial: las definiciones de WACC y DCF carecen actualmente de fórmula en el
+catálogo; la plantilla no inventa fórmulas. Antes de escalar a 167 URL, revisar
+manualmente su contenido y los títulos para evitar páginas demasiado similares o de poco valor.

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "roic",
+    "slug": "roic",
+    "heading": "ROIC: qué es y cómo se calcula",
+    "title": "ROIC: qué es, cómo se calcula y ejemplo",
+    "intro": "Qué mide el retorno sobre el capital invertido, cómo leer su fórmula y por qué importa al analizar una empresa.",
+    "insight": "Conviene observar la evolución del ROIC durante varios años y compararlo con el costo del capital (WACC), sin limitarse al resultado de un período."
+  },
+  {
+    "id": "fcf",
+    "slug": "flujo-de-caja-libre",
+    "heading": "Flujo de caja libre (FCF): qué es y cómo se utiliza",
+    "title": "Flujo de caja libre: qué es, cómo se calcula y ejemplo",
+    "intro": "Una empresa puede mostrar beneficios contables y, aun así, generar poca caja. El FCF ayuda a entender esa diferencia.",
+    "insight": "Es importante comparar la generación de flujo de caja a lo largo de varios años y comprobar qué definición de FCF utiliza cada empresa."
+  },
+  {
+    "id": "wacc",
+    "slug": "wacc",
+    "heading": "WACC: qué es y por qué importa",
+    "title": "WACC: qué es el costo promedio ponderado del capital",
+    "intro": "No basta con que una empresa obtenga beneficios: debe generar un retorno que compense el costo del capital que utiliza.",
+    "insight": "El WACC combina estimaciones del costo de la deuda y del capital propio. Es un supuesto, y sus variaciones pueden cambiar una valoración."
+  },
+  {
+    "id": "dcf",
+    "slug": "dcf",
+    "heading": "DCF: cómo funciona la valoración por flujos descontados",
+    "title": "DCF: qué es la valoración por flujos descontados",
+    "intro": "Valorar una empresa exige estimar cuánto efectivo generará en el futuro y traer esos importes al presente.",
+    "insight": "Un DCF depende de las proyecciones, del descuento y del valor terminal. Conviene comparar escenarios en lugar de utilizar un precio exacto."
+  },
+  {
+    "id": "margenseguridad",
+    "slug": "margen-de-seguridad",
+    "heading": "Margen de seguridad: qué es y cómo se calcula",
+    "title": "Margen de seguridad: qué es y cómo se calcula",
+    "intro": "Una valoración es una estimación, no una certeza. El margen de seguridad reconoce que nuestras hipótesis pueden fallar.",
+    "insight": "Un descuento frente al valor intrínseco estimado no elimina el riesgo de que el negocio se deteriore o de que la valoración sea incorrecta."
+  }
+]

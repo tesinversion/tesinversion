@@ -188,7 +188,10 @@ def main() -> None:
 </urlset>
 """
     (ROOT / "sitemap.xml").write_text(sitemap, encoding="utf-8")
-    print("OK: 167 términos; generados assets/terminos.js, roic/index.html, sitemap.xml")
+    # Regenerar también el lote de guías adicionales y el sitemap completo.
+    from generar_lote import main as generar_lote
+    generar_lote()
+    print("OK: catálogo compartido, guía ROIC y páginas adicionales generadas")
 
 
 if __name__ == "__main__":
