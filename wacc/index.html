@@ -53,7 +53,7 @@
     h2{font-size:clamp(27px,4vw,35px);color:#182c5b;margin:0 0 15px}
     p{margin:0 0 14px}
     p:last-child{margin-bottom:0}
-    .formula{display:block;padding:19px 22px;background:#eff3fa;border-left:4px solid #D4A017;border-radius:8px;font-size:16px;font-weight:700;color:#162b60;overflow-wrap:anywhere}
+    .formula{display:block;padding:19px 22px;background:#eff3fa;border-left:4px solid #D4A017;border-radius:8px;font-size:16px;font-weight:700;color:#162b60;overflow-wrap:anywhere;white-space:pre-line}
     .tip{color:var(--muted);font-size:14px;margin-top:14px}
     .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:27px}
     .actions a{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:100px;padding:12px 20px;font-size:14px;font-weight:600;text-decoration:none}
@@ -81,6 +81,15 @@
       <section aria-labelledby="definicion"><h2 id="definicion">¿Qué es WACC?</h2><p>El WACC representa el costo promedio que tiene una empresa por utilizar el capital con el que se financia, considerando tanto la deuda como el capital de los accionistas. Cada fuente de financiamiento tiene un costo: La deuda: tiene un costo explícito (intereses), pero es más barata porque es deducible de impuestos.</p>
 <p>El equity: tiene un costo implícito, que es el retorno que los accionistas esperan por asumir el riesgo. El WACC combina ambos costos según su peso en la estructura financiera de la empresa. Es una métrica clave porque representa la tasa mínima que la empresa debe superar con sus inversiones para crear valor. Además, el WACC se utiliza como tasa de descuento en modelos de valoración como el DCF: a mayor riesgo, mayor WACC, y menor valor presente de los flujos futuros.</p></section>
       
+      <section aria-labelledby="calculo"><h2 id="calculo">Fórmula de WACC</h2><div class="formula">WACC = (E / V × Re) + (D / V × Rd × (1 − T))
+
+Donde:
+E = Valor de mercado del equity, o sea, capitalización bursátil
+D = Valor de mercado de la deuda
+V = Valor total de financiamiento, es decir, E + D
+Re = Costo del equity
+Rd = Costo de la deuda
+T = Tasa impositiva</div></section>
       <section aria-labelledby="ejemplo"><h2 id="ejemplo">Un ejemplo sencillo</h2><p>Una empresa se financia con: 60% equity con costo de 10%. 40% deuda con costo después de impuestos de 4%. Su WACC es aproximadamente 7,6%. Si la empresa genera retornos por encima del 7,6%, crea valor. Si genera retornos por debajo, destruye valor</p></section>
       <section aria-labelledby="interpretacion"><h2 id="interpretacion">¿Cómo interpretarlo?</h2><p>El WACC combina estimaciones del costo de la deuda y del capital propio. Es un supuesto, y sus variaciones pueden cambiar una valoración.</p><div class="actions"><a class="primary" href="/#term=wacc">Abrir WACC en el diccionario →</a><a href="/">Ver diccionario completo</a></div></section>
     </article>
