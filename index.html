@@ -36,6 +36,18 @@
       });
     });
   </script>
+
+  <script>
+    // Compatibilidad: enlaces al antiguo diccionario que se compartieron con lectores.
+    (function () {
+      const hash = window.location.hash || '';
+      const preservedRoutes = ['#diccionario', '#todos', '#formulas', '#test-conocimiento', '#test-basico',
+        '#test-intermedio', '#test-avanzado', '#perfil-inversor', '#guardados'];
+      if (hash.startsWith('#term=') || hash.startsWith('#categoria-') || preservedRoutes.includes(hash)) {
+        window.location.replace('/diccionario/' + hash);
+      }
+    })();
+  </script>
   <style>
     :root{--blue:#1B2B6B;--deep:#172347;--ink:#1C2944;--muted:#69758C;--bg:#F8F9FC;--line:#E7EAF0;--gold:#C59A50;--white:#fff}
     *,*::before,*::after{box-sizing:border-box}
@@ -135,6 +147,15 @@
       .article h3{font-size:25px}
     }
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
+
+    .hero-search{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);max-width:660px}
+    .hero-search label{display:block;font-size:12px;color:#63718C;font-weight:650;margin-bottom:9px}
+    .hero-search-row{display:flex;gap:10px}
+    .hero-search input{min-width:0;flex:1;padding:13px 16px;background:#fff;color:#1C2944;border:1px solid #DAE1EA;border-radius:11px;font:13px Inter,system-ui,sans-serif}
+    .hero-search input:focus{outline:2px solid #C59A50;outline-offset:2px}
+    .hero-search button{cursor:pointer;border:1px solid var(--blue);border-radius:11px;background:#fff;color:var(--blue);font:650 13px Inter,system-ui,sans-serif;padding:10px 17px}
+    .hero-search button:hover{background:#EEF2F8}
+    @media(max-width:520px){.hero-search-row{flex-direction:column}.hero-search button{min-height:44px}}
   </style>
 </head>
 <body>
@@ -162,6 +183,14 @@
           <a class="button-primary" href="https://tesinversion.substack.com/subscribe" target="_blank" rel="noopener noreferrer">Recibe la newsletter gratis <span aria-hidden="true">↗</span></a>
           <a class="text-link" href="#acerca">Conoce el proyecto →</a>
         </div>
+
+        <form class="hero-search" role="search" action="/diccionario/" method="get">
+          <label for="homeTermSearch">¿Buscas una palabra o un concepto financiero?</label>
+          <div class="hero-search-row">
+            <input id="homeTermSearch" type="search" name="q" required placeholder="Ej.: ROIC, ETF, flujo de caja libre..." aria-label="Buscar término en el diccionario" autocomplete="off">
+            <button type="submit">Buscar en el diccionario →</button>
+          </div>
+        </form>
         <div class="hero-bottom" aria-hidden="true"></div>
       </div>
     </section>
