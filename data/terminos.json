@@ -318,7 +318,8 @@
     ],
     "cat": "mercado",
     "definition": "La beta es una medida estadística que indica cuánto tiende a moverse el precio de una acción en relación con el mercado general, que normalmente se usa como referencia a través de un índice como el S&P 500. \n\nSirve para medir la sensibilidad o volatilidad de una acción frente a los movimientos del mercado. Una beta de 1 significa que la acción tiende a moverse en línea con el mercado. Si el mercado sube o baja, esa acción suele moverse en una proporción similar. Una beta superior a 1 indica que la acción suele ser más volátil que el mercado, mientras que una beta inferior a 1 indica que históricamente ha tendido a moverse menos. \n\nLa beta puede ser útil para entender qué tan “movida” puede ser una acción dentro de una cartera. Las empresas de tecnología o biotecnología suelen tener betas más altas, mientras que empresas más estables, como algunas del sector consumo básico o servicios públicos, suelen tener betas más bajas. \n\nLa beta se basa en el comportamiento histórico de la acción y no garantiza cómo se moverá en el futuro. Además, una beta baja no significa que una acción sea segura, sino solo que históricamente ha sido menos volátil que el mercado.",
-    "example": "Si una acción tiene una beta de 1,5 y el S&P 500 sube 2%, esa acción podría subir aproximadamente 3%. Si el mercado cae 2%, esa misma acción podría caer alrededor de 3%. En cambio, si otra acción tiene una beta de 0,5, y el mercado sube o baja 2%, esa acción tendería a moverse solo cerca de 1%. Esto ayuda al inversor a entender qué tan intensos podrían ser los movimientos de una acción en comparación con el mercado general."
+    "example": "Si una acción tiene una beta de 1,5 y el S&P 500 sube 2%, esa acción podría subir aproximadamente 3%. Si el mercado cae 2%, esa misma acción podría caer alrededor de 3%. En cambio, si otra acción tiene una beta de 0,5, y el mercado sube o baja 2%, esa acción tendería a moverse solo cerca de 1%. Esto ayuda al inversor a entender qué tan intensos podrían ser los movimientos de una acción en comparación con el mercado general.",
+    "formula": "Beta = Covarianza entre la acción y el mercado / Varianza del mercado"
   },
   {
     "id": "diversificacion",
@@ -444,9 +445,9 @@
       "Estado de tesorería"
     ],
     "cat": "estados",
-    "formula": "FCF = Flujo operativo − CAPEX de mantenimiento",
+    "formula": null,
     "definition": "El flujo de caja es el estado financiero que muestra el movimiento real del dinero que entra y sale de una empresa durante un período determinado. A diferencia del estado de resultados, el flujo de caja refleja el efectivo real. Esto es clave porque una empresa puede mostrar ganancias en papel y, aun así, no tener dinero disponible si no ha cobrado esas ventas.  Se divide en tres partes principales: \n\nFlujo de caja operativo: el efectivo generado por la actividad principal del negocio. Es el más importante, ya que muestra si la empresa realmente genera dinero con lo que hace. \nFlujo de inversión: el dinero que la empresa usa o recibe al comprar o vender activos de largo plazo (maquinaria, adquisiciones, inversiones). \nFlujo de financiación: el efectivo relacionado con deuda y capital (préstamos, pagos de deuda, emisión o recompra de acciones, dividendos). \n\nUna de las métricas más importantes dentro de este estado es el Free Cash Flow (flujo de caja libre), que representa el dinero que queda después de cubrir las inversiones necesarias para mantener y hacer crecer el negocio.",
-    "example": "Si analizas una empresa, el flujo de caja te permite ver si el negocio realmente genera efectivo. Lo más importante es observar si la empresa genera flujo de caja libre positivo (caja neta) o negativo (deuda neta)."
+    "example": "El estado de flujos de efectivo te ayuda a distinguir tres movimientos: el dinero generado por las operaciones, las inversiones que hizo la empresa y cómo se financió. Por ejemplo, si genera $300 de flujo operativo e invierte $100 en CAPEX, su flujo de caja libre (FCF) sería de $200. Tener FCF positivo no significa necesariamente tener caja neta, porque también hay que considerar la deuda."
   },
   {
     "id": "activo",
@@ -718,7 +719,7 @@
       "Free cash flow"
     ],
     "cat": "resultados",
-    "formula": "FCF = EBITDA − CAPEX mantenimiento − Intereses − Impuestos − Variación de Working Capital",
+    "formula": "FCF = Flujo de caja operativo (CFO) − CAPEX",
     "definition": "El FCF es el efectivo que le queda a una empresa después de cubrir sus gastos operativos y realizar las inversiones necesarias en activos de largo plazo (CAPEX). Representa el dinero real que la empresa puede utilizar libremente para pagar dividendos, recomprar acciones, reducir deuda, adquirir otras empresas o acumular efectivo. \n\n Es una de las métricas más importantes para evaluar un negocio, ya que refleja la capacidad real de generar dinero más allá de la contabilidad. Un negocio que genera FCF de forma consistente suele ser más sólido y sostenible. En cambio, una empresa con ganancias contables altas pero poco flujo de caja libre puede tener problemas ocultos. Es importante tener en cuenta que pueden existir distintas formas de calcular el FCF, por lo que siempre conviene entender qué definición se está utilizando antes de comparar empresas.",
     "example": "Una empresa genera $300 de flujo operativo y gasta $100 en CAPEX. Su FCF es $200."
   },
@@ -771,7 +772,7 @@
       "Retorno sobre el capital incremental"
     ],
     "cat": "rentabilidad",
-    "formula": null,
+    "formula": "ROIIC = Incremento del NOPAT / Incremento del capital invertido",
     "definition": "El ROIIC mide qué tan rentable es el nuevo capital que una empresa invierte para crecer. A diferencia del ROIC, que mide la rentabilidad sobre todo el capital acumulado, el ROIIC se enfoca solo en el capital nuevo. Por eso, es una métrica clave para evaluar la calidad del crecimiento. Permite responder una pregunta fundamental: cuando la empresa reinvierte para crecer, ¿está generando buenos retornos o está destruyendo valor? Una empresa puede tener un ROIC alto gracias a decisiones pasadas, pero si su ROIIC es bajo, significa que las nuevas inversiones no están siendo eficientes. El ROIIC es especialmente útil para analizar empresas en crecimiento, ya que muestra si ese crecimiento es realmente rentable.",
     "example": "Una empresa invierte $100 adicionales y logra aumentar su NOPAT en $20, su ROIIC es 20%. < 10% → débil (el crecimiento puede estar destruyendo valor), 10% – 15% → acceptable, 15% – 20% → bueno y > 20% → excelente."
   },
@@ -784,7 +785,7 @@
       "Rentabilidad sobre fondos propios"
     ],
     "cat": "rentabilidad",
-    "formula": null,
+    "formula": "ROE = Beneficio neto / Patrimonio neto promedio",
     "definition": "El ROE mide cuánto beneficio neto genera una empresa por cada dólar de patrimonio que pertenece a los accionistas. Indica qué tan rentable es la empresa desde la perspectiva del accionista. Un ROE alto puede ser una señal positiva, pero debe analizarse con cuidado. Puede verse inflado por altos niveles de deuda o por recompras de acciones que reducen el patrimonio contable. \n\n Esta métrica es especialmente útil en empresas financieras, como bancos y aseguradoras, donde el equity es una parte central del modelo de negocio. En este tipo de compañías, el ROE suele ser una referencia clave para evaluar su rentabilidad. En empresas no financieras, el ROE también es útil, pero conviene complementarlo con métricas como el ROIC, ya que el apalancamiento puede distorsionar el resultado. Por eso, el ROE siempre debe evaluarse junto con el nivel de endeudamiento de la empresa para entender si esa rentabilidad es sostenible o artificial.",
     "example": "Una empresa genera $20 de beneficio neto con $100 de equity, su ROE es 20%. < 10% → débil, 10% – 15% → acceptable, 15% – 20% → bueno y > 20% → muy bueno. Si ese ROE alto se logra con poca deuda, es una señal fuerte de calidad. Si depende de mucho endeudamiento, requiere análisis adicional."
   },
@@ -797,7 +798,7 @@
       "Rentabilidad sobre activos"
     ],
     "cat": "rentabilidad",
-    "formula": null,
+    "formula": "ROA = Beneficio neto / Activos totales promedio",
     "definition": "El ROA mide qué tan eficiente es una empresa utilizando todos sus activos para generar beneficio neto. A diferencia del ROE, el ROA considera todos los activos de la empresa, independientemente de si están financiados con deuda o con equity. Por eso, no se ve tan afectado por el nivel de apalancamiento. Es una métrica útil para comparar empresas dentro del mismo sector, especialmente en negocios intensivos en activos, donde la eficiencia en el uso de esos recursos es clave. Sin embargo, como utiliza el beneficio neto, incluye el impacto de intereses y puede no ser tan preciso para comparaciones profundas como el ROIC.",
     "example": "Una empresa genera $10 de beneficio neto con $100 en activos, su ROA es 10%. Si, ROA < 5% → bajo, 5% – 10% → aceptable y > 10% → bueno. Dentro del mismo sector, la empresa con mayor ROA está utilizando mejor sus activos para generar beneficios."
   },
@@ -823,7 +824,7 @@
       "Ratio de reinversión"
     ],
     "cat": "rentabilidad",
-    "formula": null,
+    "formula": "Tasa de reinversión = Reinversión en el negocio / NOPAT\nCrecimiento = ROIC × Tasa de reinversión",
     "definition": "La tasa de reinversión mide qué porcentaje de los beneficios o del flujo de caja de una empresa se destina a volver a invertir en el negocio, en lugar de repartirse a los accionistas. Esa reinversión puede hacerse de distintas formas: aumentar el CAPEX, invertir en I+D, financiar más capital de trabajo o adquirir otras empresas. Esta métrica es importante porque ayuda a entender cuánto está apostando la empresa por su crecimiento futuro. Pero reinvertir mucho no siempre es algo positivo. Lo verdaderamente importante es qué retorno genera esa reinversión. Por eso, la tasa de reinversión debe analizarse junto con el ROIC. Ambas métricas están conectadas por una idea: Crecimiento = ROIC × Tasa de Reinversión. Esto significa que una empresa no crece solo por reinvertir mucho, sino por reinvertir bien.",
     "example": "Si una empresa tiene un ROIC de 20% y reinvierte el 50% de sus beneficios, su crecimiento potencial sería cercano al 10%. Si otra reinvierte el 100%, pero su ROIC es solo 5%, puede crecer, pero estaría creando poco valor o incluso destruyéndolo. Empresas como Microsoft y Coca-Cola pueden tener un ROIC alto, pero su tasa de reinversión es muy distinta. Microsoft suele reinvertir mucho más capital para seguir creciendo, mientras que Coca-Cola, al ser un negocio más maduro, reparte una mayor parte de su efectivo en dividendos y recompra de acciones. No solo importa que una empresa gane mucho sobre el capital; también importa cuánto capital puede reinvertir a esos mismos retornos."
   },
@@ -837,7 +838,7 @@
       "Ciclo de caja"
     ],
     "cat": "rentabilidad",
-    "formula": null,
+    "formula": "Ciclo de conversión de caja = Días de inventario + Días de cuentas por cobrar − Días de cuentas por pagar",
     "definition": "El ciclo de conversión de caja mide cuántos días tarda una empresa en recuperar en efectivo el dinero que invierte en su operación diaria. Esta métrica muestra cuánto tiempo pasa desde que la empresa invierte dinero en inventario hasta que finalmente cobra ese dinero en efectivo, teniendo en cuenta que también puede retrasar el pago a sus proveedores. Un ciclo corto suele ser una señal positiva, porque significa que la empresa convierte su operación en efectivo rápidamente. Un ciclo largo implica que necesita más capital de trabajo para sostener el negocio. En algunos casos, el ciclo puede ser incluso negativo. Eso ocurre cuando la empresa cobra a sus clientes antes de tener que pagar a sus proveedores, lo que representa una ventaja financiera importante.",
     "example": "Si una empresa tarda 60 días en vender su inventario, 30 días en cobrar a sus clientes y 45 días en pagar a sus proveedores, su CCC es 45 días. Si otra empresa cobra al cliente al instante y paga a proveedores 30 días después, puede tener un CCC negativo, lo que es una señal muy favorable. Seguir la evolución del CCC en el tiempo ayuda a detectar mejoras o deterioros en la eficiencia operativa del negocio."
   },
@@ -851,7 +852,7 @@
       "Endeudamiento neto"
     ],
     "cat": "capital",
-    "formula": null,
+    "formula": "Deuda neta = Deuda financiera total − Efectivo y equivalentes",
     "definition": "La deuda neta es la diferencia entre la deuda financiera total de una empresa y el efectivo que tiene disponible. Refleja la carga real de endeudamiento, ya que considera que parte de la deuda podría pagarse inmediatamente con el efectivo disponible. Es una métrica más útil que la deuda bruta para evaluar el nivel de riesgo financiero de una empresa. Se utiliza frecuentemente junto con el EBITDA para analizar la capacidad de pago. La relación Deuda Neta / EBITDA indica cuántos años de generación de beneficios operativos serían necesarios para pagar la deuda. En general: < 2x → nivel saludable, 2x – 3x → moderado y > 3x – 4x → elevado (depende del sector).",
     "example": "Una empresa tiene $100 de deuda y $30 en efectivo. Su deuda neta es $70."
   },
@@ -922,7 +923,7 @@
       "Valor empresarial total"
     ],
     "cat": "capital",
-    "formula": null,
+    "formula": "Enterprise Value = Market Cap + Deuda total + Acciones preferentes + Participaciones minoritarias − Efectivo y equivalentes",
     "definition": "El Enterprise Value (EV) representa el valor total de una empresa considerando todas sus fuentes de financiamiento, no solo el valor de sus acciones. El EV refleja el costo real de adquirir una empresa completa, ya que no basta con comprar todas sus acciones: también hay que asumir su deuda y otros compromisos financieros. Es una métrica clave para comparar empresas, porque elimina el efecto de la estructura de capital. Dos empresas con operaciones similares pero distinta deuda pueden tener market caps diferentes, pero un EV similar. Por eso, múltiplos como EV/EBITDA o EV/EBIT son más útiles que el P/E para comparar negocios.",
     "example": "Empresa A: Market Cap: $1.000, Deuda: $300, Efectivo: $0 → EV: $1.300. Empresa B: Market Cap: $1.000, Deuda: $300, Efectivo: $200 → EV: $1.100. 👉 Aunque ambas tienen la misma deuda, la empresa B vale menos en términos reales porque tiene efectivo disponible."
   },
@@ -936,7 +937,7 @@
       "Coste del capital"
     ],
     "cat": "capital",
-    "formula": null,
+    "formula": "WACC = (E / V × Re) + (D / V × Rd × (1 − T))\n\nDonde:\nE = Valor de mercado del equity, o sea, capitalización bursátil\nD = Valor de mercado de la deuda\nV = Valor total de financiamiento, es decir, E + D\nRe = Costo del equity\nRd = Costo de la deuda\nT = Tasa impositiva",
     "definition": "El WACC representa el costo promedio que tiene una empresa por utilizar el capital con el que se financia, considerando tanto la deuda como el capital de los accionistas. Cada fuente de financiamiento tiene un costo: La deuda: tiene un costo explícito (intereses), pero es más barata porque es deducible de impuestos. \n\n El equity: tiene un costo implícito, que es el retorno que los accionistas esperan por asumir el riesgo. El WACC combina ambos costos según su peso en la estructura financiera de la empresa. Es una métrica clave porque representa la tasa mínima que la empresa debe superar con sus inversiones para crear valor. Además, el WACC se utiliza como tasa de descuento en modelos de valoración como el DCF: a mayor riesgo, mayor WACC, y menor valor presente de los flujos futuros.",
     "example": "Una empresa se financia con: 60% equity con costo de 10%. 40% deuda con costo después de impuestos de 4%. Su WACC es aproximadamente 7,6%. Si la empresa genera retornos por encima del 7,6%, crea valor. Si genera retornos por debajo, destruye valor"
   },
@@ -951,7 +952,7 @@
       "Múltiplo de beneficios"
     ],
     "cat": "valoracion",
-    "formula": null,
+    "formula": "P/E = Precio por acción / Beneficio por acción\nP/E = Market Cap / Beneficio neto",
     "definition": "El P/E es un múltiplo de valoración que indica cuántas veces está pagando el mercado por las ganancias de una empresa. Un P/E de 20 significa que el inversor está pagando 20 veces las ganancias anuales por cada acción. Existen dos versiones principales: Trailing P/E: basado en ganancias pasadas (últimos 12 meses) y Forward P/E: basado en ganancias estimadas futuras. El P/E es útil para comparar empresas dentro del mismo sector o evaluar una empresa frente a su propio historial. Sin embargo, tiene limitaciones importantes: no funciona bien con ganancias negativas, puede distorsionarse por eventos puntuales y no considera la deuda de la empresa. Un P/E bajo no significa automáticamente que una acción esté barata, ni un P/E alto que esté cara. Siempre debe analizarse en contexto.",
     "example": "Una acción cuesta $100 y genera $5 de EPS. Su P/E es 20. Esto implica que estás pagando 20 veces sus ganancias anuales."
   },
@@ -964,7 +965,7 @@
       "Enterprise Value to EBITDA"
     ],
     "cat": "valoracion",
-    "formula": null,
+    "formula": "EV/EBITDA = Enterprise Value / EBITDA",
     "definition": "El EV/EBITDA es un múltiplo de valoración que compara el valor total de una empresa (Enterprise Value) con su capacidad de generar beneficio operativo antes de intereses, impuestos, depreciación y amortización (EBITDA). Este múltiplo permite comparar empresas de forma más justa que el P/E, ya que tiene en cuenta la deuda (a través del EV) y elimina el efecto de los intereses (al usar EBITDA). Por eso es ampliamente utilizado en análisis financiero, especialmente en fusiones y adquisiciones. Sin embargo, tiene una limitación importante: el EBITDA no considera el CAPEX, es decir, las inversiones necesarias para mantener o hacer crecer el negocio. Esto puede hacer que algunas empresas parezcan más atractivas de lo que realmente son. Por eso, siempre es recomendable analizarlo junto con otros múltiplos como EV/EBIT o métricas basadas en flujo de caja.",
     "example": "Empresa A: EV: $1.000, EBITDA: $100, CAPEX: $10. Empresa B: EV: $1.000, EBITDA: $100, CAPEX: $80. Ambas tienen EV/EBITDA de 10x, pero la empresa B necesita reinvertir mucho más dinero para sostener su negocio, por lo que es menos atractiva."
   },
@@ -977,7 +978,7 @@
       "Enterprise Value to EBIT"
     ],
     "cat": "valoracion",
-    "formula": null,
+    "formula": "EV/EBIT = Enterprise Value / EBIT",
     "definition": "El EV/EBIT es un múltiplo de valoración que compara el valor total de una empresa (Enterprise Value) con su beneficio operativo (EBIT). Es similar al EV/EBITDA, pero incluye la depreciación y amortización en el análisis, lo que lo hace más conservador. La principal ventaja del EV/EBIT es que tiene en cuenta el desgaste real de los activos. En negocios donde los activos físicos son importantes, esto da una imagen más realista de la rentabilidad. Sin embargo, también tiene una limitación: puede penalizar a empresas con altas amortizaciones de intangibles, especialmente si provienen de adquisiciones y no representan una salida real de dinero en el futuro. Por eso, es recomendable analizarlo junto con el EV/EBITDA para entender mejor la estructura del negocio.",
     "example": "Empresa A: EV/EBITDA: 10x y EV/EBIT: 12x → baja depreciación. Empresa B: EV/EBITDA: 10x y EV/EBIT: 18x → alta depreciación. Ambas parecen iguales a nivel de EBITDA, pero la empresa B tiene mayor desgaste de activos, lo que reduce su rentabilidad real."
   },
@@ -991,7 +992,7 @@
       "PSR"
     ],
     "cat": "valoracion",
-    "formula": null,
+    "formula": "P/S = Precio por acción / Ventas por acción\nP/S = Market Cap / Ingresos",
     "definition": "El P/S es un múltiplo de valoración que compara el valor de mercado de una empresa con sus ingresos. Se utiliza principalmente en empresas que aún no generan beneficios o tienen ganancias muy bajas, donde métricas como el P/E no son útiles. El P/S permite medir cuánto está pagando el mercado por cada dólar de ventas, pero no dice nada sobre la rentabilidad del negocio. Por eso, debe analizarse siempre junto con los márgenes y la calidad de los ingresos. Una empresa puede tener un P/S alto porque se espera un fuerte crecimiento o una alta rentabilidad futura, pero también puede ser una señal de sobrevaloración si esos resultados no se materializan.",
     "example": "Empresa A: P/S: 5x, Margen neto: 30% → convierte gran parte de sus ventas en ganancias. Empresa B: P/S: 5x y Margen neto: 2% → genera muy poca ganancia sobre sus ventas. Ambas tienen el mismo P/S, pero su calidad de negocio es completamente distinta."
   },
@@ -1006,7 +1007,7 @@
       "Price to book"
     ],
     "cat": "valoracion",
-    "formula": null,
+    "formula": "P/B = Precio por acción / Valor en libros por acción\nP/B = Market Cap / Patrimonio neto contable",
     "definition": "El P/B es un múltiplo de valoración que compara el precio de mercado de una empresa con su valor contable, es decir, con el patrimonio neto que aparece en el balance. Un P/B de 2x significa que el mercado está valorando la empresa en dos veces su valor contable. Este múltiplo es especialmente útil en sectores donde el balance refleja bastante bien el valor económico del negocio, como bancos, aseguradoras y algunas empresas intensivas en activos físicos. En cambio, es mucho menos útil en empresas cuyo valor depende sobre todo de activos intangibles desarrollados internamente, como marcas, software o propiedad intelectual, ya que muchas de esas ventajas no aparecen registradas en el balance. Por eso, el P/B suele ser más relevante en sectores financieros y tradicionales que en empresas tecnológicas o de consumo con alto componente intangible.",
     "example": "Un banco tiene un equity de $100 y el mercado lo valora en $80. Su P/B es 0,8x. Eso puede significar que el mercado cree que sus activos valen menos de lo que dice el balance o que espera una rentabilidad baja en el futuro."
   },

@@ -120,7 +120,7 @@ def main() -> None:
 <body>
   <header class="nav"><div class="nav-inner">
     <a class="brand" href="/">Arquitectura <span>de la Inversión</span></a>
-    <a href="/">← Volver al diccionario completo</a>
+    <a href="/diccionario/">← Volver al diccionario completo</a>
   </div></header>
   <div class="hero"><div class="hero-inner">
     <div class="eyebrow">Diccionario del Inversor · Rentabilidad</div>
@@ -146,8 +146,8 @@ def main() -> None:
         <h2 id="interpretacion">¿Cómo interpretarlo?</h2>
         <p>El ROIC no se interpreta únicamente por ser alto o bajo. Conviene observar su evolución en varios años y compararlo con el costo del capital (WACC). Un ROIC superior al WACC indica creación de valor según esta medida; uno inferior indica que el retorno no cubre ese costo.</p>
         <div class="actions">
-          <a class="primary" href="/#term=roic">Abrir ROIC en el diccionario →</a>
-          <a href="/#term=wacc">Consultar WACC</a>
+          <a class="primary" href="/diccionario/#term=roic">Abrir ROIC en el diccionario →</a>
+          <a href="/diccionario/#term=wacc">Consultar WACC</a>
         </div>
       </section>
     </article>
@@ -168,7 +168,7 @@ def main() -> None:
         "alternateName": "Return on Invested Capital",
         "description": roic["definition"],
         "url": "https://tesinversion.com/roic/",
-        "inDefinedTermSet": "https://tesinversion.com/",
+        "inDefinedTermSet": "https://tesinversion.com/diccionario/",
     }
     page = (
         template
@@ -184,6 +184,7 @@ def main() -> None:
     sitemap = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://tesinversion.com/</loc></url>
+  <url><loc>https://tesinversion.com/diccionario/</loc></url>
   <url><loc>https://tesinversion.com/roic/</loc></url>
 </urlset>
 """

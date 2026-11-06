@@ -42,7 +42,7 @@ def render(term, info, template):
         "alternateName": term.get("en") or term["es"],
         "description": term["definition"],
         "url": url,
-        "inDefinedTermSet": "https://tesinversion.com/"
+        "inDefinedTermSet": "https://tesinversion.com/diccionario/"
     }
     fields = {
         "__TITLE__": esc(info["title"]),
@@ -90,7 +90,7 @@ def main():
         "window.SEO_PAGES = " + json.dumps(page_index, ensure_ascii=False, separators=(",", ":")) + ";\n",
         encoding="utf-8"
     )
-    urls = ["https://tesinversion.com/"] + [
+    urls = ["https://tesinversion.com/", "https://tesinversion.com/diccionario/"] + [
         "https://tesinversion.com/" + slug + "/" for slug in slugs
     ]
     sitemap = ('<?xml version="1.0" encoding="UTF-8"?>\n'
