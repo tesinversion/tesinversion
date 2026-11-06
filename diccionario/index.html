@@ -28,6 +28,7 @@
 <meta property="og:title" content="Diccionario del Inversor | Términos y conceptos financieros explicados">
 <meta property="og:description" content="Un recurso educativo para entender conceptos de inversión, análisis fundamental, estados financieros, valoración y mercado financiero en español claro.">
 <meta property="og:site_name" content="Arquitectura de la Inversión">
+<meta property="og:url" content="https://tesinversion.com/diccionario/">
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Diccionario del Inversor | Términos y conceptos financieros explicados">
@@ -4349,7 +4350,7 @@ function getTermHash(id) {
 }
 
 function getTermUrl(id) {
-  return window.location.href.split('#')[0] + getTermHash(id);
+  return window.location.origin + window.location.pathname + getTermHash(id);
 }
 
 function getTermIdFromHash() {
@@ -8292,8 +8293,13 @@ loadFavorites();
 loadCompactMode();
 updateFavoriteNavLabel();
 
+const initialHomeSearch = new URLSearchParams(window.location.search).get('q') || '';
 if (shouldOpenTermDirectly() || shouldOpenAppRouteDirectly()) {
   showApp();
+} else if (initialHomeSearch.trim()) {
+  showApp();
+  searchInput.value = initialHomeSearch.trim();
+  doSearch(initialHomeSearch.trim());
 } else {
   const lastScreen = getLastScreen();
 
