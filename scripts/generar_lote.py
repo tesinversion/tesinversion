@@ -77,6 +77,10 @@ def main():
     assert len(slugs) == len(set(slugs)), "Slugs duplicados"
     for entry in config:
         assert entry["id"] in by_id, "Id desconocido: " + entry["id"]
+        if entry["id"] == "roic":
+            # La primera guía conserva su plantilla original ya validada;
+            # scripts/generar_paginas.py la regenera desde el mismo JSON.
+            continue
         dest = ROOT / entry["slug"] / "index.html"
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_text(render(by_id[entry["id"]], entry, template), encoding="utf-8")
