@@ -79,7 +79,6 @@ body,#app{background:#F6F8FB;color:#253451}
 .mobile-cat-nav{background:#fff;border-bottom:1px solid #E5E9F1;backdrop-filter:none}
 .mobile-cat-select{background:#F8FAFD;color:#1B2B6B;border-color:#DDE4EE}
 .mobile-cat-select option{background:#fff;color:#1B2B6B}
-.mobile-compact-btn{background:#1B2B6B;color:#fff}
 .learning-progress{background:#fff;border-color:#E3E8F0}
 :focus-visible{outline-color:#C79A3F}
 @media(max-width:820px){.layout{display:block}.sidebar{display:none}.content{padding:28px 21px 75px}}
