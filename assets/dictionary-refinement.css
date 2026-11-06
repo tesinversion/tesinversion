@@ -114,3 +114,29 @@ body,#app{background:#F6F8FB;color:#253451}
 #app .learning-progress-reset:hover{background:#E9EEF8;color:#142458;border-color:#94A9CF}
 #app .learning-progress-bar{background:#DDE6F1;height:9px}
 #app .learning-progress-fill{background:linear-gradient(90deg,#243C7A,#3D5DA6)}
+
+/* Espaciado general: utilizar el ancho disponible sin dejar huecos grandes. */
+#app .header-inner{max-width:1600px;width:100%;gap:clamp(10px,1.2vw,20px)}
+#app .header-inner .search-wrap{flex:1 1 300px;max-width:none;min-width:0}
+#app .header-inner .h-actions{margin-left:0;gap:7px}
+#app .layout{max-width:1600px;grid-template-columns:235px minmax(0,1fr);column-gap:0}
+#app .content{width:100%;max-width:none;margin:0;padding:36px clamp(22px,2.5vw,42px) 85px}
+#app .index-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+
+/* Menú adaptado: cuando la barra superior se estrecha se usa un selector. */
+@media(max-width:1180px){
+  #app .header-inner .h-actions{display:none}
+  #app .layout{display:block}
+  #app .sidebar{display:none}
+  #app .mobile-cat-nav{display:block;position:sticky;top:62px;z-index:90;padding:10px 16px}
+  #app .mobile-cat-inner{max-width:100%;display:flex;gap:12px}
+  #app .mobile-cat-select{min-width:0;flex:1 1 auto;width:auto}
+  #app .content{padding:28px clamp(18px,3vw,34px) 78px}
+}
+@media(max-width:600px){
+  #app .header-inner{gap:11px}
+  #app .mobile-cat-nav{top:57px;padding:10px 14px}
+  #app .mobile-cat-inner{gap:10px}
+  #app .content{padding:24px 16px 68px}
+  #app .index-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+}
