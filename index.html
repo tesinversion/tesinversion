@@ -7294,39 +7294,178 @@ if (options.updateHash !== false) {
   refreshFavoriteButtons();
   updateBackToTopVisibility();
 }
+// Rutas editoriales: aprendizaje progresivo para inversores principiantes.
+const LEARNING_ROUTES = [
+  {
+    id: 'principiante', label: 'Empieza aquí', icon: '✦',
+    title: 'Entiende la bolsa desde cero',
+    desc: 'Acciones, mercado, riesgo y diversificación, sin asumir conocimientos previos.',
+    subtitle: 'Seis conceptos para entender qué compras, dónde inviertes y cómo pensar en el riesgo.',
+    terms: ['accion','bolsa','broker','riesgo','diversificacion','etf']
+  },
+  {
+    id: 'analisis', label: 'Siguiente nivel', icon: '▤',
+    title: 'Aprende a leer una empresa',
+    desc: 'Conecta los estados financieros con los beneficios y el efectivo que genera un negocio.',
+    subtitle: 'Empieza por los tres estados financieros y llega a la generación de caja y la rentabilidad.',
+    terms: ['estadosfinancieros','balance','ingresos','beneficio-neto','fcf','roic']
+  },
+  {
+    id: 'valoracion', label: 'Análisis fundamental', icon: '◇',
+    title: 'Entiende cuánto vale',
+    desc: 'Comprende el precio, el valor intrínseco y los supuestos de una valoración.',
+    subtitle: 'Una secuencia para entender el valor de una empresa sin confundirlo con su cotización.',
+    terms: ['marketcap','ev','wacc','dcf','intrinseco','margenseguridad']
+  }
+];
+
+function getLearningRoute(routeId) {
+  return LEARNING_ROUTES.find(route => route.id === routeId);
+}
+
+function shortLearningDefinition(term) {
+  const text = String(term.definition || '').replace(/\s+/g, ' ').trim();
+  const first = text.split(/(?<=[.!?])\s+/)[0];
+  if (first.length <= 190) return first;
+  return first.slice(0, 175).replace(/\s+\S*$/, '') + '…';
+}
+
+function showLearningRoute(routeId) {
+  const route = getLearningRoute(routeId);
+  if (!route) return;
+  saveLastAppView('index');
+  currentView = 'learningRoute';
+  currentCat = null;
+  clearTermHash();
+  clearAppRouteHash();
+  updateAppRouteHash('diccionario');
+  setActiveBtn('index');
+  document.getElementById('btnIndex').classList.add('active');
+
+  const studied = route.terms.filter(id => isLearnedTerm(id)).length;
+  const percent = Math.round(studied * 100 / route.terms.length);
+  let html = '<section class="learning-route-heading">' +
+    '<button class="learning-route-back" type="button" onclick="showIndex()">← Volver a las rutas</button>' +
+    '<div class="learning-kicker">' + escapeHTML(route.label) + ' · Ruta de aprendizaje</div>' +
+    '<h2 style="font-family:Crimson Pro,serif;font-size:clamp(32px,4.2vw,46px);color:#fff;line-height:1.16;margin:0">' + escapeHTML(route.title) + '</h2>' +
+    '<p class="learning-route-intro">' + escapeHTML(route.subtitle) + ' Abre cada concepto, lee su ejemplo y márcalo como entendido. Puedes avanzar a tu ritmo.</p>' +
+    '<div class="learning-route-progress" aria-label="Progreso de esta ruta: ' + studied + ' de ' + route.terms.length + ' términos">' +
+      '<strong>' + studied + ' de ' + route.terms.length + '</strong> términos entendidos' +
+      '<div class="learning-progress-track"><span style="width:' + percent + '%"></span></div>' +
+    '</div></section>';
+
+  html += '<div class="learning-steps">';
+  route.terms.forEach((termId, index) => {
+    const term = TERMS.find(item => item.id === termId);
+    if (!term) return;
+    const done = isLearnedTerm(term.id);
+    html += '<article class="learning-step">' +
+      '<div class="learning-step-index">' + (index + 1) + '</div>' +
+      '<div class="learning-step-main">' +
+        '<div class="learning-step-top"><h3>' + escapeHTML(term.es) + '</h3>' +
+          '<span class="learning-step-status' + (done ? ' done' : '') + '">' +
+          (done ? '✓ Entendido' : 'Pendiente') + '</span></div>' +
+        '<p>' + escapeHTML(shortLearningDefinition(term)) + '</p>' +
+        '<button type="button" onclick="goToTerm(\'' + escapeHTML(term.id) + '\')">Leer concepto y ejemplo →</button>' +
+      '</div></article>';
+  });
+  html += '</div><div class="learning-route-bottom">' +
+    '<button class="learning-button secondary" type="button" onclick="showIndex()">← Ver otras rutas</button>' +
+    '<button class="learning-button primary" type="button" onclick="showQuiz()">Practicar con un test →</button>' +
+    '</div>' + getFooterHTML();
+  document.getElementById('mainContent').innerHTML = html;
+  window.scrollTo(0, 0);
+  updateBackToTopVisibility();
+}
+
 function showIndex(options = {}) {
-saveLastAppView('index');
+  saveLastAppView('index');
   currentView = 'index';
   currentCat = null;
   clearTermHash();
-clearAppRouteHash();
-
-if (options.updateHash !== false) {
-  updateAppRouteHash('diccionario');
-}
-
-setActiveBtn('index');
+  clearAppRouteHash();
+  if (options.updateHash !== false) updateAppRouteHash('diccionario');
+  setActiveBtn('index');
   document.getElementById('btnIndex').classList.add('active');
   document.getElementById('btnAll').classList.remove('active');
-  const content = document.getElementById('mainContent');
-  let html = '<div class="view-header"><h2>Contenido</h2><p>' + TERMS.length + ' términos organizados en ' + Object.keys(CATS).length + ' categorías — haz clic en cualquier término para ver su definición completa.</p></div>';
-  html += '<div class="index-grid">';
+
+  const learned = getLearningStats();
+  let html = '<section class="learning-hero" aria-labelledby="learningHeroTitle">' +
+    '<div class="learning-eyebrow">Arquitectura de la Inversión · Diccionario interactivo</div>' +
+    '<h2 id="learningHeroTitle">Aprende a invertir, un concepto a la vez.</h2>' +
+    '<p>No necesitas entender todos los términos financieros de golpe. Elige una ruta para empezar, busca una duda concreta o explora el diccionario a tu ritmo.</p>' +
+    '<div class="learning-actions">' +
+      '<button class="learning-button primary" type="button" onclick="showLearningRoute(\'principiante\')">Empezar desde cero →</button>' +
+      '<button class="learning-button secondary" type="button" onclick="document.getElementById(\'learningTopics\').scrollIntoView({behavior:\'smooth\'})">Explorar temas</button>' +
+    '</div>' +
+    '<div class="learning-stats">' +
+      '<span><strong>' + TERMS.length + '</strong> conceptos</span>' +
+      '<span><strong>' + Object.keys(CATS).length + '</strong> categorías</span>' +
+      '<span><strong>' + learned.learned + '</strong> términos entendidos</span>' +
+    '</div></section>';
+
+  html += '<section class="learning-section" aria-labelledby="learningPathHeading">' +
+    '<div class="learning-section-heading"><div><div class="learning-kicker">Aprende con un orden</div>' +
+    '<h2 id="learningPathHeading">Elige tu punto de partida</h2>' +
+    '<p>Tres recorridos cortos que conectan conceptos relacionados.</p></div></div>' +
+    '<div class="learning-path-grid">';
+  LEARNING_ROUTES.forEach(route => {
+    const done = route.terms.filter(id => isLearnedTerm(id)).length;
+    html += '<button type="button" class="learning-path-card" onclick="showLearningRoute(\'' + escapeHTML(route.id) + '\')">' +
+      '<span class="path-icon" aria-hidden="true">' + route.icon + '</span>' +
+      '<span class="path-level">' + escapeHTML(route.label) + ' · ' + route.terms.length + ' conceptos</span>' +
+      '<span class="path-title">' + escapeHTML(route.title) + '</span>' +
+      '<span class="path-description">' + escapeHTML(route.desc) + '</span>' +
+      '<span class="path-foot">' + (done ? done + ' / ' + route.terms.length + ' entendidos · ' : '') + 'Explorar ruta →</span>' +
+    '</button>';
+  });
+  html += '</div></section>';
+
+  html += '<section class="learning-section" aria-labelledby="learningPopularHeading">' +
+    '<div class="learning-section-heading"><div><div class="learning-kicker">Consultas frecuentes</div>' +
+    '<h2 id="learningPopularHeading">Conceptos esenciales</h2>' +
+    '<p>Resuelve una duda sin tener que recorrer todo el diccionario.</p></div></div>' +
+    '<div class="learning-popular">';
+  ['accion','etf','estadosfinancieros','ebitda','fcf','roic','dcf','margenseguridad'].forEach(id => {
+    const term = TERMS.find(t => t.id === id);
+    if (!term) return;
+    html += '<button type="button" onclick="goToTerm(\'' + escapeHTML(id) + '\')">' + escapeHTML(term.es) + ' ↗</button>';
+  });
+  html += '</div></section>';
+
+  html += '<section class="learning-section" id="learningTopics" aria-labelledby="learningTopicsHeading">' +
+    '<div class="learning-section-heading"><div><div class="learning-kicker">Biblioteca de conceptos</div>' +
+    '<h2 id="learningTopicsHeading">Explora por tema</h2>' +
+    '<p>Elige una categoría y descubre sus definiciones, ejemplos y fórmulas cuando correspondan.</p></div></div>' +
+    '<div class="learning-topic-grid">';
+  Object.entries(CATS).forEach(([key, cat]) => {
+    const count = TERMS.filter(t => t.cat === key).length;
+    html += '<button class="learning-topic-button" type="button" onclick="showAllCat(\'' + escapeHTML(key) + '\')">' +
+      '<span class="topic-icon" aria-hidden="true">' + cat.icon + '</span>' +
+      '<span class="topic-name">' + escapeHTML(cat.label) + '</span>' +
+      '<span class="topic-count">' + count + ' →</span></button>';
+  });
+  html += '</div></section>';
+
+  html += '<section class="learning-section" aria-labelledby="fullIndexHeading">' +
+    '<details class="learning-index-details"><summary id="fullIndexHeading">Ver el índice alfabético por categorías (' + TERMS.length + ' términos)</summary>' +
+    '<div class="index-grid">';
   Object.entries(CATS).forEach(([key, c]) => {
-    const catTerms = TERMS.filter(t => t.cat === key);
-    html += '<div class="idx-section">';
-    html += '<div class="idx-section-hd" style="border-color:' + c.color + '">';
-    html += '<span class="idx-icon">' + c.icon + '</span>';
-    html += '<span class="idx-label" style="color:' + c.color + '">' + c.label + '</span>';
-    html += '<span class="idx-count" style="color:' + c.color + '">' + catTerms.length + '</span>';
-    html += '</div>';
+    const catTerms = TERMS.filter(t => t.cat === key).sort((x, y) => x.es.localeCompare(y.es, 'es'));
+    html += '<div class="idx-section">' +
+      '<div class="idx-section-hd" style="border-color:' + c.color + '">' +
+      '<span class="idx-icon">' + c.icon + '</span>' +
+      '<span class="idx-label" style="color:' + c.color + '">' + escapeHTML(c.label) + '</span>' +
+      '<span class="idx-count" style="color:' + c.color + '">' + catTerms.length + '</span></div>';
     catTerms.forEach(t => {
-      html += '<button class="idx-link" onclick="goToTerm(\'' + escapeHTML(t.id) + '\')">' + escapeHTML(t.es) + '<span>' + escapeHTML(getShortEnglishName(t)) + '</span></button>';
+      html += '<button class="idx-link" onclick="goToTerm(\'' + escapeHTML(t.id) + '\')">' +
+        escapeHTML(t.es) + '<span>' + escapeHTML(getShortEnglishName(t)) + '</span></button>';
     });
     html += '</div>';
   });
-  html += '</div>';
-  html += getFooterHTML();
-  content.innerHTML = html;
+  html += '</div></details></section>' + getFooterHTML();
+  document.getElementById('mainContent').innerHTML = html;
+  updateBackToTopVisibility();
 }
 
 // ── SHOW ALL / CAT ──
