@@ -129,8 +129,10 @@ body,#app{background:#F6F8FB;color:#253451}
   #app .layout{display:block}
   #app .sidebar{display:none}
   #app .mobile-cat-nav{display:block;position:sticky;top:62px;z-index:90;padding:10px 16px}
-  #app .mobile-cat-inner{max-width:100%;display:flex;gap:12px}
-  #app .mobile-cat-select{min-width:0;flex:1 1 auto;width:auto}
+  #app .mobile-cat-inner{max-width:100%;display:flex;align-items:center;gap:12px}
+  #app .mobile-cat-label{font:600 12px/1.4 'Inter',sans-serif;color:#1B2B6B;white-space:nowrap}
+  #app .mobile-cat-select{min-width:0;flex:1 1 auto;width:auto;min-height:44px;padding:10px 14px;border:1px solid #DDE4EE;border-radius:12px;background:#F8FAFD;color:#1B2B6B;font:500 13px/1.4 'Inter',sans-serif;box-shadow:none}
+  #app .mobile-cat-select:focus-visible{outline:2px solid #C79A3F;outline-offset:2px}
   #app .content{padding:28px clamp(18px,3vw,34px) 78px}
 }
 @media(max-width:600px){
