@@ -3565,6 +3565,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:10px}
 </style>
+<link rel="stylesheet" href="assets/experience.css">
 </head>
 <body>
 
@@ -3637,9 +3638,9 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
       </a>
       <div class="search-wrap">
         <span class="s-icon">🔍</span>
-        <input class="search-input" type="text" id="searchInput" placeholder="Buscar término..." autocomplete="off">
-        <button class="s-clear" id="searchClear" onclick="clearSearch()">✕</button>
-        <div class="autocomplete" id="autocomplete"></div>
+        <input class="search-input" type="search" id="searchInput" aria-label="Buscar términos financieros" placeholder="Busca un concepto: ROIC, FCF, ETF..." autocomplete="off" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete">
+        <button class="s-clear" id="searchClear" onclick="clearSearch()" type="button" aria-label="Borrar búsqueda">✕</button>
+        <div class="autocomplete" id="autocomplete" role="listbox" aria-label="Sugerencias de búsqueda"></div>
       </div>
       <div class="h-actions">
  <button class="nav-btn active" id="btnIndex" onclick="showIndex()">Índice</button>
@@ -3710,135 +3711,7 @@ if ('scrollRestoration' in history) {
 const TERMS = window.DICTIONARY_TERMS;
 
 
-// ── FORMULA UPDATES ──
-const FORMULA_UPDATES = [
-  {
-    ids: ['ev', 'enterprise-value'],
-    names: ['Enterprise Value', 'EV', 'Valor de empresa'],
-    formula: 'Enterprise Value = Market Cap + Deuda total + Acciones preferentes + Participaciones minoritarias − Efectivo y equivalentes'
-  },
-  {
-    ids: ['beta'],
-    names: ['Beta'],
-    formula: 'Beta = Covarianza entre la acción y el mercado / Varianza del mercado'
-  },
-  {
-    ids: ['roic'],
-    names: ['ROIC', 'Return on Invested Capital'],
-    formula: 'ROIC = NOPAT / Capital invertido'
-  },
-  {
-    ids: ['roiic'],
-    names: ['ROIIC', 'Return on Incremental Invested Capital'],
-    formula: 'ROIIC = Incremento del NOPAT / Incremento del capital invertido'
-  },
-  {
-    ids: ['roe'],
-    names: ['ROE', 'Return on Equity'],
-    formula: 'ROE = Beneficio neto / Patrimonio neto promedio'
-  },
-  {
-    ids: ['roa'],
-    names: ['ROA', 'Return on Assets'],
-    formula: 'ROA = Beneficio neto / Activos totales promedio'
-  },
-  {
-    ids: ['tasareinversion', 'reinversion', 'tasa-reinversion', 'tasa-de-reinversion'],
-    names: ['Tasa de reinversión', 'Reinvestment Rate'],
-    formula: 'Tasa de reinversión = Reinversión en el negocio / NOPAT\nCrecimiento = ROIC × Tasa de reinversión'
-  },
-  {
-    ids: ['ccc', 'ciclo-conversion-caja', 'ciclo-de-conversion-de-caja'],
-    names: ['Ciclo de conversión de caja', 'Cash Conversion Cycle'],
-    formula: 'Ciclo de conversión de caja = Días de inventario + Días de cuentas por cobrar − Días de cuentas por pagar'
-  },
-  {
-    ids: ['deudaneta', 'deuda-neta', 'net-debt'],
-    names: ['Deuda neta', 'Net Debt'],
-    formula: 'Deuda neta = Deuda financiera total − Efectivo y equivalentes'
-  },
-  {
-  ids: ['wacc'],
-  names: ['WACC', 'Weighted Average Cost of Capital'],
-  formula: 'WACC = (E / V × Re) + (D / V × Rd × (1 − T))\n\nDonde:\nE = Valor de mercado del equity, o sea, capitalización bursátil\nD = Valor de mercado de la deuda\nV = Valor total de financiamiento, es decir, E + D\nRe = Costo del equity\nRd = Costo de la deuda\nT = Tasa impositiva'
-},
-  {
-    ids: ['pe', 'pe-ratio', 'price-to-earnings'],
-    names: ['P/E', 'P/E Ratio', 'Price-to-Earnings', 'PER'],
-    formula: 'P/E = Precio por acción / Beneficio por acción\nP/E = Market Cap / Beneficio neto'
-  },
-  {
-    ids: ['ev-ebitda', 'evebitda'],
-    names: ['EV/EBITDA'],
-    formula: 'EV/EBITDA = Enterprise Value / EBITDA'
-  },
-  {
-    ids: ['ev-ebit', 'evebit'],
-    names: ['EV/EBIT'],
-    formula: 'EV/EBIT = Enterprise Value / EBIT'
-  },
-  {
-    ids: ['ps', 'ps-ratio', 'price-to-sales'],
-    names: ['P/S', 'P/S Ratio', 'Price-to-Sales'],
-    formula: 'P/S = Precio por acción / Ventas por acción\nP/S = Market Cap / Ingresos'
-  },
-  {
-    ids: ['pb', 'pb-ratio', 'price-to-book'],
-    names: ['P/B', 'P/B Ratio', 'Price-to-Book'],
-    formula: 'P/B = Precio por acción / Valor en libros por acción\nP/B = Market Cap / Patrimonio neto contable'
-  }
-];
-
-function normalizeFormulaPatchText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function termMatchesFormulaUpdate(term, update) {
-  const id = String(term.id || '').toLowerCase();
-
-  if ((update.ids || []).some(candidate => id === String(candidate).toLowerCase())) {
-    return true;
-  }
-
-  const searchableNames = [
-    term.es,
-    term.en,
-    ...(term.aliases || [])
-  ].map(normalizeFormulaPatchText);
-
-  return (update.names || []).some(candidate => {
-    const normalizedCandidate = normalizeFormulaPatchText(candidate);
-    return searchableNames.includes(normalizedCandidate);
-  });
-}
-
-function applyFormulaUpdates() {
-  const missing = [];
-
-  FORMULA_UPDATES.forEach(update => {
-    const term = TERMS.find(item => termMatchesFormulaUpdate(item, update));
-
-    if (!term) {
-      missing.push(update.names[0]);
-      return;
-    }
-
-    term.formula = update.formula;
-  });
-
-  if (missing.length) {
-    console.warn('Fórmulas no aplicadas porque no se encontró el término:', missing);
-  } else {
-    console.info('✅ Fórmulas actualizadas correctamente.');
-  }
-}
-
-applyFormulaUpdates();
+// Las fórmulas se leen de data/terminos.json; no se modifican en esta página.
 
 const CATS = {"mercado": {"label": "Conceptos del Mercado", "color": "#2563EB", "bg": "#EFF6FF", "icon": "📈"}, "estados": {"label": "Estados Financieros", "color": "#D97706", "bg": "#FFFBEB", "icon": "📊"}, "resultados": {"label": "Resultados y Márgenes", "color": "#059669", "bg": "#ECFDF5", "icon": "💹"}, "rentabilidad": {"label": "Métricas de Rentabilidad", "color": "#7C3AED", "bg": "#F5F3FF", "icon": "🎯"}, "capital": {"label": "Estructura de Capital", "color": "#0891B2", "bg": "#ECFEFF", "icon": "🏦"}, "valoracion": {"label": "Valoración", "color": "#DC2626", "bg": "#FEF2F2", "icon": "⚖️"}, "corporativas": {"label": "Acciones Corporativas", "color": "#EA580C", "bg": "#FFF7ED", "icon": "🏢"}, "ventaja": {"label": "Ventaja Competitiva", "color": "#0D9488", "bg": "#F0FDFA", "icon": "🏰"}, "macro": {"label": "Macro y Mercados", "color": "#4F46E5", "bg": "#EEF2FF", "icon": "🌎"}, "instrumentos": {"label": "Instrumentos Financieros", "color": "#BE185D", "bg": "#FDF2F8", "icon": "🔧"}, "vehiculos": {"label": "Vehículos de Inversión", "color": "#15803D", "bg": "#F0FDF4", "icon": "🏛️"}};
 let currentView = 'index';
