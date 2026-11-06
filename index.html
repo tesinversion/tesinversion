@@ -7465,6 +7465,7 @@ function showIndex(options = {}) {
   });
   html += '</div></details></section>' + getFooterHTML();
   document.getElementById('mainContent').innerHTML = html;
+  window.scrollTo(0, 0);
   updateBackToTopVisibility();
 }
 
