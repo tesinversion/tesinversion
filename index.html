@@ -3638,7 +3638,7 @@ body.study-mode .term-card.study-flipped .tc-study-close-btn:hover{
       </a>
       <div class="search-wrap">
         <span class="s-icon">🔍</span>
-        <input class="search-input" type="search" id="searchInput" aria-label="Buscar términos financieros" placeholder="Busca un concepto: ROIC, FCF, ETF..." autocomplete="off" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete">
+        <input class="search-input" type="search" role="combobox" id="searchInput" aria-label="Buscar términos financieros" placeholder="Busca un concepto: ROIC, FCF, ETF..." autocomplete="off" aria-autocomplete="list" aria-expanded="false" aria-controls="autocomplete">
         <button class="s-clear" id="searchClear" onclick="clearSearch()" type="button" aria-label="Borrar búsqueda">✕</button>
         <div class="autocomplete" id="autocomplete" role="listbox" aria-label="Sugerencias de búsqueda"></div>
       </div>
@@ -8317,11 +8317,11 @@ searchInput.addEventListener('input', () => {
     autocomplete.innerHTML = matches.map((t, i) => {
   const c = CATS[t.cat];
 
-  return "<div class=\"ac-item\" data-id=\"" + escapeHTML(t.id) + "\" onmousedown=\"selectTerm('" + escapeHTML(t.id) + "')\">" +
+  return "<button type=\"button\" role=\"option\" aria-selected=\"false\" class=\"ac-item\" data-id=\"" + escapeHTML(t.id) + "\" onclick=\"selectTerm('" + escapeHTML(t.id) + "')\">" +
     '<span class="ac-es">' + highlight(t.es, q) + '</span>' +
     '<span class="ac-en">' + escapeHTML(getShortEnglishName(t)) + '</span>' +
     '<span class="ac-badge" style="background:' + escapeHTML(c.bg) + ';color:' + escapeHTML(c.color) + '">' + escapeHTML(c.icon) + '</span>' +
-    '</div>';
+    '</button>';
 }).join('');
     acIdx = -1;
     autocomplete.style.display = 'block';
@@ -8341,7 +8341,10 @@ searchInput.addEventListener('keydown', e => {
 });
 
 function updateAc(items) {
-  items.forEach((el, i) => el.classList.toggle('hi', i === acIdx));
+  items.forEach((el, i) => {
+    el.classList.toggle('hi', i === acIdx);
+    el.setAttribute('aria-selected', i === acIdx ? 'true' : 'false');
+  });
 }
 
 function closeAc() {
