@@ -8307,11 +8307,11 @@ searchInput.addEventListener('input', () => {
   searchTimeout = setTimeout(() => {
     const q = searchInput.value.trim();
     searchClear.style.display = q ? 'flex' : 'none';
-    if (q.length < 1) { autocomplete.style.display = 'none'; acIdx = -1; return; }
+    if (q.length < 1) { setAutocompleteOpen(false); acIdx = -1; return; }
     const matches = getSearchResults(q).slice(0, 8);
    if (!matches.length) {
   autocomplete.innerHTML = renderAutocompleteNoResults(q);
-  autocomplete.style.display = 'block';
+  setAutocompleteOpen(true);
   return;
 }
     autocomplete.innerHTML = matches.map((t, i) => {
@@ -8324,7 +8324,7 @@ searchInput.addEventListener('input', () => {
     '</button>';
 }).join('');
     acIdx = -1;
-    autocomplete.style.display = 'block';
+    setAutocompleteOpen(true);
   }, 120);
 });
 
@@ -8347,8 +8347,13 @@ function updateAc(items) {
   });
 }
 
+function setAutocompleteOpen(open) {
+  autocomplete.style.display = open ? 'block' : 'none';
+  searchInput.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
 function closeAc() {
-  autocomplete.style.display = 'none';
+  setAutocompleteOpen(false);
   acIdx = -1;
 }
 
