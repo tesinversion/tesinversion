@@ -1,0 +1,144 @@
+/* Diccionario del Inversor — refinamiento de lectura.
+   Conserva funciones originales y simplifica la jerarquía visual. */
+:root{
+  --navy:#1B2B6B;--gold:#C79A3F;--blue-start:#F6F8FB;--blue-main:#F6F8FB;--blue-end:#EEF2F9;
+  --page-bg:#F6F8FB;--bg:#F7F9FD;--white:#FFFFFF;--text:#253451;--muted:#66738B;
+  --border:#DDE4EE;--shadow:0 4px 16px rgba(18,34,66,.055);--shadow-lg:0 10px 35px rgba(18,34,66,.1)
+}
+body,#app{background:#F6F8FB;color:#253451}
+#app .header{background:rgba(19,32,70,.98);border-bottom:1px solid rgba(255,255,255,.12);box-shadow:0 1px 16px rgba(12,27,60,.1)}
+.header-inner{max-width:1350px}
+.h-brand{color:#F6F8FC}
+.search-input{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28)}
+.search-input::placeholder{color:#D6E0F3}
+.search-input:focus{border-color:#F0C876}
+.autocomplete{background:#fff;border-color:#DDE4EE;color:#253451}
+.ac-item:hover,.ac-item.hi{background:#EEF3FA}
+.ac-item:hover .ac-es,.ac-item.hi .ac-es{color:#1B2B6B}
+.ac-item .ac-es{color:#1B2B6B}
+.ac-item .ac-en{color:#66738B}
+.ac-item:focus-visible{outline:2px solid #C79A3F;outline-offset:-2px}
+.header-newsletter-btn{border-color:rgba(240,200,118,.5)}
+.nav-btn:hover,.nav-btn.active{background:#F0C876;color:#1B2B6B;border-color:#F0C876}
+.layout{max-width:1350px;column-gap:0}
+.sidebar{background:#fff;border-right:1px solid #E4E9F1;backdrop-filter:none;padding:28px 0}
+.sb-title{color:#7C89A0}
+.cat-btn{border-radius:0}
+.cat-btn:hover{background:#F2F5FA}
+.cat-btn.active{background:#F2F5FB;border-left:3px solid #B88F3C}
+.cat-btn .cb-label{color:#344564}
+.cat-btn.active .cb-label{color:#1B2B6B}
+.cb-count{background:#F2F5FA;color:#687792;border-color:#E5E9F0}
+.cat-btn.active .cb-count{background:#1B2B6B;color:#fff;border-color:#1B2B6B}
+.content{max-width:1100px;margin:0 auto;padding:39px clamp(18px,3.4vw,48px) 85px}
+.view-header{margin-bottom:28px}
+.view-header h1,.view-header h2,.cat-hd h2,.cat-hd-label{font:700 clamp(29px,3.5vw,42px)/1.15 'Crimson Pro',Georgia,serif;color:#1B2B6B;letter-spacing:-.018em}
+.view-header p{font-size:14px;line-height:1.7;color:#62718A;margin-top:9px;max-width:690px}
+.index-grid{gap:13px}
+.idx-section{background:#fff;border:1px solid #E0E7F0;border-radius:15px;box-shadow:0 2px 10px rgba(14,37,77,.035);padding:19px}
+.idx-section-hd{border-bottom-width:1px}
+.idx-label{color:#223557}
+.idx-link{color:#344461;line-height:1.55;border-radius:6px}
+.idx-link:hover{background:#F2F5FA;color:#1B2B6B}
+.idx-link span{color:#728098}
+.terms-list{gap:20px}
+.term-card{background:#fff;border:1px solid #E0E6EF;border-left:3px solid #C79A3F;border-radius:17px;box-shadow:0 4px 22px rgba(28,47,88,.05);padding:clamp(20px,3vw,31px);transition:box-shadow .16s,border-color .16s;scroll-margin-top:120px}
+.term-card::before{display:none}
+.term-card:hover{transform:none;border-color:#C9D5E5;box-shadow:0 6px 26px rgba(28,47,88,.085)}
+.term-card.term-card-in-focus{transform:none;background:#fff;border-color:#D7B36B;box-shadow:0 0 0 1px #D7B36B,0 6px 24px rgba(28,47,88,.08)}
+.terms-list:has(.term-card-in-focus) .term-card:not(.term-card-in-focus),
+.terms-list:has(.term-card-in-focus) .term-card:not(.term-card-in-focus):hover{opacity:1;filter:none}
+.term-card.term-card-in-focus .tc-es{color:#1B2B6B}
+.tc-head{gap:12px}
+.tc-es{color:#1B2B6B;font-size:clamp(23px,3vw,29px)}
+.tc-en{color:#74819A;font-style:normal}
+.tc-alias{background:#F3F6FA;color:#5F6F8A;border:1px solid #E5EAF2}
+.tc-def,.tc-rich-text,.tc-rich-text p{color:#2C3C57;font-size:14px;line-height:1.8;text-align:left}
+.tc-def-label{color:#A3782B}
+.tc-rich-text li strong{color:#1B2B6B}
+.tc-rich-text li::before{color:#A3782B}
+.tc-formula{background:#F4F7FC;border:1px solid #DFE6F2;border-left:3px solid #C79A3F;box-shadow:none;padding:16px 18px}
+.tc-formula-label{color:#63728D}
+.tc-formula-text{color:#1B2B6B;white-space:pre-line;font:600 13px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace}
+.tc-example{background:#FAF8F2;border:1px solid #EEE4D3;border-left:3px solid #C79A3F;box-shadow:none}
+.tc-example-label{color:#9E762E}
+.tc-example-text,.tc-example-text p{color:#33435F}
+.tc-guide-link{color:#1B2B6B;text-decoration-color:#A17C37}
+.tc-guide-link:hover{color:#B08028}
+.tc-badge{box-shadow:none}
+.tc-fav-btn,.tc-link-btn,.tc-learned-btn{background:#F8FAFD;border-color:#E0E7F0;color:#385174}
+.tc-fav-btn:hover,.tc-link-btn:hover{background:#F1F5FA}
+.cat-hd-label{color:#1B2B6B}
+.cat-hd-count{color:#6C7A92}
+.formula-card{background:#fff;border-color:#E0E7F0;box-shadow:var(--shadow)}
+.formula-card-title{color:#1B2B6B}
+.formula-card-box{background:#F4F7FB;border-color:#E0E6F0}
+.formula-card-label{color:#1B2B6B}
+.favorites-empty,.no-results{background:#fff;border:1px solid #E1E7EF;box-shadow:var(--shadow)}
+.favorites-empty h3,.no-results h3,.search-hd h2{color:#1B2B6B}
+.mobile-cat-nav{background:#fff;border-bottom:1px solid #E5E9F1;backdrop-filter:none}
+.mobile-cat-select{background:#F8FAFD;color:#1B2B6B;border-color:#DDE4EE}
+.mobile-cat-select option{background:#fff;color:#1B2B6B}
+.learning-progress{background:#fff;border-color:#E3E8F0}
+:focus-visible{outline-color:#C79A3F}
+@media(max-width:820px){.layout{display:block}.sidebar{display:none}.content{padding:28px 21px 75px}}
+@media(max-width:600px){.content{padding:24px 16px 65px}.term-card{padding:20px 18px}.term-card.term-card-in-focus{transform:none}.tc-head{flex-wrap:wrap}.tc-actions{flex-wrap:wrap}.header{padding:10px 12px}.view-header h1{font-size:33px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Favoritos: corazón vacío o relleno, sin modificar los datos ya guardados. */
+.tc-fav-btn{font-family:Arial,Helvetica,sans-serif;font-size:21px;color:#566780;border-color:#DDE4EE}
+.tc-fav-btn:hover{color:#B93459;border-color:#DFA0AF;background:#FFF7F9}
+.tc-fav-btn.is-favorite{color:#BA294E;background:#FFF0F3;border-color:#D76C88;box-shadow:none}
+.tc-fav-btn.is-favorite:hover{background:#FFE5EB;border-color:#BB365B}
+.favorites-empty-icon{color:#BA294E}
+
+/* Bloque final: texto legible sobre el fondo azul oscuro existente. */
+.page-footer .page-footer-title{color:#FFFFFF}
+.page-footer .page-footer-text{color:#E4EBF7}
+.page-footer .page-footer-disclaimer{color:#D3DDEC;opacity:1}
+.page-footer .page-footer-btn-primary{background:#F1C46B;color:#18284C}
+.page-footer .page-footer-btn-primary:hover{background:#F6D48D;color:#18284C}
+
+/* Regreso explícito a la web principal, independiente del botón Inicio del diccionario. */
+.dictionary-breadcrumb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 22px;font:500 12px/1.5 'Inter',sans-serif;color:#65758E}
+.dictionary-breadcrumb a{color:#1B2B6B;text-decoration:none;font-weight:700;padding:4px 0}
+.dictionary-breadcrumb a:hover{text-decoration:underline;text-underline-offset:3px}
+.dictionary-breadcrumb a:focus-visible{outline:2px solid #C79A3F;outline-offset:4px}
+@media(max-width:600px){.dictionary-breadcrumb{gap:8px;margin-bottom:20px;font-size:12px}}
+
+/* Progreso de aprendizaje: fondo blanco, texto oscuro y barra visible. */
+#app .learning-progress{background:#FFFFFF;border:1px solid #DCE4F0;box-shadow:0 5px 18px rgba(21,43,77,.045)}
+#app .learning-progress-text{color:#1B2B6B;font-size:14px;font-weight:650}
+#app .learning-progress-reset{background:#F6F8FC;color:#1B2B6B;border:1px solid #CCD6E7}
+#app .learning-progress-reset:hover{background:#E9EEF8;color:#142458;border-color:#94A9CF}
+#app .learning-progress-bar{background:#DDE6F1;height:9px}
+#app .learning-progress-fill{background:linear-gradient(90deg,#243C7A,#3D5DA6)}
+
+/* Espaciado general: utilizar el ancho disponible sin dejar huecos grandes. */
+#app .header-inner{max-width:1600px;width:100%;gap:clamp(10px,1.2vw,20px)}
+#app .header-inner .search-wrap{flex:1 1 300px;max-width:none;min-width:0}
+#app .header-inner .h-actions{margin-left:0;gap:7px}
+#app .layout{max-width:1600px;grid-template-columns:235px minmax(0,1fr);column-gap:0}
+#app .content{width:100%;max-width:none;margin:0;padding:36px clamp(22px,2.5vw,42px) 85px}
+#app .index-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+
+/* Menú adaptado: cuando la barra superior se estrecha se usa un selector. */
+@media(max-width:1180px){
+  #app .header-inner .h-actions{display:none}
+  #app .layout{display:block}
+  #app .sidebar{display:none}
+  #app .mobile-cat-nav{display:block;position:sticky;top:62px;z-index:90;padding:10px 16px}
+  #app .mobile-cat-inner{max-width:100%;display:flex;align-items:center;gap:12px}
+  #app .mobile-cat-label{font:600 12px/1.4 'Inter',sans-serif;color:#1B2B6B;white-space:nowrap}
+  #app .mobile-cat-select{min-width:0;flex:1 1 auto;width:auto;min-height:44px;padding:10px 14px;border:1px solid #DDE4EE;border-radius:12px;background:#F8FAFD;color:#1B2B6B;font:500 13px/1.4 'Inter',sans-serif;box-shadow:none}
+  #app .mobile-cat-select:focus-visible{outline:2px solid #C79A3F;outline-offset:2px}
+  #app .content{padding:28px clamp(18px,3vw,34px) 78px}
+}
+@media(max-width:600px){
+  #app .header-inner{gap:11px}
+  #app .mobile-cat-nav{top:57px;padding:10px 14px}
+  #app .mobile-cat-inner{gap:10px}
+  #app .content{padding:24px 16px 68px}
+  #app .index-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+}
