@@ -66,8 +66,7 @@ function periods(input){const anchors=series(input,'revenue','USD').filter(isAnn
   const groups=new Map();for(const a of all){const yr=Number((a.end||'').slice(0,4));if(yr<1990||yr>2100)continue;const old=groups.get(yr);if(!old||a._priority<old._priority||(a._priority===old._priority && a.filed>old.filed))groups.set(yr,a);}
   return [...groups.values()].sort((a,b)=>a.end.localeCompare(b.end)).slice(-10).map(f=>({year:Number(f.end.slice(0,4)),end:f.end,start:f.start,form:f.form,accession:f.accn,filed:f.filed}));
 }
-function derive(facts,period){const d={year:period.year,end:period.end,start:period.start,amounts:{},status:[]};const keys=Object.keys(tags);
-for(const k of keys){d.amounts[k]=choose(facts,k,period.year,period.end,['assets','currentAssets','cash','receivables','inventory','ppe','goodwill','currentLiabilities','liabilities','equity','shortDebt','longDebt','debtTotal','sharesEnd'].includes(k)?null:period.start,units[k]||'USD');}
+function deriveMetrics(d){
 const a=d.amounts, g=k=>val(a[k]);
 if(g('gross')===null&&g('revenue')!==null&&g('cogs')!==null)a.gross=mk(g('revenue')-g('cogs'),'Ventas − costo de ventas',['revenue','cogs']);
 if(g('cogs')===null&&g('revenue')!==null&&g('gross')!==null)a.cogs=mk(g('revenue')-g('gross'),'Ventas − beneficio bruto',['revenue','gross']);
@@ -99,9 +98,11 @@ if(g('assets')!==null&&g('liabilities')!==null&&g('equity')!==null){let residual
 if(g('ebit')!==null&&g('opex')!==null&&g('gross')!==null&&Math.abs(g('gross')-g('opex')-g('ebit'))/Math.max(1,Math.abs(g('revenue')||1))>.02)d.status.push('EBIT, beneficio bruto y gastos operativos totales no concilian; existen partidas no representadas o diferencias de definición.');
 return d;
 }
-function parseCompanyFacts(json){if(!json||!json.facts||!json.facts['us-gaap']||!json.cik)throw Error('El archivo debe ser Company Facts JSON con taxonomía US-GAAP y CIK de la SEC.');
-const spans=periods(json);if(!spans.length)throw Error('No se detectaron ejercicios anuales 10-K válidos con ventas, beneficio neto o flujo operativo.');
-const rows=spans.map(p=>derive(json,p));
+function derive(facts,period){const d={year:period.year,end:period.end,start:period.start,amounts:{},status:[]};const keys=Object.keys(tags);
+for(const k of keys){d.amounts[k]=choose(facts,k,period.year,period.end,['assets','currentAssets','cash','receivables','inventory','ppe','goodwill','currentLiabilities','liabilities','equity','shortDebt','longDebt','debtTotal','sharesEnd'].includes(k)?null:period.start,units[k]||'USD');}
+return deriveMetrics(d);
+}
+function deriveHistory(rows){
 for(let i=0;i<rows.length;i++){
  const row=rows[i],a=row.amounts,prev=rows[i-1],b=prev?.amounts||{};
  const adjacent=!!prev && row.year-prev.year===1;
@@ -127,8 +128,47 @@ for(let i=0;i<rows.length;i++){
   a.roicMedian5=mk(median,'Mediana del ROIC orientativo de hasta cinco ejercicios, con al menos tres observaciones válidas',['roicApprox']);
  }
 }
+return rows;
+}
+function parseCompanyFacts(json){if(!json||!json.facts||!json.facts['us-gaap']||!json.cik)throw Error('El archivo debe ser Company Facts JSON con taxonomía US-GAAP y CIK de la SEC.');
+const spans=periods(json);if(!spans.length)throw Error('No se detectaron ejercicios anuales 10-K válidos con ventas, beneficio neto o flujo operativo.');
+const rows=spans.map(p=>derive(json,p));
+deriveHistory(rows);
 const missing=new Set();for(const row of rows){for(const k of ['revenue','ebit','assets','equity','cfo','capex'])if(!row.amounts[k])missing.add(k);}
 return {name:json.entityName||'Empresa SEC',cik:String(json.cik).padStart(10,'0'),currency:'USD',rows,missing:[...missing],source:'SEC EDGAR Company Facts',generatedAt:new Date().toISOString(),limitations:['Estados originales en US-GAAP, no datos de TIKR.','Los importes reportados pueden contener reclasificaciones y ajustes en años comparativos.','FCF = flujo operativo − CapEx; no equivale automáticamente a FCFF para valoración EV/FCF.','Las filas de gastos pueden solaparse y no deben sumarse automáticamente.','ROIC, EBITDA, deuda neta y reinversión son aproximaciones contables no ajustadas; su fiabilidad puede variar por sector, adquisiciones, arrendamientos, gasto en I+D y clasificación de la SEC.','ROIC histórico se resume con la mediana de hasta cinco ejercicios y al menos tres observaciones válidas; se omite cuando faltan datos.']};
 }
-return {parseCompanyFacts,periods,derive,tags};
+
+/* Overrides represent user-provided review corrections, never changes to SEC originals.
+   Keys have exact fiscal-end dates (YYYY-MM-DD) and US-GAAP fields; derived values are
+   completely recalculated from source values after overrides have been applied. */
+function applyOverrides(report,overrides={}){
+ if(!report||!Array.isArray(report.rows))throw Error('Historial original inválido');
+ const list=report.rows.map(row=>({
+  ...row,
+  amounts:Object.fromEntries(Object.entries(row.amounts).filter(([,obj])=>obj && !obj.meta?.calculated)),
+  status:[]
+ }));
+ for(const [identifier,change] of Object.entries(overrides)){
+  const parts=identifier.split('|');if(parts.length!==2)continue;
+  const [end,key]=parts;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(end)||!Object.hasOwn(tags,key))continue;
+  const r=list.find(x=>x.end===end);
+  if(!r||!change||!Number.isFinite(change.value))continue;
+  const before=report.rows.find(x=>x.end===end)?.amounts?.[key]||null;
+  r.amounts[key]={
+   v:change.value,
+   meta:{manual:true,
+     period_end:end,
+     original:before,
+     reason:String(change.reason||'').slice(0,300),
+     sourceUrl:String(change.sourceUrl||'').slice(0,500),
+     editedAt:String(change.editedAt||''),
+     originalDocument:before?.meta||null}
+  };
+ }
+ for(const r of list)deriveMetrics(r);
+ deriveHistory(list);
+ return {...report,rows:list,manualAdjustments:Object.keys(overrides).length};
+}
+return {parseCompanyFacts,periods,derive,tags,applyOverrides};
 });
