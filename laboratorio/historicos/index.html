@@ -16,6 +16,15 @@ table{border-collapse:separate;border-spacing:0;min-width:790px;width:100%;font-
 @media(max-width:900px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:19px}.wrap{padding:0 16px}.hero{padding-top:35px}.metric .n{font-size:19px}}
 @media(max-width:580px){.top-inner{min-height:63px}.brand{font-size:16px}.lab{font-size:10px}.hero h1{font-size:37px}.hero p{font-size:13px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{padding:10px}.metric .n{font-size:16px}table th.label,table td.label{min-width:190px;max-width:190px}th,td{padding:9px 11px}.tabbar{gap:15px}.searchbox input{max-width:100%;min-width:160px}.section-head{display:block}.section-head .sub{margin-bottom:12px}}
 @media print{.top,.searchbox,.queryhelp,.table-toolbar,.tabbar,.sourcebox,.empty,.steps,.file,.notice,.foot{display:none!important}.wrap{max-width:none}.card{box-shadow:none;border:0}.gridwrap{overflow:visible}table{min-width:0}th,td{font-size:9px;padding:5px}th.label,td.label{position:static;min-width:130px;max-width:130px}}
+/* Indicadores elegidos por la autora: jerarquía visual sobria, sin semáforos de calidad. */
+tbody tr.focus-metric td{background:#f1f5fc;color:#172c65;font-weight:700;border-bottom-color:#dce5f3}
+tbody tr.focus-metric td.label{background:#eef3fb;color:#142169;border-left:3px solid #142169;padding-left:10px}
+tbody tr.focus-metric .value{font-weight:750;color:#142169}
+tbody tr.focus-metric .value.missing{color:#8f9aae;font-weight:500}
+tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#e9f0fc}
+.focus-legend{font-size:11px;color:#62728b;display:inline-flex;gap:8px;align-items:center}
+.focus-legend:before{content:"";display:inline-block;width:11px;height:11px;border-radius:3px;background:#142169}
+@media print{tbody tr.focus-metric td{background:#f1f5fc!important}}
 </style>
 </head>
 <body>
@@ -31,7 +40,7 @@ table{border-collapse:separate;border-spacing:0;min-width:790px;width:100%;font-
 <div class="section-head" id="empty-head"><div><h2>Historial financiero</h2><p class="sub">Una lectura sencilla antes de pasar a la valoración.</p></div></div>
 <div class="empty" id="empty"><div class="graphic">01 — 10</div><h3>Explora los resultados de una empresa</h3><p>Abre la demostración para conocer el diseño. Cuando importes datos SEC o consultes una compañía, aquí aparecerán los tres estados financieros.</p><button class="btn primary" id="empty-demo" type="button">Mostrar ejemplo ficticio</button></div>
 <div id="report" hidden><nav class="tabbar" id="tabs" role="tablist" aria-label="Estados financieros"><button class="tab active" type="button" role="tab" aria-selected="true" data-tab="income">Resultados</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="balance">Balance general</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="cashflow">Flujos de efectivo</button></nav>
-<div class="table-toolbar"><div class="mutedlabel" id="table-help">Cifras anuales en millones de USD.</div><div class="controls"><button class="btn small" type="button" id="history-years">Ver 10 años</button><button class="btn small" type="button" id="percent-toggle">Variaciones visibles</button></div></div>
+<div class="table-toolbar"><div class="mutedlabel" id="table-help">Cifras anuales en millones de USD.</div><div class="controls"><span class="focus-legend">Indicador clave</span><button class="btn small" type="button" id="history-years">Ver 10 años</button><button class="btn small" type="button" id="percent-toggle">Variaciones visibles</button></div></div>
 <div class="gridwrap" role="region" tabindex="0" aria-label="Tabla de datos financieros desplazable horizontalmente"><table><thead id="financial-head"></thead><tbody id="financial-body"></tbody></table></div>
 <div class="sourcebox" id="sourcebox" aria-live="polite"></div><p class="legend"><strong>Cómo leerlo:</strong> selecciona una cifra para consultar el dato, su concepto contable y el archivo original. «—» significa que el dato no está disponible o no se puede calcular de forma fiable. Los gastos agregados y sus componentes pueden solaparse.</p><div id="warnings"></div></div>
 </section>
@@ -121,15 +130,54 @@ if(g('debtTotal')!==null)a.totalDebt=mk(g('debtTotal'),'Deuda financiera reporta
 else if(g('shortDebt')!==null&&g('longDebt')!==null)a.totalDebt=mk(g('shortDebt')+g('longDebt'),'Deuda financiera a corto + largo plazo',['shortDebt','longDebt']);
 if(g('totalDebt')!==null&&g('cash')!==null)a.netDebt=mk(g('totalDebt')-g('cash'),'Deuda financiera − efectivo',['totalDebt','cash']);
 if(g('currentAssets')!==null&&g('currentLiabilities')!==null&&g('currentLiabilities')!==0)a.currentRatio=mk(g('currentAssets')/g('currentLiabilities'),'Activos corrientes ÷ pasivos corrientes',['currentAssets','currentLiabilities']);
+// Ratios de historial: se muestran solo con todos los insumos necesarios. No se sustituyen faltantes por cero.
+if(g('totalDebt')!==null&&g('totalDebt')>=0&&g('assets')!==null&&g('assets')>0)
+ a.debtAssetRatio=mk(g('totalDebt')/g('assets')*100,'Deuda financiera identificada ÷ activos totales',['totalDebt','assets']);
+if(g('ebit')!==null&&g('da')!==null){
+ a.ebitdaApprox=mk(g('ebit')+g('da'),'Aproximación EBITDA: EBIT + depreciación y amortización reportada en flujo de efectivo',['ebit','da']);
+ if(g('netDebt')!==null&&g('ebitdaApprox')>0)
+  a.netDebtEbitda=mk(g('netDebt')/g('ebitdaApprox'),'Deuda neta orientativa ÷ EBITDA aproximado (requiere EBITDA positivo)',['netDebt','ebitdaApprox']);
+}
+if(g('equity')!==null&&g('totalDebt')!==null&&g('cash')!==null)
+ a.investedCapitalApprox=mk(g('equity')+g('totalDebt')-g('cash'),'Capital invertido orientativo: patrimonio + deuda financiera identificada − efectivo',['equity','totalDebt','cash']);
+if(g('ebit')!==null&&g('taxRate')!==null&&g('taxRate')>=0&&g('taxRate')<=100&&g('preTax')>0)
+ a.nopatApprox=mk(g('ebit')*(1-g('taxRate')/100),'NOPAT orientativo: EBIT × (1 − tasa efectiva de impuestos)',['ebit','taxRate']);
+if(g('currentAssets')!==null&&g('currentLiabilities')!==null&&g('cash')!==null&&g('shortDebt')!==null)
+ a.nwcApprox=mk(g('currentAssets')-g('cash')-g('currentLiabilities')+g('shortDebt'),'Capital de trabajo operativo aproximado: (activo corriente − caja) − (pasivo corriente − deuda corriente)',['currentAssets','cash','currentLiabilities','shortDebt']);
 if(g('assets')!==null&&g('liabilities')!==null&&g('equity')!==null){let residual=Math.abs(g('assets')-g('liabilities')-g('equity'))/Math.max(1,Math.abs(g('assets')));if(residual>.01)d.status.push('El balance no concilia con activos = pasivos + patrimonio (>1 %); podría haber intereses no controladores o diferencias de reporte.');}
 if(g('ebit')!==null&&g('opex')!==null&&g('gross')!==null&&Math.abs(g('gross')-g('opex')-g('ebit'))/Math.max(1,Math.abs(g('revenue')||1))>.02)d.status.push('EBIT, beneficio bruto y gastos operativos totales no concilian; existen partidas no representadas o diferencias de definición.');
 return d;
 }
 function parseCompanyFacts(json){if(!json||!json.facts||!json.facts['us-gaap']||!json.cik)throw Error('El archivo debe ser Company Facts JSON con taxonomía US-GAAP y CIK de la SEC.');
 const spans=periods(json);if(!spans.length)throw Error('No se detectaron ejercicios anuales 10-K válidos con ventas, beneficio neto o flujo operativo.');
-const rows=spans.map(p=>derive(json,p));for(let i=0;i<rows.length;i++){const a=rows[i].amounts, b=rows[i-1]?.amounts;const revenue=val(a.revenue),before=val(b?.revenue);if(i&&revenue!==null&&before!==null&&before!==0){a.revenueGrowth=mk((revenue/before-1)*100,'Variación de ventas frente al ejercicio anterior',['revenue']);}const shares=val(a.sharesEnd),prevShares=val(b?.sharesEnd);if(i&&shares!==null&&prevShares!==null&&prevShares!==0)a.sharesGrowth=mk((shares/prevShares-1)*100,'Variación de acciones en circulación',['sharesEnd']);}
+const rows=spans.map(p=>derive(json,p));
+for(let i=0;i<rows.length;i++){
+ const row=rows[i],a=row.amounts,prev=rows[i-1],b=prev?.amounts||{};
+ const adjacent=!!prev && row.year-prev.year===1;
+ const revenue=val(a.revenue),before=val(b.revenue);
+ if(adjacent&&revenue!==null&&before!==null&&before!==0)
+  a.revenueGrowth=mk((revenue/before-1)*100,'Variación de ventas frente al ejercicio anterior',['revenue']);
+ const shares=val(a.sharesEnd),prevShares=val(b.sharesEnd);
+ if(adjacent&&shares!==null&&prevShares!==null&&prevShares!==0)
+  a.sharesGrowth=mk((shares/prevShares-1)*100,'Variación de acciones al cierre del ejercicio',['sharesEnd']);
+ const eps=val(a.eps),prevEps=val(b.eps);
+ if(adjacent&&eps!==null&&prevEps!==null&&prevEps>0&&eps>=0)
+  a.epsGrowth=mk((eps/prevEps-1)*100,'Variación del beneficio diluido por acción (si el EPS anterior es positivo)',['eps']);
+ const ic=val(a.investedCapitalApprox),prevIc=val(b.investedCapitalApprox),nopat=val(a.nopatApprox);
+ if(adjacent&&ic!==null&&prevIc!==null&&ic>0&&prevIc>0&&nopat!==null)
+  a.roicApprox=mk(nopat/((ic+prevIc)/2)*100,'ROIC orientativo: NOPAT dividido entre capital invertido medio (sin ajustes de arrendamientos, I+D, exceso de caja ni extraordinarios)',['nopatApprox','investedCapitalApprox']);
+ const nwc=val(a.nwcApprox),prevNwc=val(b.nwcApprox),capex=val(a.capex),da=val(a.da);
+ if(adjacent&&nwc!==null&&prevNwc!==null&&capex!==null&&da!==null&&nopat!==null&&nopat>0)
+  a.reinvestmentRateApprox=mk((Math.abs(capex)-da+nwc-prevNwc)/nopat*100,'Reinversión orientativa: (CapEx − D&A + variación del capital de trabajo operativo) ÷ NOPAT. Excluye adquisiciones, ajustes de I+D y arrendamientos',['capex','da','nwcApprox','nopatApprox']);
+ const lastFive=rows.slice(Math.max(0,i-4),i+1).map(x=>val(x.amounts.roicApprox)).filter(Number.isFinite).sort((x,y)=>x-y);
+ if(lastFive.length>=3){
+  const mid=Math.floor(lastFive.length/2);
+  const median=lastFive.length%2?lastFive[mid]:(lastFive[mid-1]+lastFive[mid])/2;
+  a.roicMedian5=mk(median,'Mediana del ROIC orientativo de hasta cinco ejercicios, con al menos tres observaciones válidas',['roicApprox']);
+ }
+}
 const missing=new Set();for(const row of rows){for(const k of ['revenue','ebit','assets','equity','cfo','capex'])if(!row.amounts[k])missing.add(k);}
-return {name:json.entityName||'Empresa SEC',cik:String(json.cik).padStart(10,'0'),currency:'USD',rows,missing:[...missing],source:'SEC EDGAR Company Facts',generatedAt:new Date().toISOString(),limitations:['Estados originales en US-GAAP, no datos de TIKR.','Los importes reportados pueden contener reclasificaciones y ajustes en años comparativos.','FCF = flujo operativo − CapEx; no equivale automáticamente a FCFF para valoración EV/FCF.','Las filas de gastos pueden solaparse y no deben sumarse automáticamente.']};
+return {name:json.entityName||'Empresa SEC',cik:String(json.cik).padStart(10,'0'),currency:'USD',rows,missing:[...missing],source:'SEC EDGAR Company Facts',generatedAt:new Date().toISOString(),limitations:['Estados originales en US-GAAP, no datos de TIKR.','Los importes reportados pueden contener reclasificaciones y ajustes en años comparativos.','FCF = flujo operativo − CapEx; no equivale automáticamente a FCFF para valoración EV/FCF.','Las filas de gastos pueden solaparse y no deben sumarse automáticamente.','ROIC, EBITDA, deuda neta y reinversión son aproximaciones contables no ajustadas; su fiabilidad puede variar por sector, adquisiciones, arrendamientos, gasto en I+D y clasificación de la SEC.','ROIC histórico se resume con la mediana de hasta cinco ejercicios y al menos tres observaciones válidas; se omite cuando faltan datos.']};
 }
 return {parseCompanyFacts,periods,derive,tags};
 });
@@ -143,7 +191,7 @@ const state={report:null,tab:'income',count:5,showRatio:true,mode:'empty'};
 const rows={
  income:[
  {k:'revenue',label:'Ingresos / ventas netas',kind:'money',class:'key section',hint:'Punto de partida del negocio'},
- {k:'revenueGrowth',label:'Crecimiento de ventas',kind:'pct',class:'ratio'},
+ {k:'revenueGrowth',label:'Crecimiento de ventas',kind:'pct',class:'ratio focus-metric'},
  {k:'cogs',label:'Costo de ventas',kind:'money'},
  {k:'gross',label:'Beneficio bruto',kind:'money',class:'key'},
  {k:'grossMargin',label:'Margen bruto',kind:'pct',class:'ratio'},
@@ -151,16 +199,17 @@ const rows={
  {k:'rd',label:'Investigación y desarrollo (I+D)',kind:'money'},
  {k:'opex',label:'Gastos operativos totales reportados',kind:'money',hint:'Puede incluir SG&A e I+D; no sumar estas filas entre sí'},
  {k:'ebit',label:'Beneficio operativo (EBIT)',kind:'money',class:'key section'},
- {k:'ebitMargin',label:'Margen EBIT',kind:'pct',class:'ratio'},
+ {k:'ebitMargin',label:'Margen EBIT',kind:'pct',class:'ratio focus-metric'},
  {k:'interest',label:'Gastos por intereses',kind:'money',class:'section'},
  {k:'interestIncome',label:'Ingresos por intereses',kind:'money'},
  {k:'preTax',label:'Beneficio antes de impuestos',kind:'money'},
  {k:'taxExpense',label:'Gasto por impuestos',kind:'money'},
- {k:'taxRate',label:'Tasa efectiva de impuestos',kind:'pct',class:'ratio'},
+ {k:'taxRate',label:'Tasa efectiva de impuestos',kind:'pct',class:'ratio focus-metric'},
  {k:'netIncome',label:'Beneficio neto',kind:'money',class:'key section'},
- {k:'netMargin',label:'Margen neto',kind:'pct',class:'ratio'},
+ {k:'netMargin',label:'Margen neto',kind:'pct',class:'ratio focus-metric'},
  {k:'diluted',label:'Acciones diluidas (promedio anual)',kind:'shares',class:'section'},
- {k:'eps',label:'Beneficio por acción diluido (USD)',kind:'eps'}],
+ {k:'eps',label:'Beneficio por acción diluido (USD)',kind:'eps'},
+  {k:'epsGrowth',label:'Crecimiento del EPS diluido',kind:'pct',class:'ratio focus-metric',hint:'Calculable cuando el EPS del año previo es positivo'}],
  balance:[
  {k:'assets',label:'Activos totales',kind:'money',class:'key section'},
  {k:'currentAssets',label:'Activos corrientes',kind:'money'},
@@ -175,15 +224,20 @@ const rows={
  {k:'longDebt',label:'Deuda financiera de largo plazo',kind:'money'},
  {k:'totalDebt',label:'Deuda financiera identificada',kind:'money',class:'key'},
  {k:'netDebt',label:'Deuda neta orientativa',kind:'money'},
+  {k:'netDebtEbitda',label:'Deuda neta / EBITDA (aproximado)',kind:'times',class:'ratio focus-metric',hint:'EBITDA calculado a partir de EBIT + D&A reportada'},
+  {k:'debtAssetRatio',label:'Endeudamiento financiero / activos',kind:'pct',class:'ratio focus-metric',hint:'Deuda financiera identificada ÷ activos; no pasivos totales'},
  {k:'equity',label:'Patrimonio neto reportado',kind:'money',class:'key section'},
  {k:'currentRatio',label:'Razón corriente (veces)',kind:'times',class:'ratio'},
  {k:'sharesEnd',label:'Acciones en circulación (fin de año)',kind:'shares',class:'section'},
- {k:'sharesGrowth',label:'Variación de acciones',kind:'pct',class:'ratio'}],
+ {k:'sharesGrowth',label:'Variación de acciones',kind:'pct',class:'ratio focus-metric'},
+  {k:'roicApprox',label:'ROIC anual orientativo',kind:'pct',class:'ratio focus-metric',hint:'NOPAT orientativo / capital invertido medio'},
+  {k:'roicMedian5',label:'ROIC histórico · mediana 5 años',kind:'pct',class:'ratio focus-metric',hint:'Al menos tres ROIC anuales disponibles; aproximado'}],
  cashflow:[
  {k:'cfo',label:'Flujo de efectivo de operaciones (CFO)',kind:'money',class:'key section'},
- {k:'capex',label:'Inversión en activos (CapEx)',kind:'money',hint:'Salida de efectivo destinada a activos fijos'},
- {k:'fcf',label:'Flujo de caja libre convencional (FCF)',kind:'money',class:'key'},
- {k:'fcfMargin',label:'Margen FCF / ventas',kind:'pct',class:'ratio'},
+ {k:'capex',label:'Inversión en activos (CapEx)',kind:'money',class:'focus-metric',hint:'Salida de efectivo destinada a activos fijos'},
+ {k:'fcf',label:'Flujo de caja libre convencional (FCF)',kind:'money',class:'key focus-metric'},
+ {k:'fcfMargin',label:'Margen FCF / ventas',kind:'pct',class:'ratio focus-metric'},
+  {k:'reinvestmentRateApprox',label:'Tasa de reinversión histórica (aprox.)',kind:'pct',class:'ratio focus-metric',hint:'CapEx neto + variación de capital circulante / NOPAT; sin adquisiciones'},
  {k:'da',label:'Depreciación y amortización reportada',kind:'money',class:'section'},
  {k:'sbc',label:'Compensación basada en acciones',kind:'money'},
  {k:'cfi',label:'Flujo de efectivo de inversión',kind:'money',class:'key section'},
@@ -208,13 +262,13 @@ function render(){const data=state.report;if(!data){$('report').hidden=true;$('e
  $('history-years').textContent=state.count===5?'Mostrar hasta 10 años':'Ver últimos 5 años';$('percent-toggle').textContent=state.showRatio?'Ocultar variaciones':'Mostrar variaciones';
  $('table-help').textContent='USD en millones · Acciones en millones · Ejercicios fiscales terminados en el año indicado';
  const selected=data.rows.slice(-state.count);$('financial-head').innerHTML='<tr><th scope="col" class="label">Concepto / ejercicio fiscal</th>'+selected.map(row=>`<th scope="col">${row.year}<span class="tag-note">${row.end.slice(5)}</span></th>`).join('')+'</tr>';
- const configured=rows[state.tab].filter(row=>state.showRatio||row.kind!=='pct'&&row.kind!=='times');
+ const configured=rows[state.tab].filter(row=>state.showRatio||row.kind!=='pct'&&row.kind!=='times'||row.class?.includes('focus-metric'));
  $('financial-body').innerHTML=configured.map(item=>`<tr class="${item.class||''}"><td class="label">${escapeHtml(item.label)}${item.hint?`<span class="tag-note">${escapeHtml(item.hint)}</span>`:''}</td>${selected.map((y,idx)=>{
- const val=y.amounts[item.k],change=item.kind==='pct'&&(item.k==='revenueGrowth'||item.k==='sharesGrowth')&&val&&Number.isFinite(val.v)?(val.v>0?'up':val.v<0?'down':''):'';
+ const val=y.amounts[item.k],change=item.kind==='pct'&&(item.k==='revenueGrowth'||item.k==='sharesGrowth'||item.k==='epsGrowth')&&val&&Number.isFinite(val.v)?(val.v>0?'up':val.v<0?'down':''):'';
  return `<td><button type="button" class="value ${val?'':'missing'} ${change}" data-year="${y.year}" data-key="${item.k}" aria-label="${escapeHtml(item.label)} ${y.year}, ${escapeHtml(formatValue(val,item.kind))}">${escapeHtml(formatValue(val,item.kind))}${change?'<span class="dot" aria-hidden="true">●</span>':''}</button></td>`;
  }).join('')}</tr>`).join('');
  const warns=selected.flatMap(y=>y.status.map(t=>({year:y.year,txt:t})));const currentMissing=rows[state.tab].filter(item=>!selected.at(-1)?.amounts[item.k]&&item.kind!=='pct');
- let extra='';if(state.tab==='cashflow')extra='El FCF aquí es CFO − CapEx. Es un dato histórico descriptivo; no es automáticamente el FCFF para una valoración EV/FCF.';if(state.tab==='income')extra='La disponibilidad de partidas cambia según la empresa. SG&A e I+D pueden estar incluidas en gastos operativos totales; no las sumes de nuevo.';if(state.tab==='balance')extra='La deuda neta se presenta solo si la deuda financiera y el efectivo se identifican con suficiente claridad. No incluye todos los ajustes de valoración.';
+ let extra='';if(state.tab==='cashflow')extra='El FCF aquí es CFO − CapEx, no automáticamente FCFF. La reinversión es una aproximación que excluye adquisiciones y otros ajustes. Revisa las fuentes antes de valorar.';if(state.tab==='income')extra='La disponibilidad de partidas cambia según la empresa. SG&A e I+D pueden estar incluidas en gastos operativos totales; no las sumes de nuevo.';if(state.tab==='balance')extra='La deuda neta se presenta solo si la deuda financiera y el efectivo se identifican con suficiente claridad. No incluye todos los ajustes de valoración. El endeudamiento destacado es deuda financiera / activos; EBITDA y ROIC son aproximados. La mediana de ROIC requiere al menos tres ejercicios válidos.';
  $('warnings').innerHTML=(extra||warns.length||currentMissing.length)?`<div class="notice" style="margin-top:14px"><strong>Sobre estos datos:</strong> ${escapeHtml(extra)} ${currentMissing.length?`<div>Partidas no disponibles en el último ejercicio: ${escapeHtml(currentMissing.map(r=>r.label).slice(0,5).join(', '))}${currentMissing.length>5?'…':''}.</div>`:''}${warns.length?`<ul class="warnlist">${warns.slice(0,5).map(w=>`<li>${w.year}: ${escapeHtml(w.txt)}</li>`).join('')}</ul>`:''}</div>`:'';
  $('sourcebox').classList.remove('visible');
 }
