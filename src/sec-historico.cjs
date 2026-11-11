@@ -81,15 +81,54 @@ if(g('debtTotal')!==null)a.totalDebt=mk(g('debtTotal'),'Deuda financiera reporta
 else if(g('shortDebt')!==null&&g('longDebt')!==null)a.totalDebt=mk(g('shortDebt')+g('longDebt'),'Deuda financiera a corto + largo plazo',['shortDebt','longDebt']);
 if(g('totalDebt')!==null&&g('cash')!==null)a.netDebt=mk(g('totalDebt')-g('cash'),'Deuda financiera − efectivo',['totalDebt','cash']);
 if(g('currentAssets')!==null&&g('currentLiabilities')!==null&&g('currentLiabilities')!==0)a.currentRatio=mk(g('currentAssets')/g('currentLiabilities'),'Activos corrientes ÷ pasivos corrientes',['currentAssets','currentLiabilities']);
+// Ratios de historial: se muestran solo con todos los insumos necesarios. No se sustituyen faltantes por cero.
+if(g('totalDebt')!==null&&g('totalDebt')>=0&&g('assets')!==null&&g('assets')>0)
+ a.debtAssetRatio=mk(g('totalDebt')/g('assets')*100,'Deuda financiera identificada ÷ activos totales',['totalDebt','assets']);
+if(g('ebit')!==null&&g('da')!==null){
+ a.ebitdaApprox=mk(g('ebit')+g('da'),'Aproximación EBITDA: EBIT + depreciación y amortización reportada en flujo de efectivo',['ebit','da']);
+ if(g('netDebt')!==null&&g('ebitdaApprox')>0)
+  a.netDebtEbitda=mk(g('netDebt')/g('ebitdaApprox'),'Deuda neta orientativa ÷ EBITDA aproximado (requiere EBITDA positivo)',['netDebt','ebitdaApprox']);
+}
+if(g('equity')!==null&&g('totalDebt')!==null&&g('cash')!==null)
+ a.investedCapitalApprox=mk(g('equity')+g('totalDebt')-g('cash'),'Capital invertido orientativo: patrimonio + deuda financiera identificada − efectivo',['equity','totalDebt','cash']);
+if(g('ebit')!==null&&g('taxRate')!==null&&g('taxRate')>=0&&g('taxRate')<=100&&g('preTax')>0)
+ a.nopatApprox=mk(g('ebit')*(1-g('taxRate')/100),'NOPAT orientativo: EBIT × (1 − tasa efectiva de impuestos)',['ebit','taxRate']);
+if(g('currentAssets')!==null&&g('currentLiabilities')!==null&&g('cash')!==null&&g('shortDebt')!==null)
+ a.nwcApprox=mk(g('currentAssets')-g('cash')-g('currentLiabilities')+g('shortDebt'),'Capital de trabajo operativo aproximado: (activo corriente − caja) − (pasivo corriente − deuda corriente)',['currentAssets','cash','currentLiabilities','shortDebt']);
 if(g('assets')!==null&&g('liabilities')!==null&&g('equity')!==null){let residual=Math.abs(g('assets')-g('liabilities')-g('equity'))/Math.max(1,Math.abs(g('assets')));if(residual>.01)d.status.push('El balance no concilia con activos = pasivos + patrimonio (>1 %); podría haber intereses no controladores o diferencias de reporte.');}
 if(g('ebit')!==null&&g('opex')!==null&&g('gross')!==null&&Math.abs(g('gross')-g('opex')-g('ebit'))/Math.max(1,Math.abs(g('revenue')||1))>.02)d.status.push('EBIT, beneficio bruto y gastos operativos totales no concilian; existen partidas no representadas o diferencias de definición.');
 return d;
 }
 function parseCompanyFacts(json){if(!json||!json.facts||!json.facts['us-gaap']||!json.cik)throw Error('El archivo debe ser Company Facts JSON con taxonomía US-GAAP y CIK de la SEC.');
 const spans=periods(json);if(!spans.length)throw Error('No se detectaron ejercicios anuales 10-K válidos con ventas, beneficio neto o flujo operativo.');
-const rows=spans.map(p=>derive(json,p));for(let i=0;i<rows.length;i++){const a=rows[i].amounts, b=rows[i-1]?.amounts;const revenue=val(a.revenue),before=val(b?.revenue);if(i&&revenue!==null&&before!==null&&before!==0){a.revenueGrowth=mk((revenue/before-1)*100,'Variación de ventas frente al ejercicio anterior',['revenue']);}const shares=val(a.sharesEnd),prevShares=val(b?.sharesEnd);if(i&&shares!==null&&prevShares!==null&&prevShares!==0)a.sharesGrowth=mk((shares/prevShares-1)*100,'Variación de acciones en circulación',['sharesEnd']);}
+const rows=spans.map(p=>derive(json,p));
+for(let i=0;i<rows.length;i++){
+ const row=rows[i],a=row.amounts,prev=rows[i-1],b=prev?.amounts||{};
+ const adjacent=!!prev && row.year-prev.year===1;
+ const revenue=val(a.revenue),before=val(b.revenue);
+ if(adjacent&&revenue!==null&&before!==null&&before!==0)
+  a.revenueGrowth=mk((revenue/before-1)*100,'Variación de ventas frente al ejercicio anterior',['revenue']);
+ const shares=val(a.sharesEnd),prevShares=val(b.sharesEnd);
+ if(adjacent&&shares!==null&&prevShares!==null&&prevShares!==0)
+  a.sharesGrowth=mk((shares/prevShares-1)*100,'Variación de acciones al cierre del ejercicio',['sharesEnd']);
+ const eps=val(a.eps),prevEps=val(b.eps);
+ if(adjacent&&eps!==null&&prevEps!==null&&prevEps>0&&eps>=0)
+  a.epsGrowth=mk((eps/prevEps-1)*100,'Variación del beneficio diluido por acción (si el EPS anterior es positivo)',['eps']);
+ const ic=val(a.investedCapitalApprox),prevIc=val(b.investedCapitalApprox),nopat=val(a.nopatApprox);
+ if(adjacent&&ic!==null&&prevIc!==null&&ic>0&&prevIc>0&&nopat!==null)
+  a.roicApprox=mk(nopat/((ic+prevIc)/2)*100,'ROIC orientativo: NOPAT dividido entre capital invertido medio (sin ajustes de arrendamientos, I+D, exceso de caja ni extraordinarios)',['nopatApprox','investedCapitalApprox']);
+ const nwc=val(a.nwcApprox),prevNwc=val(b.nwcApprox),capex=val(a.capex),da=val(a.da);
+ if(adjacent&&nwc!==null&&prevNwc!==null&&capex!==null&&da!==null&&nopat!==null&&nopat>0)
+  a.reinvestmentRateApprox=mk((Math.abs(capex)-da+nwc-prevNwc)/nopat*100,'Reinversión orientativa: (CapEx − D&A + variación del capital de trabajo operativo) ÷ NOPAT. Excluye adquisiciones, ajustes de I+D y arrendamientos',['capex','da','nwcApprox','nopatApprox']);
+ const lastFive=rows.slice(Math.max(0,i-4),i+1).map(x=>val(x.amounts.roicApprox)).filter(Number.isFinite).sort((x,y)=>x-y);
+ if(lastFive.length>=3){
+  const mid=Math.floor(lastFive.length/2);
+  const median=lastFive.length%2?lastFive[mid]:(lastFive[mid-1]+lastFive[mid])/2;
+  a.roicMedian5=mk(median,'Mediana del ROIC orientativo de hasta cinco ejercicios, con al menos tres observaciones válidas',['roicApprox']);
+ }
+}
 const missing=new Set();for(const row of rows){for(const k of ['revenue','ebit','assets','equity','cfo','capex'])if(!row.amounts[k])missing.add(k);}
-return {name:json.entityName||'Empresa SEC',cik:String(json.cik).padStart(10,'0'),currency:'USD',rows,missing:[...missing],source:'SEC EDGAR Company Facts',generatedAt:new Date().toISOString(),limitations:['Estados originales en US-GAAP, no datos de TIKR.','Los importes reportados pueden contener reclasificaciones y ajustes en años comparativos.','FCF = flujo operativo − CapEx; no equivale automáticamente a FCFF para valoración EV/FCF.','Las filas de gastos pueden solaparse y no deben sumarse automáticamente.']};
+return {name:json.entityName||'Empresa SEC',cik:String(json.cik).padStart(10,'0'),currency:'USD',rows,missing:[...missing],source:'SEC EDGAR Company Facts',generatedAt:new Date().toISOString(),limitations:['Estados originales en US-GAAP, no datos de TIKR.','Los importes reportados pueden contener reclasificaciones y ajustes en años comparativos.','FCF = flujo operativo − CapEx; no equivale automáticamente a FCFF para valoración EV/FCF.','Las filas de gastos pueden solaparse y no deben sumarse automáticamente.','ROIC, EBITDA, deuda neta y reinversión son aproximaciones contables no ajustadas; su fiabilidad puede variar por sector, adquisiciones, arrendamientos, gasto en I+D y clasificación de la SEC.','ROIC histórico se resume con la mediana de hasta cinco ejercicios y al menos tres observaciones válidas; se omite cuando faltan datos.']};
 }
 return {parseCompanyFacts,periods,derive,tags};
 });
