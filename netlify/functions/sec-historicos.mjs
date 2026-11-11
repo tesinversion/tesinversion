@@ -1,53 +1,75 @@
-// Netlify proxy: consultas SEC desde servidor, sin exponer claves ni acceder desde navegador.
-// Uso exclusivamente experimental en una rama separada.
-// Fuente oficial: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
-const { parseCompanyFacts } = require('../../src/sec-historico.cjs');
+// Laboratorio SEC: interfaz moderna de Netlify Functions (Request -> Response).
+// No hay datos ficticios en este servidor; cada respuesta financiera procede de EDGAR.
+import parser from '../../src/sec-historico.cjs';
+const { parseCompanyFacts } = parser;
+const VERSION = 'v0.3.0-sec-diagnostic-2';
 const HEADERS = {
   'User-Agent': 'Arquitectura de la Inversion info@tesinversion.com',
   'Accept': 'application/json'
 };
-const SEC_TICKERS = 'https://www.sec.gov/files/company_tickers.json';
+const TICKERS_URL = 'https://www.sec.gov/files/company_tickers.json';
 let tickerCache = { until: 0, list: [] };
+
 function reply(status, data) {
-  return { statusCode: status, headers: {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': status === 200 ? 'public, max-age=120, s-maxage=600' : 'no-store',
-    'X-Content-Type-Options': 'nosniff',
-    'X-Robots-Tag': 'noindex, nofollow'
-  }, body: JSON.stringify(data) };
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': status === 200 ? 'public, max-age=120, s-maxage=600' : 'no-store',
+      'x-content-type-options': 'nosniff',
+      'x-robots-tag': 'noindex, nofollow'
+    }
+  });
 }
-async function getJson(url) {
+
+async function getJson(url, source) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 13000);
+  const timeout = setTimeout(() => controller.abort(), 12000);
   try {
-    const response = await fetch(url, { headers: HEADERS, signal: controller.signal });
-    if (!response.ok) throw new Error('La SEC respondió HTTP ' + response.status);
-    return await response.json();
+    let response;
+    try {
+      response = await fetch(url, { headers: HEADERS, signal: controller.signal });
+    } catch (err) {
+      throw new Error(source + ': fallo de red (' + String(err?.message || err).slice(0,100) + ')');
+    }
+    if (!response.ok) throw new Error(source + ': HTTP ' + response.status);
+    try { return await response.json(); }
+    catch { throw new Error(source + ': respuesta no es JSON válido'); }
   } finally { clearTimeout(timeout); }
 }
-async function findTickers() {
-  if (tickerCache.until > Date.now() && tickerCache.list.length) return tickerCache.list;
-  const data = await getJson(SEC_TICKERS);
-  const list = Object.values(data).filter(item=>item?.ticker && item?.cik_str)
-    .map(item=>({ ticker:item.ticker.toUpperCase(), name:item.title, cik:item.cik_str }));
-  tickerCache = { until: Date.now() + 12 * 60 * 60 * 1000, list };
-  return list;
+
+async function findTicker(ticker) {
+  if (tickerCache.until < Date.now() || tickerCache.list.length === 0) {
+    const data = await getJson(TICKERS_URL, 'Listado SEC de tickers');
+    const list = Object.values(data).filter(it => it?.ticker && it?.cik_str)
+      .map(it => ({ ticker: it.ticker.toUpperCase(), name: it.title, cik: it.cik_str }));
+    if (!list.length) throw new Error('Listado SEC de tickers vacío');
+    tickerCache = { until: Date.now() + 12 * 60 * 60 * 1000, list };
+  }
+  return tickerCache.list.find(it => it.ticker === ticker);
 }
-export async function handler(event) {
-  const q = event.queryStringParameters || {};
-  const ticker = String(q.ticker || '').trim().toUpperCase();
-  if (!/^[A-Z][A-Z0-9.\-]{0,11}$/.test(ticker)) return reply(400, { error:'Ticker no válido.' });
+
+export default async function handler(request) {
+  const url = new URL(request.url);
+  if (request.method !== 'GET') return reply(405,{code:'METHOD',error:'Solo se permite GET.'});
+  if (url.searchParams.get('health') === '1') {
+    return reply(200,{ok:true,service:'historicos-sec',version:VERSION});
+  }
+  const ticker = String(url.searchParams.get('ticker') || '').trim().toUpperCase();
+  if (!/^[A-Z][A-Z0-9.\-]{0,11}$/.test(ticker))
+    return reply(400,{code:'INVALID_TICKER',error:'Ticker no válido.'});
   try {
-    const list = await findTickers();
-    const selected = list.find(item => item.ticker === ticker);
-    if (!selected) return reply(404, { error:'No se encontró el ticker en el listado SEC.' });
-    const cik = String(selected.cik).padStart(10, '0');
-    const facts = await getJson('https://data.sec.gov/api/xbrl/companyfacts/CIK' + cik + '.json');
-    const parsed = parseCompanyFacts(facts);
-    return reply(200, { ...parsed, ticker: selected.ticker, company: selected.name });
+    const company = await findTicker(ticker);
+    if (!company) return reply(404,{code:'NOT_FOUND',error:'Ticker no identificado en el listado SEC.'});
+    const cik = String(company.cik).padStart(10,'0');
+    const raw = await getJson('https://data.sec.gov/api/xbrl/companyfacts/CIK'+cik+'.json','Company Facts SEC');
+    let report;
+    try { report = parseCompanyFacts(raw); }
+    catch (err) {
+      return reply(422,{code:'PARSER',error:'La respuesta SEC no pudo transformarse en estados financieros.',detail:String(err?.message || err).slice(0,180)});
+    }
+    return reply(200,{...report,ticker:company.ticker,company:company.name});
   } catch (err) {
-    return reply(502, { error:'Falló la consulta a la SEC. El módulo permanece en pruebas.', detail:String(err.message || err).slice(0,160) });
+    return reply(502,{code:'SEC_UPSTREAM',error:'No se pudo completar la consulta oficial a la SEC.',detail:String(err?.message || err).slice(0,180)});
   }
 }
