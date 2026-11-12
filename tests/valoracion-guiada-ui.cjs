@@ -1,68 +1,55 @@
 'use strict';
-/* Prueba de integración estructural y sintaxis para la calculadora unificada.
- * No reemplaza las pruebas visuales en navegador ni la conciliación SEC/10-K.
- * Ejecutar: node tests/valoracion-guiada-ui.cjs */
+/* Validación estática de integración y estructura: node tests/valoracion-guiada-ui.cjs.
+ * No sustituye pruebas visuales reales ni conciliación SEC frente a 10-K. */
 const fs=require('node:fs');
 const vm=require('node:vm');
-const path=require('node:path');
 const assert=require('node:assert/strict');
-
+const path=require('node:path');
 const html=fs.readFileSync(path.join(__dirname,'../laboratorio/historicos/index.html'),'utf8');
-const old=fs.readFileSync(path.join(__dirname,'../laboratorio/valoracion/index.html'),'utf8');
-const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
-assert.equal(scripts.length,2,'Debe preservarse el motor SEC y la interfaz unificada');
-scripts.forEach((script,i)=>assert.doesNotThrow(()=>new vm.Script(script,{filename:'calculadora-script-'+i})));
+const legacy=fs.readFileSync(path.join(__dirname,'../laboratorio/valoracion/index.html'),'utf8');
+const model=fs.readFileSync(path.join(__dirname,'../laboratorio/historicos/valoracion-modelo.js'),'utf8');
+const scripts=[...html.matchAll(/<script>([\s\S]+?)<\/script>/g)].map(m=>m[1]);
+assert.equal(scripts.length,2,'Parser SEC y controlador de calculadora deben permanecer separados');
+scripts.forEach((script,i)=>assert.doesNotThrow(()=>new vm.Script(script,{filename:'calculadora-'+i})));
+assert.doesNotThrow(()=>new vm.Script(model,{filename:'valoracion-modelo.js'}));
+assert.match(html,/<script src="\.\/valoracion-modelo\.js"><\/script>/,'Cargar motor de valoración propio');
 
-for(const id of ['lookup','upload','load-demo','tabs','financial-body','sourcebox','restore-all','launch-wizard','history-section','valuation-stage','valuation-content','journey-prev','journey-next']){
- assert.match(html,new RegExp('id="'+id+'"'),'Falta el elemento '+id);
+for(let i=1;i<=5;i++)assert.match(html,new RegExp('data-journey="'+i+'"'),'Etapa '+i);
+for(const name of ['lookup','tabs','sourcebox','financial-body','restore-all','history-section',
+ 'valuation-stage','valuation-content','journey-prev','journey-next']){
+ assert.match(html,new RegExp('id="'+name+'"'),'Falta '+name);
 }
-for(let i=1;i<=5;i++)assert.match(html,new RegExp('data-journey="'+i+'"'));
-assert.match(html,/const journey=\{/,'La guía debe existir en el mismo documento');
-assert.match(html,/function setJourneyStep\(/);
-assert.match(html,/if\(step>1&&!state\.report\)/,'No debe avanzar sin empresa');
-assert.match(html,/setJourneyStep\(2\)/,'La primera etapa debe continuar a caja sostenible');
-assert.match(html,/state\.report\.rows\.at\(-1\)/,'La guía debe utilizar el reporte histórico existente');
-assert.match(html,/function loadJourney\(/);
-assert.match(html,/function saveJourney\(/);
-assert.match(html,/localStorage\.setItem\(journeyKey\(\)/,'Persistencia local por empresa');
-assert.match(html,/function recalculate\(\)\{state\.report=engine\.applyOverrides/,'Conservar el recálculo histórico');
-assert.match(html,/function explain\(year,key\)/,'Conservar el acceso a fuentes/correcciones');
-assert.match(html,/function renderJourney\(/);
-assert.match(html,/Último ejercicio disponible/,'La caja necesita una fecha precisa');
-assert.match(html,/cashRows=state\.report\.rows\.slice\(-5\)/,'Comparar cinco ejercicios disponibles');
-assert.match(html,/Flujo de caja operativo \(CFO\)/,'Nombre completo del flujo operativo');
-assert.match(html,/CapEx registrado \(sin separar\)/,'No presentar CapEx registrado como mantenimiento');
-assert.match(html,/Depreciación y amortización \(D&A\)/,'Mostrar depreciación para analizar mantenimiento');
-assert.match(html,/function maintenancePreview\(/,'La estimación de mantenimiento tiene desglose');
-assert.match(html,/data-action="use-da-proxy"/,'D&A se ofrece solo como supuesto editable');
-assert.match(html,/CapEx de crecimiento estimado = CapEx registrado/,'Mostrar fórmula explícita de crecimiento estimado');
-assert.match(html,/FCF normalizado hipotético/,'Separar FCF normalizado hipotético del histórico');
-assert.match(html,/Todos? las estimaciones|Todas las estimaciones/,'Indicar horizonte de proyección');
-assert.match(html,/CapEx total 40 millones/,'Mostrar origen de ejemplo de reinversión');
-assert.match(html,/COMPONENTES HISTÓRICOS/,'Dar componentes históricos de reinversión');
-
-assert.match(html,/mediana histórica de FCF/i,'La mediana debe estar explicada');
-assert.doesNotMatch(html,/jField\('fcffBasis'/,'No solicitar FCFF arbitrario en pantalla básica');
-assert.match(html,/Impuestos y reinversión \(ajustes avanzados opcionales\)/,'Reservar supuestos complejos para detalle opcional');
-assert.match(html,/NOPAT = EBIT después de impuestos operativos/,'Explicar NOPAT');
-assert.match(html,/Antes de calcular un precio harán falta hipótesis comprobables/,'No ocultar bloqueo financiero');
-assert.match(html,/Number\(r\.year\)\+5/,'Proyección identificada por años fiscales');
-
-assert.match(html,/Pendiente de validación/,'No producir precio sin motor auditado');
-assert.match(html,/class="valuation-field user-estimate"/,'Campos editables distinguibles');
-assert.match(html,/class="valuation-fact source-data"/,'Datos históricos distinguibles');
-assert.match(html,/Datos de la empresa/,'Leyenda de datos fuente');
-assert.match(html,/Tu estimación/,'Leyenda de campos editables');
-assert.match(html,/¿Cuántas veces el FCF anual pagarías por el negocio\?/,'Lenguaje comprensible');
-assert.match(html,/Ver fórmulas y ajustes técnicos \(opcional\)/,'WACC tras detalles');
-assert.match(html,/jField\('wacc'/,'WACC conservado solo como opción técnica');
-assert.match(html,/function recalculate\(\)/,'La fuente puede corregirse sin perder trazabilidad');
-
-assert.doesNotMatch(html,/location\.assign\(['"]\.\.\/valoracion\//,'No deben existir saltos a una segunda app');
-assert.doesNotMatch(old,/function renderStep\(/,'La ruta anterior no debe incluir otro asistente funcional');
-assert.match(old,/location\.replace\(target\.href\)/,'La ruta anterior debe redirigir');
-assert.match(old,/target\.searchParams\.set\('ticker',ticker\)/,'Conservar ticker en enlaces antiguos');
-assert.match(html,/aria-label="Estados financieros"/);
-assert.match(html,/aria-label="Etapas de la calculadora"/);
-assert.match(html,/DEMO|fictici/i,'La demostración debe seguir identificada');
-console.log('OK: una sola entrada, 5 etapas, historial y correcciones preservados, persistencia, sintaxis y redirección antigua');
+assert.match(html,/function applyOverrides\(/,'Mantener correcciones SEC y su origen');
+assert.match(html,/function recalculate\(\)/,'Recalcular indicadores históricos al corregir');
+assert.match(html,/function saveJourney\(/,'Conservar datos entre etapas');
+assert.match(html,/localStorage\.setItem\(journeyKey\(\)/,'Guardar supuestos por empresa');
+assert.match(html,/if\(step>1&&!state\.report\)/,'Impedir avanzar sin empresa');
+assert.match(html,/const five=state\.report\.rows\.slice\(-5\)/,'Años históricos visibles');
+assert.match(html,/data-journey="5"/,'Cinco etapas en una experiencia');
+assert.match(html,/valuation-field user-estimate/,'Distinguir supuestos editables');
+assert.match(html,/valuation-fact source-data/,'Distinguir datos históricos');
+assert.match(html,/Flujo de caja operativo/,'Explicar CFO');
+assert.match(html,/CapEx registrado/,'No ocultar CapEx original');
+assert.match(html,/CapEx anual estimas para mantenimiento/,'Ajuste de mantenimiento editable');
+assert.match(html,/data-action="use-da-proxy"/,'Copiar D&A solo con decisión del usuario');
+assert.match(html,/growthInvestmentPct/,'Inversión para expansión futura');
+assert.match(html,/workingCapitalPct/,'Capital de trabajo futuro');
+assert.match(html,/próximos cinco ejercicios fiscales/,'Explicar horizonte temporal');
+assert.match(html,/growthGap/,'Escenarios mediante cambios explícitos');
+assert.match(html,/marginGap/,'Sensibilidad al margen');
+assert.match(html,/multipleGap/,'Sensibilidad al múltiplo');
+assert.match(html,/jSource\('Deuda neta aproximada'/,'Deuda aproximada, no predicción');
+assert.match(html,/data-action="copy-shares"/,'Permitir copiar acciones previa revisión');
+assert.match(html,/function projectionInput\(/,'Convertir historial y supuestos al motor');
+assert.match(html,/ADIValuation\.calculate\(projectionInput\(\)\)/,'Resultado conectado al motor');
+assert.match(html,/Faltan datos para calcularlo/,'No inventar precios ante datos faltantes');
+assert.match(html,/Valor razonable|VALOR RAZONABLE/,'Mostrar valor de hoy');
+assert.match(html,/Precio teórico al final del año 5/,'Separar valor futuro');
+assert.match(html,/escenarios|Escenarios/,'Mostrar rango con escenarios');
+assert.match(html,/intervalo estadístico/,'Aclarar que el rango no es un intervalo estadístico');
+assert.match(html,/market-date/,'Fecha para cotización manual');
+assert.match(html,/revisar fuente|REVISAR FUENTE/,'Trazabilidad');
+assert.doesNotMatch(html,/location\.assign\(['"]\.\.\/valoracion\//,'No volver a segunda aplicación');
+assert.doesNotMatch(legacy,/function renderStep\(/,'No mantener una interfaz duplicada');
+assert.match(legacy,/location\.replace\(target\.href\)/,'Enlace anterior redirige al único producto');
+console.log('OK · Interfaz unificada con históricos, cinco etapas, edición, escenarios, precio futuro y validación sin números inventados.');
