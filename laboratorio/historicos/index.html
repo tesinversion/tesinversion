@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Históricos financieros | Arquitectura de la Inversión · Laboratorio</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Calculadora guiada | Arquitectura de la Inversión · Laboratorio</title>
 <style>
 :root{--blue:#142169;--deep:#18264a;--gold:#a48143;--ink:#25314b;--muted:#65718a;--line:#e4e9f0;--pale:#f7f9fc;--soft:#f2f5fb;--ok:#38705a;--down:#a25458}
 *{box-sizing:border-box}body{margin:0;background:var(--pale);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button,input{font:inherit}button{cursor:pointer}a{color:var(--blue)}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #d5a340;outline-offset:2px}.wrap{max-width:1280px;margin:auto;padding:0 26px}
@@ -139,12 +139,53 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 .wizard-entry p{margin:0;color:#7887a0;font-size:11px;line-height:1.6;max-width:610px}
 .wizard-entry .btn{flex-shrink:0;text-decoration:none}
 @media(max-width:640px){.wizard-entry{flex-direction:column;align-items:stretch}.wizard-entry .btn{width:100%;text-align:center}}
+
+/* Un recorrido, una sola página. Las cinco etapas reutilizan el histórico aprobado. */
+.journey-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:24px}
+.journey-tab{border:1px solid #dce3ee;background:#fff;padding:11px 8px;border-radius:12px;font-size:11px;line-height:1.35;color:#5e6c82;display:flex;align-items:center;justify-content:center;gap:7px;min-height:45px}
+.journey-tab span{display:grid;place-items:center;flex:none;width:23px;height:23px;border-radius:8px;background:#f1f4fa;color:#6b7c96;font-weight:700}
+.journey-tab.active{border-color:#c0cee6;background:#eaf0fc;color:#142169;font-weight:750}
+.journey-tab.active span{background:#142169;color:#fff}
+.journey-tab:disabled{cursor:not-allowed;opacity:.55}
+.journey-status{margin:11px 0 0;color:#718099;font-size:11px}
+#history-section[hidden],#valuation-stage[hidden]{display:none!important}
+.valuation-content{margin-top:23px;max-width:1020px}
+.valuation-intro{font-size:13px;color:#627189;line-height:1.7;margin:0 0 22px;max-width:750px}
+.valuation-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:18px 0}
+.valuation-field{display:grid;gap:6px;min-width:0}
+.valuation-field label{font-size:12px;font-weight:700;color:#233655}
+.valuation-field input{width:100%;min-width:0;border:1px solid #ccd7e8;border-radius:10px;padding:12px 13px;color:#142169;background:#fcfdff;min-height:43px;font-variant-numeric:tabular-nums}
+.valuation-field small{font-size:11px;line-height:1.5;color:#8290a4}
+.valuation-info{border:1px solid #e0e7f1;background:#f8faff;border-radius:13px;padding:16px 18px;color:#53657f;font-size:12px;line-height:1.7;margin:15px 0}
+.valuation-info.warning{border-color:#e7ddc9;background:#fffaf2;color:#7d6949}
+.valuation-info strong{color:#1f3466}
+.valuation-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:13px 0 18px}
+.valuation-fact{background:#fafbfe;border:1px solid #e5ebf4;padding:15px;border-radius:13px;min-width:0}
+.valuation-fact dt{font-size:11px;color:#687c97}.valuation-fact dd{margin:7px 0 0;font-size:19px;font-weight:750;color:#142169;font-variant-numeric:tabular-nums}
+.valuation-info details summary,.valuation-content details summary{cursor:pointer;font-size:12px;font-weight:700;color:#142169}
+.valuation-content details{border:1px solid #e2e9f1;border-radius:11px;padding:13px 15px;margin:15px 0;background:#fff}
+.valuation-content details p{color:#697991;font-size:12px;line-height:1.7}
+.valuation-year-table{overflow:auto}.valuation-year-table table{min-width:600px;width:100%;border-collapse:collapse}
+.valuation-year-table th,.valuation-year-table td{min-width:96px;position:static;text-align:left;padding:10px;border-bottom:1px solid #edf0f5}
+.valuation-year-table input{width:90px;padding:8px;border:1px solid #ced9e7;border-radius:8px}
+.journey-footer{margin-top:25px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:19px;border-top:1px solid #e5ebf3}
+.valuation-result{border:1px solid #d6e0ef;background:#f4f7fc;border-radius:15px;padding:23px;margin:14px 0}
+.valuation-result strong{display:block;font-size:24px;color:#142169;line-height:1.25;margin-top:6px}
+.valuation-recap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.valuation-recap .valuation-info{margin:0}
+.valuation-recap p{margin:5px 0}
+@media(max-width:800px){.journey-nav{grid-template-columns:repeat(5,minmax(0,1fr))}.journey-tab{font-size:10px;gap:4px;flex-direction:column;min-height:61px;text-align:center}.valuation-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.journey-nav{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.journey-tab{font-size:9px;padding:8px 3px}.journey-tab span{width:21px;height:21px}.valuation-fields,.valuation-recap{grid-template-columns:1fr}.valuation-facts{grid-template-columns:1fr 1fr}.valuation-fact{padding:11px}.valuation-fact dd{font-size:17px}.journey-footer{flex-wrap:wrap}.journey-footer .tip{order:3;width:100%;text-align:center}}
+@media print{.journey-nav,.journey-footer,.valuation-fields{display:none!important}}
 </style>
 </head>
 <body>
-<header class="top"><div class="wrap top-inner"><a class="brand" href="https://tesinversion.com/">Arquitectura de la Inversión</a><span class="lab">Laboratorio privado · Históricos</span></div></header>
+<header class="top"><div class="wrap top-inner"><a class="brand" href="https://tesinversion.com/">Arquitectura de la Inversión</a><span class="lab">Laboratorio · Calculadora en prueba</span></div></header>
 <main class="wrap">
-<section class="hero"><div class="eyebrow">Calculadora · Primera etapa</div><h1>Primero, entiende el pasado.</h1><p>Antes de proyectar una empresa, revisa qué ha ocurrido con sus ventas, rentabilidad, deuda y generación de caja. Datos ordenados como estados financieros, con sus fuentes a un clic.</p><div class="steps"><span class="step active">01 · Entender el pasado</span><span class="step">02 · Flujo sostenible (después)</span><span class="step">03 · Proyección y valoración (después)</span></div></section>
+<section class="hero"><div class="eyebrow">Calculadora de empresas · Laboratorio</div><h1>Analiza y valora una empresa, paso a paso.</h1><p>Busca una empresa, revisa sus estados financieros y decide qué supuestos utilizarías para valorarla. Todo en un mismo recorrido, sin buscar la empresa dos veces.</p>
+<nav class="journey-nav" aria-label="Etapas de la calculadora"><button class="journey-tab active" type="button" data-journey="1" aria-current="step"><span>1</span> Históricos</button><button class="journey-tab" type="button" data-journey="2" disabled><span>2</span> Caja sostenible</button><button class="journey-tab" type="button" data-journey="3" disabled><span>3</span> Proyectar 5 años</button><button class="journey-tab" type="button" data-journey="4" disabled><span>4</span> Valoración</button><button class="journey-tab" type="button" data-journey="5" disabled><span>5</span> Resultado</button></nav>
+<p id="journey-status" class="journey-status" role="status">Etapa 1 de 5 · Revisa los datos financieros antes de avanzar.</p></section>
+<div id="history-section">
 <section class="card"><div class="section-head"><div><h2>Busca una empresa</h2><p class="sub">Estados financieros anuales · Empresas estadounidenses · Fuente SEC EDGAR</p></div><div class="tag">Hasta 10 ejercicios</div></div>
 <form id="lookup" class="searchbox"><label for="ticker">Ticker</label><input id="ticker" spellcheck="false" autocomplete="off" placeholder="AAPL, MSFT, KO…" maxlength="12" aria-label="Ticker bursátil"><button class="btn primary" type="submit">Consultar SEC</button><button class="btn" type="button" id="load-demo">Ver demostración</button><label class="btn file" title="Importar documento Company Facts JSON descargado de la SEC">Importar archivo SEC<input type="file" id="upload" accept=".json,application/json" aria-label="Importar archivo SEC Company Facts JSON"></label></form>
 <div class="queryhelp"><span class="tip">Ejemplos de búsqueda:</span><button class="btn" type="button" data-ticker="AAPL">AAPL</button><button class="btn" type="button" data-ticker="MSFT">MSFT</button><button class="btn" type="button" data-ticker="KO">KO</button><span class="tip">La búsqueda automática funciona en la vista previa con servidor; la demostración y la importación JSON también funcionan sin conexión.</span></div>
@@ -153,7 +194,7 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 <section class="card" id="financial-card"><div id="company-header" hidden><div class="company-line"><div><div class="eyebrow" id="company-kicker">Estados financieros anuales</div><h2 id="company-name"></h2></div><div class="date-line" id="company-date"></div></div><div id="pillline" class="header-strip"></div><div class="metrics" id="metrics"></div></div>
 <div class="section-head" id="empty-head"><div><h2>Historial financiero</h2><p class="sub">Una lectura sencilla antes de pasar a la valoración.</p></div></div>
 <div class="empty" id="empty"><div class="graphic">01 — 10</div><h3>Explora los resultados de una empresa</h3><p>Abre la demostración para conocer el diseño. Cuando importes datos SEC o consultes una compañía, aquí aparecerán los tres estados financieros.</p><button class="btn primary" id="empty-demo" type="button">Mostrar ejemplo ficticio</button></div>
-<div id="report" hidden><div class="wizard-entry" aria-label="Siguiente etapa de valoración"><div><h3>¿Ya conoces el pasado del negocio?</h3><p>Continúa con la valoración guiada en cinco pasos. La herramienta conservará los datos revisados durante esta sesión, incluidos los ajustes manuales; todavía no calcula un precio objetivo.</p></div><button id="launch-wizard" type="button" class="btn primary">Empezar valoración</button></div><nav class="tabbar" id="tabs" role="tablist" aria-label="Estados financieros"><button class="tab active" type="button" role="tab" aria-selected="true" data-tab="income">Resultados</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="balance">Balance general</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="cashflow">Flujos de efectivo</button></nav>
+<div id="report" hidden><nav class="tabbar" id="tabs" role="tablist" aria-label="Estados financieros"><button class="tab active" type="button" role="tab" aria-selected="true" data-tab="income">Resultados</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="balance">Balance general</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="cashflow">Flujos de efectivo</button></nav>
 <div class="table-toolbar"><div class="mutedlabel" id="table-help">Cifras anuales en millones de USD.</div><div class="controls"><span class="focus-legend">Indicador clave</span><button class="btn small" type="button" id="focus-only" aria-pressed="false">Solo indicadores clave</button><button class="btn small" type="button" id="restore-all" hidden>Restaurar valores oficiales</button><button class="btn small" type="button" id="history-years">Ver 10 años</button><button class="btn small" type="button" id="percent-toggle">Variaciones visibles</button></div></div>
 <div class="gridwrap" role="region" tabindex="0" aria-label="Tabla de datos financieros desplazable horizontalmente"><table><thead id="financial-head"></thead><tbody id="financial-body"></tbody></table></div>
 <div class="sourcebox" id="sourcebox" aria-live="polite"></div><p class="legend"><strong>Cómo leerlo:</strong> selecciona una cifra para consultar la fuente y corregirla si es necesario. La cifra SEC original siempre se conserva; los indicadores derivados se recalculan. Los valores manuales aparecen con la marca «Editado» y se guardan solo en este navegador. «—» indica información no disponible.</p><div id="warnings"></div>
@@ -185,7 +226,15 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
     <p class="method-footer">Relación conceptual: reinversión × rentabilidad futura de nuevas inversiones ≈ crecimiento del beneficio operativo atribuible a esas inversiones, bajo determinados supuestos. Por ejemplo, 40 % × 20 % = 8 %. <a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html" target="_blank" rel="noopener noreferrer">Definiciones financieras de Damodaran</a>.</p>
   </div>
 </details>
+<div class="wizard-entry" aria-label="Avanzar a la etapa siguiente"><div><h3>¿Ya revisaste los datos?</h3><p>Continúa con la caja sostenible. Conservarás las cifras y correcciones de esta empresa sin salir de la calculadora.</p></div><button id="launch-wizard" type="button" class="btn primary">Continuar a caja sostenible</button></div>
 </div>
+</section>
+</div>
+<section class="card valuation-stage" id="valuation-stage" hidden aria-labelledby="stage-title">
+ <div class="section-head"><div><div class="eyebrow" id="stage-kicker">Etapa 2 de 5</div><h2 id="stage-title" tabindex="-1">Caja sostenible</h2><p class="sub" id="stage-desc"></p></div><span class="tag" id="stage-entity"></span></div>
+ <p class="notice" id="valuation-notice" role="status" hidden></p>
+ <div id="valuation-content" class="valuation-content"></div>
+ <div class="journey-footer"><button type="button" class="btn" id="journey-prev">Anterior</button><span class="tip">Supuestos editables · Guardado local en este navegador</span><button type="button" class="btn primary" id="journey-next">Continuar</button></div>
 </section>
 <p class="foot"><strong>Información educativa y experimental.</strong> La aplicación está en pruebas y no constituye recomendación de compra, venta ni asesoramiento financiero. Las fuentes oficiales deben contrastarse con los documentos originales. Las cifras ficticias de demostración no corresponden a empresas reales. La plataforma no reproduce materiales de cursos de terceros.</p>
 </main>
@@ -556,20 +605,136 @@ function explain(year,key){
   saveSaved();recalculate();setMessage('Dato corregido para '+year+'. Los indicadores dependientes se recalcularon.','ok');
  });
 }
-function setData(obj,mode='live'){state.original=obj;state.mode=mode;state.overrides=loadSaved();state.report=engine.applyOverrides(obj,state.overrides);state.count=5;state.tab='income';render();}
+
+// Asistente integrado. Usa state.report (con correcciones) sin otra búsqueda ni otra pantalla.
+const journey={
+ step:1, highest:1, inputs:{fcffBasis:'',salesGrowth:'',ebitMargin:'',taxRate:'',reinvestRate:'',multiple:'',wacc:'',safety:'',netDebt:'',shares:'',otherAssets:''},
+ yearly:{},annualOpen:false,bridgeOpen:false
+};
+const assumptions=Object.keys(journey.inputs);
+function journeyTicker(){
+ return state.mode==='demo'?'DEMO':state.mode==='file'?'IMPORT':String(state.report?.ticker||state.original?.ticker||state.report?.cik||'SIN-TICKER').toUpperCase();
+}
+function journeyKey(){return 'adi-guided-v05-'+String(state.report?.cik||journeyTicker()).replace(/[^A-Za-z0-9-]/g,'');}
+function loadJourney(){
+ journey.inputs=Object.fromEntries(assumptions.map(k=>[k,'']));journey.yearly={};journey.highest=1;
+ try{
+  const current=localStorage.getItem(journeyKey());
+  const legacy=localStorage.getItem('adi-guided-v04-'+journeyTicker());
+  const data=JSON.parse(current||legacy||'null');
+  if(data&&data.inputs){for(const k of assumptions)if(typeof data.inputs[k]==='string')journey.inputs[k]=data.inputs[k].slice(0,50);}
+  if(data&&data.yearly&&typeof data.yearly==='object'&&!Array.isArray(data.yearly))journey.yearly=data.yearly;
+ }catch(err){}
+}
+function saveJourney(){
+ try{localStorage.setItem(journeyKey(),JSON.stringify({version:5,inputs:journey.inputs,yearly:journey.yearly}));}
+ catch(err){showJourneyMessage('Los cambios se conservan durante esta visita, pero el navegador no permitió guardarlos.',true);}
+}
+function showJourneyMessage(message,error=false){
+ const box=$('valuation-notice');box.hidden=!message;box.textContent=message||'';box.className='notice'+(error?' error':'');
+}
+function jNum(k){const x=journey.inputs[k];return x!==''&&x!==undefined&&Number.isFinite(Number(x))?x:null;}
+function jValue(amount){return amount&&Number.isFinite(amount.v)?amount.v:null;}
+function jMoney(amount){return amount!==null&&Number.isFinite(amount)?fmt(amount/1e6,1)+' M USD':'No disponible';}
+function jPercent(amount){return amount!==null&&Number.isFinite(amount)?fmt(amount,1)+' %':'No disponible';}
+function jField(key,label,hint,placeholder,range=''){
+ return '<div class="valuation-field"><label for="j-'+key+'">'+escapeHtml(label)+'</label><input id="j-'+key+'" data-assumption="'+key+'" type="number" inputmode="decimal" step="any" value="'+escapeHtml(journey.inputs[key]||'')+'" placeholder="'+escapeHtml(placeholder)+'" '+range+'><small>'+escapeHtml(hint)+'</small></div>';
+}
+function jFact(label,value){
+ return '<dl class="valuation-fact"><dt>'+escapeHtml(label)+'</dt><dd>'+escapeHtml(value)+'</dd></dl>';
+}
+function jHelp(title,content){
+ return '<details><summary>'+escapeHtml(title)+'</summary><p>'+escapeHtml(content)+'</p></details>';
+}
+function jSummary(keys){
+ return keys.map(([k,label,unit])=>'<p><strong>'+escapeHtml(label)+':</strong> '+escapeHtml(jNum(k)===null?'Sin definir':jNum(k)+(unit||''))+'</p>').join('');
+}
+function renderJourney(){
+ if(journey.step===1||!state.report)return;
+ const r=state.report.rows.at(-1),a=r.amounts||{},stage=journey.step;
+ $('stage-kicker').textContent='ETAPA '+stage+' DE 5';
+ $('stage-entity').textContent=(state.mode==='demo'?'DEMOSTRACIÓN FICTICIA · ': '')+(state.report.name||journeyTicker());
+ const titles=['','Históricos financieros','Determinar la caja sostenible','Proyectar los próximos cinco años','Definir los supuestos de valoración','Revisar el resultado'];
+ $('stage-title').textContent=titles[stage];
+ $('stage-desc').textContent=['','','Una base para estimar la caja disponible de la empresa.','Tus hipótesis de crecimiento, rentabilidad y reinversión.','Cómo expresar los flujos futuros en valor presente.','Tus decisiones, reunidas antes de un cálculo que todavía debemos auditar.'][stage];
+ let html='';
+ if(stage===2){
+  html='<p class="valuation-intro">Revisemos la caja que ha producido la empresa. Puedes utilizar esta información para definir una base sostenible; no tenemos por qué asumir que el último año se repetirá.</p>'
+   +'<div class="valuation-facts">'+jFact('Ejercicio fiscal',String(r.year))+jFact('Flujo operativo',jMoney(jValue(a.cfo)))+jFact('FCF histórico (CFO − CapEx)',jMoney(jValue(a.fcf)))+'</div>'
+   +'<div class="valuation-fields">'+jField('fcffBasis','Caja sostenible estimada (FCFF) · millones USD','Hipótesis propia: el FCFF para valorar toda la empresa no se obtiene automáticamente del FCF histórico.','Ej. 1200')+'</div>'
+   +jHelp('¿Por qué no usamos directamente el FCF histórico?','CFO menos CapEx es una referencia, pero el flujo disponible para todos los proveedores de capital requiere comprobar impuestos, intereses y reinversión. Todavía estamos auditando su cálculo.')
+   +'<div class="valuation-info warning">Esta cifra queda como hipótesis editable. No se calcula un precio con ella hasta validar el método.</div>';
+ }else if(stage===3){
+  html='<p class="valuation-intro">Empieza con cuatro supuestos generales. Si crees que cambiarán de un año a otro, puedes personalizarlos en la tabla opcional.</p>'
+   +'<div class="valuation-info"><strong>Referencia del ejercicio '+escapeHtml(r.year)+':</strong> crecimiento de ventas '+escapeHtml(jPercent(jValue(a.revenueGrowth)))+', margen EBIT '+escapeHtml(jPercent(jValue(a.ebitMargin)))+' y margen FCF '+escapeHtml(jPercent(jValue(a.fcfMargin)))+'. Estas cifras históricas no son previsiones.</div>'
+   +'<div class="valuation-fields">'+jField('salesGrowth','Crecimiento anual de ventas · %','¿Qué crecimiento consideras razonable?','Ej. 6')
+   +jField('ebitMargin','Margen EBIT esperado · %','Parte de las ventas que quedaría como beneficio operativo.','Ej. 22')
+   +jField('taxRate','Impuestos operativos · %','Tasa estimada sobre el beneficio operativo.','Ej. 21','min="0" max="100"')
+   +jField('reinvestRate','Reinversión neta · % de NOPAT','Cuánto beneficio operativo después de impuestos necesitaría reinvertir el negocio.','Ej. 30')+'</div>';
+  html+='<details id="journey-annual"'+(journey.annualOpen?' open':'')+'><summary>Personalizar año por año (opcional)</summary><p>Si dejas una casilla vacía, conservará el supuesto general. Los cambios permanecen editables.</p><div class="valuation-year-table"><table><thead><tr><th>Año</th><th>Ventas %</th><th>EBIT %</th><th>Impuestos %</th><th>Reinversión %</th></tr></thead><tbody>';
+  for(let i=1;i<=5;i++){html+='<tr><th>Año '+i+'</th>';for(const k of ['salesGrowth','ebitMargin','taxRate','reinvestRate']){const val=journey.yearly[i]?.[k]||'';html+='<td><input data-year="'+i+'" data-annual="'+k+'" type="number" step="any" inputmode="decimal" value="'+escapeHtml(val)+'" aria-label="'+escapeHtml(k)+' año '+i+'" placeholder="—"></td>';}html+='</tr>';}
+  html+='</tbody></table></div></details><div class="valuation-info warning">Los porcentajes son hipótesis del usuario. La proyección de FCFF y el motor del precio siguen en revisión.</div>';
+ }else if(stage===4){
+  html='<p class="valuation-intro">Un múltiplo de salida EV/FCFF y una tasa de descuento permiten combinar los flujos de cinco años con una estimación terminal. Es importante justificar ambos supuestos.</p>'
+   +'<div class="valuation-fields">'+jField('multiple','Múltiplo de salida EV/FCFF · veces','Hipótesis de valoración relativa, no una cifra recomendada.','Ej. 18','min="0"')
+   +jField('wacc','Tasa para descontar flujos (WACC) · %','Una tasa mayor reduce el valor presente estimado.','Ej. 9','min="0"')
+   +jField('safety','Margen de seguridad · %','Descuento que exigirías frente al valor estimado.','Ej. 25','min="0" max="99"')+'</div>'
+   +jHelp('¿Por qué aparece una tasa de descuento si utilizamos EV/FCF?','El método previsto combina flujos proyectados con un múltiplo EV/FCFF al final del año cinco. Una tasa como WACC convierte importes futuros a valores de hoy.')
+   +'<details id="journey-bridge"'+(journey.bridgeOpen?' open':'')+'><summary>Ver ajustes técnicos (opcional)</summary><p>Para pasar de valor empresarial a valor por acción se necesitan deuda neta, activos no operativos y número adecuado de acciones. Todavía requieren conciliación.</p><div class="valuation-fields">'
+   +jField('netDebt','Deuda neta considerada · millones USD','Requiere comprobar los componentes de deuda y efectivo.','Sin definir')
+   +jField('shares','Acciones diluidas · millones','Verificar fecha y si son las acciones apropiadas para la valoración.','Sin definir','min="0"')
+   +jField('otherAssets','Otros activos no operativos · millones USD','No duplicar el efectivo ya descontado en deuda neta.','Opcional')+'</div></details>'
+   +'<div class="valuation-info warning">El precio por acción aún no se calcula. Las definiciones financieras y la conciliación de deuda necesitan pruebas.</div>';
+ }else{
+  html='<p class="valuation-intro">Aquí podrás comprobar la valoración y editar cualquier hipótesis. Actualmente el cálculo final está desactivado mientras verificamos las fórmulas.</p>'
+   +'<div class="valuation-result"><div>Valor estimado por acción</div><strong>Pendiente de validación</strong><p class="tip">La aplicación no muestra precios inventados ni una estimación no auditada.</p></div>'
+   +'<div class="valuation-recap"><div class="valuation-info"><strong>Caja sostenible</strong>'+jSummary([['fcffBasis','FCFF base',' M USD']])+'<button type="button" class="btn small" data-edit-stage="2">Editar caja</button></div>'
+   +'<div class="valuation-info"><strong>Proyecciones</strong>'+jSummary([['salesGrowth','Ventas',' %'],['ebitMargin','Margen EBIT',' %'],['taxRate','Impuestos',' %'],['reinvestRate','Reinversión',' %']])+'<button type="button" class="btn small" data-edit-stage="3">Editar proyección</button></div>'
+   +'<div class="valuation-info"><strong>Valoración</strong>'+jSummary([['multiple','EV/FCFF',' ×'],['wacc','WACC',' %'],['safety','Margen de seguridad',' %']])+'<button type="button" class="btn small" data-edit-stage="4">Editar valoración</button></div>'
+   +'<div class="valuation-info"><strong>Antes del precio objetivo</strong><p>Faltan comprobaciones sobre FCFF, deuda, acciones, hipótesis y compatibilidad de múltiplos. El precio de mercado requerirá fuente y fecha verificables.</p><button type="button" class="btn small" data-edit-stage="1">Revisar históricos</button></div></div>';
+ }
+ $('valuation-content').innerHTML=html;
+ $('journey-next').textContent=stage===5?'Volver al historial':'Continuar';
+}
+function setJourneyStep(step){
+ if(step<1||step>5)return;
+ if(step>1&&!state.report){setMessage('Primero busca una empresa o abre la demostración ficticia.','error');return;}
+ if(step>journey.highest+1)return;
+ journey.highest=Math.max(journey.highest,step);journey.step=step;
+ $('history-section').hidden=step!==1;$('valuation-stage').hidden=step===1;
+ document.querySelectorAll('[data-journey]').forEach(btn=>{
+  const target=Number(btn.dataset.journey),active=target===step;
+  btn.classList.toggle('active',active);btn.disabled=target>journey.highest;
+  if(active)btn.setAttribute('aria-current','step');else btn.removeAttribute('aria-current');
+ });
+ $('journey-status').textContent='Etapa '+step+' de 5 · '+['','Revisa los estados financieros.','Define una base razonable de caja.','Estima los próximos cinco años.','Elige múltiplo y descuento.','Revisa lo decidido.'][step];
+ if(step>1){showJourneyMessage('');renderJourney();}
+ window.scrollTo({top:0,behavior:'auto'});
+}
+$('journey-prev').addEventListener('click',()=>setJourneyStep(journey.step-1));
+$('journey-next').addEventListener('click',()=>setJourneyStep(journey.step===5?1:journey.step+1));
+document.querySelectorAll('[data-journey]').forEach(btn=>btn.addEventListener('click',()=>setJourneyStep(Number(btn.dataset.journey))));
+$('valuation-stage').addEventListener('input',e=>{
+ const input=e.target;
+ if(input.dataset.assumption&&assumptions.includes(input.dataset.assumption))journey.inputs[input.dataset.assumption]=input.value.slice(0,50);
+ else if(input.dataset.annual&&/^[1-5]$/.test(input.dataset.year)&&['salesGrowth','ebitMargin','taxRate','reinvestRate'].includes(input.dataset.annual)){
+  const y=input.dataset.year;if(!journey.yearly[y])journey.yearly[y]={};journey.yearly[y][input.dataset.annual]=input.value.slice(0,50);
+ }else return;
+ saveJourney();
+});
+$('valuation-stage').addEventListener('toggle',e=>{
+ if(e.target.id==='journey-annual')journey.annualOpen=e.target.open;
+ if(e.target.id==='journey-bridge')journey.bridgeOpen=e.target.open;
+},true);
+$('valuation-stage').addEventListener('click',e=>{
+ const b=e.target.closest('[data-edit-stage]');if(b)setJourneyStep(Number(b.dataset.editStage));
+});
+
+function setData(obj,mode='live'){state.original=obj;state.mode=mode;state.overrides=loadSaved();state.report=engine.applyOverrides(obj,state.overrides);state.count=5;state.tab='income';render();loadJourney();setJourneyStep(1);}
 async function loadDemo(){try{const demo=engine.parseCompanyFacts(window.SAMPLE_COMPANY_FACTS);setData(demo,'demo');setMessage('Ejemplo ficticio: las cifras sirven para probar navegación, orden y lectura. No representan ninguna empresa real.','ok');}catch(err){setMessage('No se pudo cargar la demostración: '+err.message,'error')}}
 async function lookupTicker(ticker){ticker=String(ticker||'').trim().toUpperCase();if(!/^[A-Z][A-Z0-9.\-]{0,11}$/.test(ticker)){setMessage('Escribe un ticker válido, como AAPL o MSFT.','error');return;}
  $('ticker').value=ticker;setMessage('Consultando la SEC…');const host=location.protocol==='file:'?'':location.origin;try{if(!host)throw Error('Para la consulta automática necesitas abrir la versión alojada en Netlify. Mientras tanto puedes importar un archivo JSON de la SEC.');const endpoint=host+'/.netlify/functions/sec-historicos?ticker='+encodeURIComponent(ticker);const res=await fetch(endpoint);const raw=await res.text();let data;try{data=JSON.parse(raw);}catch{throw Error('Servidor HTTP '+res.status+': respuesta no JSON. Puede ser un error de ejecución de Netlify.');}if(!res.ok)throw Error('HTTP '+res.status+' ['+(data.code||'SIN_CODIGO')+']: '+(data.detail||data.error||'Error de consulta SEC'));setData(data,'live');setMessage('Datos obtenidos mediante SEC EDGAR. Comprueba cada concepto y el documento original antes de utilizarlos.','ok');}catch(err){setMessage('Consulta no disponible: '+err.message+' La demostración ficticia y la importación JSON siguen funcionando.','error');}}
-$('launch-wizard').addEventListener('click',()=>{
- if(!state.report)return;
- const ticker=state.mode==='demo'?'DEMO':(state.mode==='file'?'IMPORT':String(state.report.ticker||'').toUpperCase());
- try{
-  if(ticker)sessionStorage.setItem('adi-wizard-source',JSON.stringify({ticker,mode:state.mode,report:state.report}));
-  else sessionStorage.removeItem('adi-wizard-source');
- }catch(err){setMessage('No se pudieron transferir los datos a la guía; podrás buscar el ticker desde allí.','error');}
- const q=ticker?'?ticker='+encodeURIComponent(ticker):'';
- location.assign('../valoracion/'+q);
-});
+$('launch-wizard').addEventListener('click',()=>setJourneyStep(2));
 $('lookup').addEventListener('submit',e=>{e.preventDefault();lookupTicker($('ticker').value);});
 $('load-demo').addEventListener('click',loadDemo);$('empty-demo').addEventListener('click',loadDemo);
 document.querySelectorAll('button[data-ticker]').forEach(el=>el.addEventListener('click',()=>lookupTicker(el.dataset.ticker)));
