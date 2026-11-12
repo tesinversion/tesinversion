@@ -8,11 +8,14 @@ const path=require('node:path');
 const html=fs.readFileSync(path.join(__dirname,'../laboratorio/historicos/index.html'),'utf8');
 const legacy=fs.readFileSync(path.join(__dirname,'../laboratorio/valoracion/index.html'),'utf8');
 const model=fs.readFileSync(path.join(__dirname,'../laboratorio/historicos/valoracion-modelo.js'),'utf8');
+const reference=fs.readFileSync(path.join(__dirname,'../laboratorio/historicos/referencia-inversion.js'),'utf8');
 const scripts=[...html.matchAll(/<script>([\s\S]+?)<\/script>/g)].map(m=>m[1]);
 assert.equal(scripts.length,2,'Parser SEC y controlador de calculadora deben permanecer separados');
 scripts.forEach((script,i)=>assert.doesNotThrow(()=>new vm.Script(script,{filename:'calculadora-'+i})));
 assert.doesNotThrow(()=>new vm.Script(model,{filename:'valoracion-modelo.js'}));
 assert.match(html,/<script src="\.\/valoracion-modelo\.js"><\/script>/,'Cargar motor de valoración propio');
+assert.match(html,/<script src="\.\/referencia-inversion\.js"><\/script>/,'Cargar referencia histórica');
+assert.doesNotThrow(()=>new vm.Script(reference,{filename:'referencia-inversion.js'}));
 
 for(let i=1;i<=5;i++)assert.match(html,new RegExp('data-journey="'+i+'"'),'Etapa '+i);
 for(const name of ['lookup','tabs','sourcebox','financial-body','restore-all','history-section',
@@ -34,6 +37,12 @@ assert.match(html,/CapEx anual estimas para mantenimiento/,'Ajuste de mantenimie
 assert.match(html,/data-action="use-da-proxy"/,'Copiar D&A solo con decisión del usuario');
 assert.match(html,/growthInvestmentPct/,'Inversión para expansión futura');
 assert.match(html,/workingCapitalPct/,'Capital de trabajo futuro');
+assert.match(html,/ADIInvestmentReference\.analyze\(state\.report\.rows\)/,'Referencia calculada desde históricos');
+assert.match(html,/data-action="use-historical-expansion"/,'Aplicación manual de expansión');
+assert.match(html,/data-action="use-historical-working-capital"/,'Aplicación manual de capital de trabajo');
+assert.match(html,/investment-details/,'Detallado técnico opcional');
+assert.match(html,/al menos tres años comparables/,'Umbral de datos históricos');
+assert.match(html,/No tienes que adivinar/,'La interfaz no exige adivinar tasas');
 assert.match(html,/próximos cinco ejercicios fiscales/,'Explicar horizonte temporal');
 assert.match(html,/growthGap/,'Escenarios mediante cambios explícitos');
 assert.match(html,/marginGap/,'Sensibilidad al margen');
