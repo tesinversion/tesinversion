@@ -86,3 +86,15 @@ Evitar en pantallas principales salvo ayuda solicitada: NOPAT, FCFF, WACC, ratio
 5. Ningún cambio a `main`, publicación ni cobros sin autorización.
 
 **No se ha aplicado esta propuesta al HTML ni al motor de valoración existente.**
+
+## Ajustes de las primeras cinco secciones (v0.7.1, 12/11/2026)
+
+La autora revisó y aprobó la dirección visual de las tablas simplificadas y la etapa 3; solicitó estas cinco correcciones **antes de revisar otras etapas**:
+
+1. **Resultados:** control deslizante de **1 a 10 años**, no selector fijo de cinco/diez. Conservar el número elegido al navegar entre Resultados, Balance y Flujos. Añadir gastos operativos después de crecimiento de ventas, margen neto, acciones en circulación, variación porcentual de acciones, EPS y crecimiento porcentual de EPS. Destacar los indicadores clave con una banda azul discreta.
+2. **Balance:** conservar lectura simple, mismo selector de años y orden lógico: efectivo, cuentas por cobrar, inventario y total de activos corrientes; activos no corrientes y activos totales; cuentas por pagar, pasivos corrientes, capital de trabajo neto; pasivos no corrientes, pasivos totales; deuda financiera, deuda neta y patrimonio. El «capital de trabajo neto» exhibido aquí es activos corrientes menos pasivos corrientes: no confundirlo automáticamente con la inversión en capital de trabajo operativo usada en valoración.
+3. **Flujo de caja:** mismo selector 1–10; añadir compensación en acciones, depreciación y amortización y bloque de inversión y financiación/asignación del capital: adquisiciones, otras inversiones, dividendos, recompras, emisión de acciones, nueva deuda, pago de deuda y flujo neto de financiación. Mantener unidad en millones USD y signos coherentes para entradas/salidas.
+4. **CapEx de mantenimiento:** indicar que el valor editable es una estimación **anual para el ejercicio base 2025** y que su posible utilización en la proyección 2026–2030 depende de la futura validación del modelo. Sugerir depreciación y amortización (D&A) como referencia inicial o proxy, con advertencia sobre inflación, envejecimiento de activos y necesidades reales de reposición. No calcular automáticamente la inversión futura en el wireframe.
+5. **Proyecciones:** tabla con las tres filas conocidas (crecimiento ventas, margen EBIT e impuestos) y cinco columnas de ejercicios reales **2021–2025**, seguidas de una columna en ámbar para el **año en curso del ejemplo 2026**. La estimación general sirve de referencia para 2027–2030, editables por año en desplegable. Los datos históricos de 2026 y otros años se actualizarán según ejercicio realmente disponible al construir la herramienta funcional.
+
+**Estado:** ejecutado **solo en el boceto visual v0.7.1** de `laboratorio/diseno-v07/index.html`; el motor financiero y la calculadora real permanecen intactos. Los datos de la demostración son ficticios y no hay cálculos reales de valores por acción. Tests estáticos y simulación aislada de navegación pasaron; todavía falta inspección real de navegador y confirmación visual de la autora.
