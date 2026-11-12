@@ -38,6 +38,15 @@ assert.match(html,/Antes de calcular un precio harán falta hipótesis comprobab
 assert.match(html,/Number\(r\.year\)\+5/,'Proyección identificada por años fiscales');
 
 assert.match(html,/Pendiente de validación/,'No producir precio sin motor auditado');
+assert.match(html,/class="valuation-field user-estimate"/,'Campos editables distinguibles');
+assert.match(html,/class="valuation-fact source-data"/,'Datos históricos distinguibles');
+assert.match(html,/Datos de la empresa/,'Leyenda de datos fuente');
+assert.match(html,/Tu estimación/,'Leyenda de campos editables');
+assert.match(html,/¿Cuántas veces el FCF anual pagarías por el negocio\?/,'Lenguaje comprensible');
+assert.match(html,/Ver fórmulas y ajustes técnicos \(opcional\)/,'WACC tras detalles');
+assert.match(html,/jField\('wacc'/,'WACC conservado solo como opción técnica');
+assert.match(html,/function recalculate\(\)/,'La fuente puede corregirse sin perder trazabilidad');
+
 assert.doesNotMatch(html,/location\.assign\(['"]\.\.\/valoracion\//,'No deben existir saltos a una segunda app');
 assert.doesNotMatch(old,/function renderStep\(/,'La ruta anterior no debe incluir otro asistente funcional');
 assert.match(old,/location\.replace\(target\.href\)/,'La ruta anterior debe redirigir');
