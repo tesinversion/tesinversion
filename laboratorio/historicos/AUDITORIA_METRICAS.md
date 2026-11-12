@@ -34,3 +34,29 @@ Los importes de FY2025 se presentan también como comparativos en el informe FY2
 - Separar reinversión orgánica, adquisiciones y gastos intangibles; documentar la definición que se apruebe.
 - Probar el importador contra el 10-K más reciente de cada empresa y detectar ejercicios fiscales distintos.
 - No construir ni comercializar valoración EV/FCF hasta definir FCFF compatible con enterprise value y revisar licencias de materiales educativos previos.
+
+
+## Revisión conceptual del 11/11/2026 — explicación y pendientes
+Se añadió en la interfaz un desplegable **«Entender ROIC y reinversión»**. Solo presenta definiciones, un ejemplo didáctico y advertencias; el motor no cambió.
+
+### ROIC reportado hoy
+- NOPAT = EBIT × (1 − tipo impositivo efectivo del ejercicio).
+- Capital invertido = patrimonio contable + deuda financiera identificada − efectivo y equivalentes.
+- ROIC anual = NOPAT / capital invertido medio de dos cierres; histórico = mediana hasta cinco observaciones si al menos tres son válidas.
+- **Límite:** el tipo efectivo puede incluir efectos extraordinarios; el capital invertido no incorpora todos los ajustes que se consideran en un ROIC normalizado (arrendamientos, exceso de caja, I+D capitalizable, goodwill, etc.).
+- **No equivale** a rentabilidad incremental de capital nuevo. Recompras pueden reducir patrimonio y magnificar el porcentaje.
+
+### Reinversión reportada hoy
+- Formula programada = (CapEx − D&A + variación de capital de trabajo aproximado) / NOPAT.
+- La función \`nwcApprox\` actualmente suma \`shortDebt\` al pasivo corriente para excluir deuda financiera, pero **\`shortDebt\` solo selecciona una etiqueta** (por ejemplo vencimientos de deuda a plazo), y puede omitir papel comercial y otros préstamos de corto plazo; necesita reconciliación con \`totalDebt\` y sus componentes sin duplicación.
+- No incluye adquisiciones ni algunas inversiones intangibles, entre otras diferencias. Una tasa negativa no implica error; necesita explicación.
+- No usar el resultado para proyectar beneficios o crecimiento hasta aprobar y probar la metodología.
+
+### Criterios por decidir antes de cambiar las fórmulas
+1. ROIC operativo **sin ajustes** frente a ROIC normalizado **con ajustes explícitos**; mostrar ambos si es útil pero no sustituir sin aviso.
+2. Impuestos reportados frente a tipo impositivo operativo normalizado y tratamiento de ejercicios extraordinarios.
+3. Capital invertido operativo con deuda de arrendamientos, caja excedentaria, intangibles y goodwill.
+4. Reinversión **orgánica** separada de adquisiciones e I+D u otros intangibles; control consistente del capital de trabajo operativo.
+5. Comparar ROIC histórico con rentabilidad incremental estimada, explicitando que ésta requiere información/hipótesis adicionales.
+
+Fuentes independientes de referencia (no material de cursos): Damodaran, [Return on Capital](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/roc.html) y [Definitions](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html). Fórmulas de la implementación verificadas directamente en \`src/sec-historico.cjs\`.
