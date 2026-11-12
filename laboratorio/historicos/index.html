@@ -746,7 +746,7 @@ function projectionInput(){
   marketPrice:journey.marketDate&&jNum('marketPrice')!==null?jNum('marketPrice'):null,annual};
 }
 function valueMoney(n){return Number.isFinite(n)?fmt(n,1)+' M USD':'—';}
-function shareMoney(n){return Number.isFinite(n)?'$ '+fmt(n,2):'—';}
+function shareMoney(n){if(!Number.isFinite(n))return '—';const d=Math.abs(n)>=20?0:Math.abs(n)>=1?1:2;return '$ '+fmt(n,d);}
 function jSection(name,content,variant=''){
  return '<div class="wizard-panel '+variant+'"><h3>'+escapeHtml(name)+'</h3>'+content+'</div>';
 }
@@ -849,11 +849,11 @@ function renderJourney(){
    const prices=[low.priceToday,base.priceToday,high.priceToday];
    const rangeMin=Math.min(...prices),rangeMax=Math.max(...prices);
    const mini=(label,v,description)=>'<div class="scenario-card"><span>'+escapeHtml(label)+'</span><strong>'+escapeHtml(shareMoney(v.priceToday))+'</strong><small>'+escapeHtml(description)+'</small><div>Estimación año 5: '+escapeHtml(shareMoney(v.priceYear5))+'</div></div>';
-   html+='<div class="valuation-result result-ready"><span class="source-label">VALOR RAZONABLE ESTIMADO HOY · USD POR ACCIÓN</span><strong>'+escapeHtml(shareMoney(base.priceToday))+'</strong><p>Escenarios: '+escapeHtml(shareMoney(rangeMin))+' a '+escapeHtml(shareMoney(rangeMax))+'. Son resultados de supuestos distintos, no un intervalo estadístico.</p></div>';
+   html+='<div class="valuation-result result-ready"><span class="source-label">VALOR RAZONABLE ESTIMADO HOY · USD POR ACCIÓN</span><strong>'+escapeHtml(shareMoney(base.priceToday))+'</strong><p>Escenarios: '+escapeHtml(shareMoney(rangeMin))+' a '+escapeHtml(shareMoney(rangeMax))+'. Cifras redondeadas para facilitar la lectura. Los escenarios representan hipótesis distintas, no un intervalo estadístico.</p></div>';
    html+='<div class="scenario-grid">'+mini('Conservador',low,'Menor crecimiento, margen y múltiplo')+mini('Base',base,'Tus hipótesis centrales')+mini('Optimista',high,'Mayor crecimiento, margen y múltiplo')+'</div>';
    html+=jSection('Tu nivel de compra con margen de seguridad',
     '<div class="valuation-facts">'+jSource('Valor de hoy · escenario base',shareMoney(base.priceToday),'VALOR PRESENTE CALCULADO')
-    +'<div class="valuation-fact user-review"><dt>Precio de compra deseado</dt><dd>'+escapeHtml(shareMoney(base.buyBelow))+'</dd><span class="fact-source">MARGEN DE SEGURIDAD DEL '+escapeHtml(jNum('safety'))+' %</span></div>'
+    +'<dl class="valuation-fact user-review"><dt>Precio de compra deseado</dt><dd>'+escapeHtml(shareMoney(base.buyBelow))+'</dd><div class="fact-source">MARGEN DE SEGURIDAD DEL '+escapeHtml(jNum('safety'))+' %</div></dl>'
     +jSource('Precio teórico al final del año 5',shareMoney(base.priceYear5),'VALOR TERMINAL POR ACCIÓN · NO COTIZACIÓN FUTURA GARANTIZADA')+'</div>'
     +(base.comparison?'<div class="valuation-info">Cotización manual de '+escapeHtml(journey.marketDate)+': '+escapeHtml(shareMoney(base.comparison.quote))+'. Diferencia frente al valor base de hoy: '+escapeHtml(fmt(base.comparison.vsValuePct,1))+' %. Fuente: introducida por ti, no verificada automáticamente.</div>':'<p class="small">No hay una cotización verificada para comparar. Puedes introducir una manualmente, con fecha, en la etapa anterior.</p>'),'estimate-panel');
    html+='<details><summary>Ver cálculos financieros y proyección del escenario base (avanzado)</summary><div class="valuation-facts">'
