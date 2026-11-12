@@ -36,7 +36,7 @@ const tests=[
 let done=0;
 for(const [name,values,expected] of tests){
  const row=parseCompanyFacts(make(values)).rows[0];
- const actual=row.amounts.totalDebt?.v/1e6??null;
+ const actual=row.amounts.totalDebt ? row.amounts.totalDebt.v/1e6 : null;
  assert.equal(actual,expected,name);
  done++;
 }
