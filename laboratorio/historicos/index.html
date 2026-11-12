@@ -181,6 +181,30 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 .valuation-cash-table table{min-width:660px}
 .valuation-cash-table th,.valuation-cash-table td{min-width:125px;vertical-align:top;font-variant-numeric:tabular-nums}
 .valuation-cash-table th .tag-note{font-weight:400;font-size:10px;color:#8997a8}
+
+/* Datos del informe en azul grisáceo; hipótesis editables en ámbar suave. */
+.data-legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px}
+.data-legend .legend-source,.data-legend .legend-edit{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:99px;font-size:11px;font-weight:740}
+.legend-source{background:#e9eff7;color:#354e70;border:1px solid #cbd8e9}
+.legend-edit{background:#fff3d6;color:#815b15;border:1px solid #e3c37b}
+.legend-note{color:#78879c;font-size:11px}
+.history-source-label{display:flex;align-items:center;gap:6px;font-size:11px;color:#516b8c;background:#edf3f9;border:1px solid #d9e4f0;border-radius:8px;padding:8px 11px;margin:1px 0 9px}
+#financial-card .metric{background:#f1f5fa;border-color:#dbe5f0}
+#financial-body button.value:not(:has(.manual-marker)){color:#324d72}
+#financial-body button.value:has(.manual-marker){background:#fff4da;color:#7e5917}
+.valuation-fact.source-data,.valuation-info.source-data{background:#f0f5fa;border-color:#d9e4f0}
+.valuation-fact .fact-source,.source-label{display:block;font-size:9px;font-weight:800;letter-spacing:.055em;color:#526f90;margin-top:8px}
+.valuation-info .source-label{margin:0 0 7px}
+.valuation-field.user-estimate{background:#fffaf0;border:1px solid #ecd6a7;border-left:3px solid #b68a38;border-radius:12px;padding:12px 13px;gap:8px}
+.valuation-field .field-type,.review-label{display:inline-block;font-size:9px;line-height:1.3;letter-spacing:.055em;color:#835b16;font-weight:800}
+.valuation-field.user-estimate label{color:#46391f}
+.valuation-field.user-estimate input,.valuation-year-table input{border:1.5px solid #b68a38;background:#fff;color:#3a3125}
+.valuation-field.user-estimate input:focus,.valuation-year-table input:focus{outline:2px solid #d4a64d;outline-offset:2px}
+.valuation-field.user-estimate small{color:#756952}
+.valuation-recap .user-review{background:#fffaf0;border-color:#ebd5a2}
+.valuation-recap .user-review .review-label{display:block;margin-bottom:7px}
+.valuation-cash-table td,.valuation-cash-table th{background:#f9fbfe}
+@media(prefers-contrast:more){.valuation-field.user-estimate input{border-width:2px}.legend-source,.legend-edit{border-width:2px}}
 </style>
 </head>
 <body>
@@ -188,7 +212,12 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 <main class="wrap">
 <section class="hero"><div class="eyebrow">Calculadora de empresas · Laboratorio</div><h1>Analiza y valora una empresa, paso a paso.</h1><p>Busca una empresa, revisa sus estados financieros y decide qué supuestos utilizarías para valorarla. Todo en un mismo recorrido, sin buscar la empresa dos veces.</p>
 <nav class="journey-nav" aria-label="Etapas de la calculadora"><button class="journey-tab active" type="button" data-journey="1" aria-current="step"><span>1</span> Históricos</button><button class="journey-tab" type="button" data-journey="2" disabled><span>2</span> Caja sostenible</button><button class="journey-tab" type="button" data-journey="3" disabled><span>3</span> Proyectar 5 años</button><button class="journey-tab" type="button" data-journey="4" disabled><span>4</span> Valoración</button><button class="journey-tab" type="button" data-journey="5" disabled><span>5</span> Resultado</button></nav>
-<p id="journey-status" class="journey-status" role="status">Etapa 1 de 5 · Revisa los datos financieros antes de avanzar.</p></section>
+<p id="journey-status" class="journey-status" role="status">Etapa 1 de 5 · Revisa los datos financieros antes de avanzar.</p>
+<div class="data-legend" aria-label="Cómo distinguir los datos">
+<span class="legend-source"><span aria-hidden="true">▣</span> Datos de la empresa</span>
+<span class="legend-edit"><span aria-hidden="true">✎</span> Tu estimación</span>
+<span class="legend-note">Los datos de la empresa se consultan; las estimaciones las eliges tú.</span>
+</div></section>
 <div id="history-section">
 <section class="card"><div class="section-head"><div><h2>Busca una empresa</h2><p class="sub">Estados financieros anuales · Empresas estadounidenses · Fuente SEC EDGAR</p></div><div class="tag">Hasta 10 ejercicios</div></div>
 <form id="lookup" class="searchbox"><label for="ticker">Ticker</label><input id="ticker" spellcheck="false" autocomplete="off" placeholder="AAPL, MSFT, KO…" maxlength="12" aria-label="Ticker bursátil"><button class="btn primary" type="submit">Consultar SEC</button><button class="btn" type="button" id="load-demo">Ver demostración</button><label class="btn file" title="Importar documento Company Facts JSON descargado de la SEC">Importar archivo SEC<input type="file" id="upload" accept=".json,application/json" aria-label="Importar archivo SEC Company Facts JSON"></label></form>
@@ -200,6 +229,7 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 <div class="empty" id="empty"><div class="graphic">01 — 10</div><h3>Explora los resultados de una empresa</h3><p>Abre la demostración para conocer el diseño. Cuando importes datos SEC o consultes una compañía, aquí aparecerán los tres estados financieros.</p><button class="btn primary" id="empty-demo" type="button">Mostrar ejemplo ficticio</button></div>
 <div id="report" hidden><nav class="tabbar" id="tabs" role="tablist" aria-label="Estados financieros"><button class="tab active" type="button" role="tab" aria-selected="true" data-tab="income">Resultados</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="balance">Balance general</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="cashflow">Flujos de efectivo</button></nav>
 <div class="table-toolbar"><div class="mutedlabel" id="table-help">Cifras anuales en millones de USD.</div><div class="controls"><span class="focus-legend">Indicador clave</span><button class="btn small" type="button" id="focus-only" aria-pressed="false">Solo indicadores clave</button><button class="btn small" type="button" id="restore-all" hidden>Restaurar valores oficiales</button><button class="btn small" type="button" id="history-years">Ver 10 años</button><button class="btn small" type="button" id="percent-toggle">Variaciones visibles</button></div></div>
+<div class="history-source-label"><span aria-hidden="true">▣</span> Datos de la empresa · Puedes abrir una cifra para consultar su fuente o corregirla</div>
 <div class="gridwrap" role="region" tabindex="0" aria-label="Tabla de datos financieros desplazable horizontalmente"><table><thead id="financial-head"></thead><tbody id="financial-body"></tbody></table></div>
 <div class="sourcebox" id="sourcebox" aria-live="polite"></div><p class="legend"><strong>Cómo leerlo:</strong> selecciona una cifra para consultar la fuente y corregirla si es necesario. La cifra SEC original siempre se conserva; los indicadores derivados se recalculan. Los valores manuales aparecen con la marca «Editado» y se guardan solo en este navegador. «—» indica información no disponible.</p><div id="warnings"></div>
 <details class="method-help" id="method-help">
@@ -642,10 +672,10 @@ function jValue(amount){return amount&&Number.isFinite(amount.v)?amount.v:null;}
 function jMoney(amount){return amount!==null&&Number.isFinite(amount)?fmt(amount/1e6,1)+' M USD':'No disponible';}
 function jPercent(amount){return amount!==null&&Number.isFinite(amount)?fmt(amount,1)+' %':'No disponible';}
 function jField(key,label,hint,placeholder,range=''){
- return '<div class="valuation-field"><label for="j-'+key+'">'+escapeHtml(label)+'</label><input id="j-'+key+'" data-assumption="'+key+'" type="number" inputmode="decimal" step="any" value="'+escapeHtml(journey.inputs[key]||'')+'" placeholder="'+escapeHtml(placeholder)+'" '+range+'><small>'+escapeHtml(hint)+'</small></div>';
+ return '<div class="valuation-field user-estimate"><span class="field-type"><span aria-hidden="true">✎</span> TU ESTIMACIÓN</span><label for="j-'+key+'">'+escapeHtml(label)+'</label><input id="j-'+key+'" data-assumption="'+key+'" type="number" inputmode="decimal" step="any" value="'+escapeHtml(journey.inputs[key]||'')+'" placeholder="'+escapeHtml(placeholder)+'" '+range+'><small>'+escapeHtml(hint)+'</small></div>';
 }
 function jFact(label,value){
- return '<dl class="valuation-fact"><dt>'+escapeHtml(label)+'</dt><dd>'+escapeHtml(value)+'</dd></dl>';
+ return '<dl class="valuation-fact source-data"><dt>'+escapeHtml(label)+'</dt><dd>'+escapeHtml(value)+'</dd><span class="fact-source">'+(state.mode==='demo'?'EJEMPLO FICTICIO':'DATO DEL INFORME')+'</span></dl>';
 }
 function jHelp(title,content){
  return '<details><summary>'+escapeHtml(title)+'</summary><p>'+escapeHtml(content)+'</p></details>';
