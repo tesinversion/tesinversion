@@ -43,7 +43,7 @@
   check(input.maintenance0>input.sales0*10,'El mantenimiento estimado supera diez veces las ventas de partida. Verifica las unidades en millones.');
   check(input.taxPct<0||input.taxPct>60,'Impuestos operativos fuera del rango admitido (0 % a 60 %).');
   check(input.growthInvestmentPct<0||input.growthInvestmentPct>500,'Inversión de expansión fuera del rango admitido.');
-  check(input.workingCapitalPct<0||input.workingCapitalPct>200,'Capital de trabajo fuera del rango admitido.');
+  check(input.workingCapitalPct < -200 || input.workingCapitalPct > 200,'Capital de trabajo fuera del rango admitido (-200 a 200 por cada 100 de ventas adicionales).');
   check(input.multiple<=0||input.multiple>100,'El múltiplo debe ser mayor que cero y menor o igual a 100.');
   check(input.discountPct<=0||input.discountPct>50,'La tasa de descuento debe estar entre 0 % y 50 %.');
   check(input.shares0<=0,'Debe haber acciones en circulación.');
@@ -57,7 +57,7 @@
   if(input.annual){
    for(let i=1;i<=5;i++){
     const a=input.annual[i]||{};
-    for(const [key,lower,upper] of [['growthPct',-99,150],['marginPct',-100,100],['taxPct',0,60],['growthInvestmentPct',0,500],['workingCapitalPct',0,200]]){
+    for(const [key,lower,upper] of [['growthPct',-99,150],['marginPct',-100,100],['taxPct',0,60],['growthInvestmentPct',0,500],['workingCapitalPct',-200,200]]){
      const x=num(a[key]);if(x!==null&&(!finite(x)||x<lower||x>upper))errors.push('Supuesto de '+key+' fuera de rango en año '+i+'.');
     }
    }
