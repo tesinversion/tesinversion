@@ -30,6 +30,17 @@ assert.match(html,/function explain\(year,key\)/,'Conservar el acceso a fuentes/
 assert.match(html,/function renderJourney\(/);
 assert.match(html,/Último ejercicio disponible/,'La caja necesita una fecha precisa');
 assert.match(html,/cashRows=state\.report\.rows\.slice\(-5\)/,'Comparar cinco ejercicios disponibles');
+assert.match(html,/Flujo de caja operativo \(CFO\)/,'Nombre completo del flujo operativo');
+assert.match(html,/CapEx registrado \(sin separar\)/,'No presentar CapEx registrado como mantenimiento');
+assert.match(html,/Depreciación y amortización \(D&A\)/,'Mostrar depreciación para analizar mantenimiento');
+assert.match(html,/function maintenancePreview\(/,'La estimación de mantenimiento tiene desglose');
+assert.match(html,/data-action="use-da-proxy"/,'D&A se ofrece solo como supuesto editable');
+assert.match(html,/CapEx de crecimiento estimado = CapEx registrado/,'Mostrar fórmula explícita de crecimiento estimado');
+assert.match(html,/FCF normalizado hipotético/,'Separar FCF normalizado hipotético del histórico');
+assert.match(html,/Todos? las estimaciones|Todas las estimaciones/,'Indicar horizonte de proyección');
+assert.match(html,/CapEx total 40 millones/,'Mostrar origen de ejemplo de reinversión');
+assert.match(html,/COMPONENTES HISTÓRICOS/,'Dar componentes históricos de reinversión');
+
 assert.match(html,/mediana histórica de FCF/i,'La mediana debe estar explicada');
 assert.doesNotMatch(html,/jField\('fcffBasis'/,'No solicitar FCFF arbitrario en pantalla básica');
 assert.match(html,/Impuestos y reinversión \(ajustes avanzados opcionales\)/,'Reservar supuestos complejos para detalle opcional');
