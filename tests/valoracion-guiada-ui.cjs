@@ -28,6 +28,15 @@ assert.match(html,/localStorage\.setItem\(journeyKey\(\)/,'Persistencia local po
 assert.match(html,/function recalculate\(\)\{state\.report=engine\.applyOverrides/,'Conservar el recálculo histórico');
 assert.match(html,/function explain\(year,key\)/,'Conservar el acceso a fuentes/correcciones');
 assert.match(html,/function renderJourney\(/);
+assert.match(html,/Último ejercicio disponible/,'La caja necesita una fecha precisa');
+assert.match(html,/cashRows=state\.report\.rows\.slice\(-5\)/,'Comparar cinco ejercicios disponibles');
+assert.match(html,/mediana histórica de FCF/i,'La mediana debe estar explicada');
+assert.doesNotMatch(html,/jField\('fcffBasis'/,'No solicitar FCFF arbitrario en pantalla básica');
+assert.match(html,/Impuestos y reinversión \(ajustes avanzados opcionales\)/,'Reservar supuestos complejos para detalle opcional');
+assert.match(html,/NOPAT = EBIT después de impuestos operativos/,'Explicar NOPAT');
+assert.match(html,/Antes de calcular un precio harán falta hipótesis comprobables/,'No ocultar bloqueo financiero');
+assert.match(html,/Number\(r\.year\)\+5/,'Proyección identificada por años fiscales');
+
 assert.match(html,/Pendiente de validación/,'No producir precio sin motor auditado');
 assert.doesNotMatch(html,/location\.assign\(['"]\.\.\/valoracion\//,'No deben existir saltos a una segunda app');
 assert.doesNotMatch(old,/function renderStep\(/,'La ruta anterior no debe incluir otro asistente funcional');
