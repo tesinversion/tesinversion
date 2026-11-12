@@ -40,12 +40,17 @@ function execute({ticker='',saved={},transfer=null}={}){
 const a=execute(), get=()=>a.nodes.get('stage').innerHTML;
 assert.match(get(),/Primero, conoce el negocio/);
 assert.match(get(),/Usar ejemplo ficticio/);
-for(const expected of [/¿Cuánta caja puede generar\?/,/¿Cómo imaginas los próximos cinco años\?/,/¿Qué pagarías por esos flujos\?/,/Revisa tu análisis\./]){
+a.events['next:click']();
+assert.match(get(),/Primero, conoce el negocio/);
+assert.match(a.nodes.get('status').textContent,/busca una empresa o utiliza el ejemplo ficticio/);
+a.events['use-demo:click']();
+assert.match(get(),/Empresa de demostración/);
+for(const expected of [/¿Cuánta caja puede generar\?/,/¿Cómo imaginas los próximos cinco años\?/,/¿Con qué supuestos valoraremos el negocio\?/,/Revisa tu análisis\./]){
  a.events['next:click']();assert.match(get(),expected);
 }
 assert.match(get(),/Pendiente de validación/);
 assert.doesNotMatch(get(),/\$\s*[0-9][0-9.,]*\s*por acción/);
-a.events['back:click']();assert.match(get(),/¿Qué pagarías por esos flujos\?/);
+a.events['back:click']();assert.match(get(),/¿Con qué supuestos valoraremos el negocio\?/);
 a.events['next:click']();assert.match(get(),/Tu empresa y caja/);
 assert.ok(wizard.includes('localStorage.setItem'));
 assert.match(history,/id="launch-wizard"/);
@@ -59,6 +64,8 @@ const transfer={ticker:'AAPL',mode:'live',report:{
 const b=execute({ticker:'AAPL',transfer});
 assert.match(b.nodes.get('stage').innerHTML,/Apple/);
 assert.match(b.nodes.get('stage').innerHTML,/2026/);
+assert.match(wizard,/Referencia histórica/);
+assert.match(wizard,/historyLink.href/);
 const c=execute({ticker:'IMPORT',transfer:{...transfer,ticker:'IMPORT',mode:'file'}});
 assert.match(c.nodes.get('stage').innerHTML,/Apple/);
-console.log('OK: navegación 5 pasos, retroceso, precio bloqueado, transferencias AAPL/IMPORT y datos históricos conservados');
+console.log('OK: bloquear avance sin empresa, demo habilitada, navegación 5 pasos, regreso, contexto histórico y precio bloqueado');
