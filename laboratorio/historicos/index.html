@@ -177,6 +177,10 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 @media(max-width:800px){.journey-nav{grid-template-columns:repeat(5,minmax(0,1fr))}.journey-tab{font-size:10px;gap:4px;flex-direction:column;min-height:61px;text-align:center}.valuation-facts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.journey-nav{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.journey-tab{font-size:9px;padding:8px 3px}.journey-tab span{width:21px;height:21px}.valuation-fields,.valuation-recap{grid-template-columns:1fr}.valuation-facts{grid-template-columns:1fr 1fr}.valuation-fact{padding:11px}.valuation-fact dd{font-size:17px}.journey-footer{flex-wrap:wrap}.journey-footer .tip{order:3;width:100%;text-align:center}}
 @media print{.journey-nav,.journey-footer,.valuation-fields{display:none!important}}
+
+.valuation-cash-table table{min-width:660px}
+.valuation-cash-table th,.valuation-cash-table td{min-width:125px;vertical-align:top;font-variant-numeric:tabular-nums}
+.valuation-cash-table th .tag-note{font-weight:400;font-size:10px;color:#8997a8}
 </style>
 </head>
 <body>
@@ -609,7 +613,7 @@ function explain(year,key){
 // Asistente integrado. Usa state.report (con correcciones) sin otra búsqueda ni otra pantalla.
 const journey={
  step:1, highest:1, inputs:{fcffBasis:'',salesGrowth:'',ebitMargin:'',taxRate:'',reinvestRate:'',multiple:'',wacc:'',safety:'',netDebt:'',shares:'',otherAssets:''},
- yearly:{},annualOpen:false,bridgeOpen:false
+ yearly:{},annualOpen:false,bridgeOpen:false,technicalOpen:false
 };
 const assumptions=Object.keys(journey.inputs);
 function journeyTicker(){
@@ -659,21 +663,34 @@ function renderJourney(){
  $('stage-desc').textContent=['','','Una base para estimar la caja disponible de la empresa.','Tus hipótesis de crecimiento, rentabilidad y reinversión.','Cómo expresar los flujos futuros en valor presente.','Tus decisiones, reunidas antes de un cálculo que todavía debemos auditar.'][stage];
  let html='';
  if(stage===2){
-  html='<p class="valuation-intro">Revisemos la caja que ha producido la empresa. Puedes utilizar esta información para definir una base sostenible; no tenemos por qué asumir que el último año se repetirá.</p>'
-   +'<div class="valuation-facts">'+jFact('Ejercicio fiscal',String(r.year))+jFact('Flujo operativo',jMoney(jValue(a.cfo)))+jFact('FCF histórico (CFO − CapEx)',jMoney(jValue(a.fcf)))+'</div>'
-   +'<div class="valuation-fields">'+jField('fcffBasis','Caja sostenible estimada (FCFF) · millones USD','Hipótesis propia: el FCFF para valorar toda la empresa no se obtiene automáticamente del FCF histórico.','Ej. 1200')+'</div>'
-   +jHelp('¿Por qué no usamos directamente el FCF histórico?','CFO menos CapEx es una referencia, pero el flujo disponible para todos los proveedores de capital requiere comprobar impuestos, intereses y reinversión. Todavía estamos auditando su cálculo.')
-   +'<div class="valuation-info warning">Esta cifra queda como hipótesis editable. No se calcula un precio con ella hasta validar el método.</div>';
+  const cashRows=state.report.rows.slice(-5);
+  const observed=cashRows.map(row=>jValue(row.amounts?.fcf)).filter(Number.isFinite).sort((x,y)=>x-y);
+  const median=observed.length>=3?(observed.length%2?observed[(observed.length-1)/2]:(observed[observed.length/2-1]+observed[observed.length/2])/2):null;
+  html='<p class="valuation-intro">Primero mira cuánto efectivo ha generado la empresa en sus últimos ejercicios disponibles. Así tendrás una referencia con fechas y podrás comprobar si el último año fue habitual o excepcional.</p>'
+   +'<div class="valuation-facts">'+jFact('Último ejercicio disponible',escapeHtml(r.end))+jFact('FCF del último ejercicio',jMoney(jValue(a.fcf)))+jFact('Mediana histórica de FCF'+(median!==null?' ('+observed.length+' años)':''),median!==null?jMoney(median):'Datos insuficientes')+'</div>'
+   +'<div class="valuation-info"><strong>¿Qué significa esta cifra?</strong> FCF histórico = efectivo generado por las operaciones menos inversiones en activos fijos (CapEx). Aquí se muestra para cada ejercicio fiscal de los últimos cinco disponibles. La mediana sirve como comparación; <strong>no es todavía FCFF ni una valoración</strong>.</div>'
+   +'<div class="valuation-year-table valuation-cash-table"><table><thead><tr><th>Ejercicio fiscal</th><th>Flujo operativo</th><th>CapEx</th><th>FCF (CFO − CapEx)</th></tr></thead><tbody>'
+   +cashRows.map(row=>'<tr><th>'+escapeHtml(row.year)+'<span class="tag-note">'+escapeHtml(row.end)+'</span></th><td>'+escapeHtml(jMoney(jValue(row.amounts?.cfo)))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.capex)))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.fcf)))+'</td></tr>').join('')
+   +'</tbody></table></div>'
+   +jHelp('¿Qué es FCFF y cómo se obtiene?','FCFF es la caja que queda para accionistas y acreedores después de impuestos operativos y reinversión. Una forma de estimarla es partir del EBIT después de impuestos y restar la reinversión operativa neta. Para ello debemos verificar CapEx, depreciación y cambios del capital de trabajo; CFO menos CapEx por sí solo no es necesariamente FCFF.')
+   +'<div class="valuation-info warning"><strong>Por ahora no tienes que escribir ninguna cifra.</strong> Estamos validando el cálculo de FCFF a partir de los estados financieros. Cuando esté listo, la herramienta mostrará una estimación con sus componentes y te permitirá corregirla de forma justificada. Puedes continuar.</div>';
  }else if(stage===3){
-  html='<p class="valuation-intro">Empieza con cuatro supuestos generales. Si crees que cambiarán de un año a otro, puedes personalizarlos en la tabla opcional.</p>'
-   +'<div class="valuation-info"><strong>Referencia del ejercicio '+escapeHtml(r.year)+':</strong> crecimiento de ventas '+escapeHtml(jPercent(jValue(a.revenueGrowth)))+', margen EBIT '+escapeHtml(jPercent(jValue(a.ebitMargin)))+' y margen FCF '+escapeHtml(jPercent(jValue(a.fcfMargin)))+'. Estas cifras históricas no son previsiones.</div>'
-   +'<div class="valuation-fields">'+jField('salesGrowth','Crecimiento anual de ventas · %','¿Qué crecimiento consideras razonable?','Ej. 6')
-   +jField('ebitMargin','Margen EBIT esperado · %','Parte de las ventas que quedaría como beneficio operativo.','Ej. 22')
-   +jField('taxRate','Impuestos operativos · %','Tasa estimada sobre el beneficio operativo.','Ej. 21','min="0" max="100"')
-   +jField('reinvestRate','Reinversión neta · % de NOPAT','Cuánto beneficio operativo después de impuestos necesitaría reinvertir el negocio.','Ej. 30')+'</div>';
-  html+='<details id="journey-annual"'+(journey.annualOpen?' open':'')+'><summary>Personalizar año por año (opcional)</summary><p>Si dejas una casilla vacía, conservará el supuesto general. Los cambios permanecen editables.</p><div class="valuation-year-table"><table><thead><tr><th>Año</th><th>Ventas %</th><th>EBIT %</th><th>Impuestos %</th><th>Reinversión %</th></tr></thead><tbody>';
-  for(let i=1;i<=5;i++){html+='<tr><th>Año '+i+'</th>';for(const k of ['salesGrowth','ebitMargin','taxRate','reinvestRate']){const val=journey.yearly[i]?.[k]||'';html+='<td><input data-year="'+i+'" data-annual="'+k+'" type="number" step="any" inputmode="decimal" value="'+escapeHtml(val)+'" aria-label="'+escapeHtml(k)+' año '+i+'" placeholder="—"></td>';}html+='</tr>';}
-  html+='</tbody></table></div></details><div class="valuation-info warning">Los porcentajes son hipótesis del usuario. La proyección de FCFF y el motor del precio siguen en revisión.</div>';
+  const nextStart=Number(r.year)+1,nextEnd=Number(r.year)+5;
+  html='<p class="valuation-intro">Vas a plantear hipótesis para los ejercicios fiscales '+escapeHtml(nextStart)+'–'+escapeHtml(nextEnd)+'. Comienza por ventas y rentabilidad. Los impuestos y la reinversión son ajustes avanzados que todavía estamos validando.</p>'
+   +'<div class="valuation-info"><strong>Datos del último ejercicio ('+escapeHtml(r.end)+'):</strong> crecimiento de ventas '+escapeHtml(jPercent(jValue(a.revenueGrowth)))+', margen EBIT '+escapeHtml(jPercent(jValue(a.ebitMargin)))+' y tasa efectiva de impuestos '+escapeHtml(jPercent(jValue(a.taxRate)))+'. Puedes ver su evolución en la primera etapa. Son referencias históricas, no predicciones.</div>'
+   +'<div class="valuation-fields">'+jField('salesGrowth','¿Cuánto podrían crecer las ventas cada año? · %','Tu hipótesis para los próximos cinco ejercicios. Compara varios años históricos antes de decidir.','Tu estimación, en %')
+   +jField('ebitMargin','¿Qué margen operativo podría mantener? · %','De cada 100 USD de ventas, cuánto quedaría como beneficio operativo (EBIT).','Tu estimación, en %')+'</div>'
+   +'<details id="journey-technical"'+(journey.technicalOpen?' open':'')+'><summary>Impuestos y reinversión (ajustes avanzados opcionales)</summary>'
+   +'<p>Si aún no sabes estimarlos, puedes continuar sin completarlos. Ninguno se rellenará con porcentajes inventados. Antes de calcular un precio harán falta hipótesis comprobables.</p>'
+   +'<div class="valuation-fields">'+jField('taxRate','Impuestos sobre beneficio operativo · %','La tasa efectiva de impuestos del último año es solo una referencia; no equivale necesariamente a la tasa operativa futura.','Sin definir','min="0" max="100"')
+   +jField('reinvestRate','Reinversión operativa neta · % del NOPAT','NOPAT = EBIT después de impuestos operativos. Este porcentaje necesita analizar CapEx, depreciación y capital de trabajo.','Sin definir')+'</div>'
+   +'<div class="valuation-info"><strong>Ejemplo únicamente educativo:</strong> si el beneficio operativo después de impuestos es 100 y la inversión operativa neta necesaria es 15, la tasa de reinversión es 15 %. La inversión neta puede ser negativa o superar el beneficio, así que no siempre estará entre 0 % y 100 %.</div>'
+   +(jValue(a.reinvestmentRateApprox)!==null?'<p>Referencia del último ejercicio: el histórico muestra una <strong>aproximación preliminar de '+escapeHtml(jPercent(jValue(a.reinvestmentRateApprox)))+'</strong>, que todavía no está auditada ni debe copiarse directamente a una previsión.</p>':'<p>No hay una aproximación de reinversión suficientemente completa en este ejercicio. No se sustituye por cero.</p>')
+   +jHelp('¿De dónde debe salir una hipótesis de reinversión?','Revisa varios ejercicios: CapEx menos depreciación, más variación del capital de trabajo operativo. Considera también adquisiciones, intangibles y necesidades de crecimiento. Divide la inversión operativa neta entre NOPAT. Las partidas SEC actuales requieren conciliación antes de que podamos sugerir una referencia.')
+   +'</details>';
+  html+='<details id="journey-annual"'+(journey.annualOpen?' open':'')+'><summary>Personalizar los cinco años (opcional)</summary><p>Si dejas una casilla vacía, se mantiene el supuesto general. Los impuestos y reinversión de esta tabla son campos avanzados y pueden permanecer sin completar en esta demostración.</p><div class="valuation-year-table"><table><thead><tr><th>Ejercicio</th><th>Ventas %</th><th>EBIT %</th><th>Impuestos %</th><th>Reinversión %</th></tr></thead><tbody>';
+  for(let i=1;i<=5;i++){html+='<tr><th>'+escapeHtml(Number(r.year)+i)+'</th>';for(const k of ['salesGrowth','ebitMargin','taxRate','reinvestRate']){const val=journey.yearly[i]?.[k]||'';html+='<td><input data-year="'+i+'" data-annual="'+k+'" type="number" step="any" inputmode="decimal" value="'+escapeHtml(val)+'" aria-label="'+escapeHtml(k)+' ejercicio '+escapeHtml(Number(r.year)+i)+'" placeholder="—"></td>';}html+='</tr>';}
+  html+='</tbody></table></div></details><div class="valuation-info warning">Todavía no hay una proyección financiera validada ni un cálculo del precio. Estos campos te permiten revisar la experiencia sin tener que inventar datos técnicos.</div>';
  }else if(stage===4){
   html='<p class="valuation-intro">Un múltiplo de salida EV/FCFF y una tasa de descuento permiten combinar los flujos de cinco años con una estimación terminal. Es importante justificar ambos supuestos.</p>'
    +'<div class="valuation-fields">'+jField('multiple','Múltiplo de salida EV/FCFF · veces','Hipótesis de valoración relativa, no una cifra recomendada.','Ej. 18','min="0"')
@@ -688,7 +705,7 @@ function renderJourney(){
  }else{
   html='<p class="valuation-intro">Aquí podrás comprobar la valoración y editar cualquier hipótesis. Actualmente el cálculo final está desactivado mientras verificamos las fórmulas.</p>'
    +'<div class="valuation-result"><div>Valor estimado por acción</div><strong>Pendiente de validación</strong><p class="tip">La aplicación no muestra precios inventados ni una estimación no auditada.</p></div>'
-   +'<div class="valuation-recap"><div class="valuation-info"><strong>Caja sostenible</strong>'+jSummary([['fcffBasis','FCFF base',' M USD']])+'<button type="button" class="btn small" data-edit-stage="2">Editar caja</button></div>'
+   +'<div class="valuation-recap"><div class="valuation-info"><strong>Caja histórica (referencia)</strong><p>FCF del último ejercicio: '+escapeHtml(jMoney(jValue(a.fcf)))+'</p><p>FCFF sostenible: pendiente de reconstruir y validar.</p><button type="button" class="btn small" data-edit-stage="2">Revisar caja</button></div>'
    +'<div class="valuation-info"><strong>Proyecciones</strong>'+jSummary([['salesGrowth','Ventas',' %'],['ebitMargin','Margen EBIT',' %'],['taxRate','Impuestos',' %'],['reinvestRate','Reinversión',' %']])+'<button type="button" class="btn small" data-edit-stage="3">Editar proyección</button></div>'
    +'<div class="valuation-info"><strong>Valoración</strong>'+jSummary([['multiple','EV/FCFF',' ×'],['wacc','WACC',' %'],['safety','Margen de seguridad',' %']])+'<button type="button" class="btn small" data-edit-stage="4">Editar valoración</button></div>'
    +'<div class="valuation-info"><strong>Antes del precio objetivo</strong><p>Faltan comprobaciones sobre FCFF, deuda, acciones, hipótesis y compatibilidad de múltiplos. El precio de mercado requerirá fuente y fecha verificables.</p><button type="button" class="btn small" data-edit-stage="1">Revisar históricos</button></div></div>';
@@ -725,6 +742,7 @@ $('valuation-stage').addEventListener('input',e=>{
 $('valuation-stage').addEventListener('toggle',e=>{
  if(e.target.id==='journey-annual')journey.annualOpen=e.target.open;
  if(e.target.id==='journey-bridge')journey.bridgeOpen=e.target.open;
+ if(e.target.id==='journey-technical')journey.technicalOpen=e.target.open;
 },true);
 $('valuation-stage').addEventListener('click',e=>{
  const b=e.target.closest('[data-edit-stage]');if(b)setJourneyStep(Number(b.dataset.editStage));
