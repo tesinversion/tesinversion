@@ -784,9 +784,12 @@ function renderJourney(){
  }else if(stage===3){
   const start=Number(r.year)+1,end=Number(r.year)+5;
   html+='<p class="valuation-intro"><strong>Todas estas estimaciones corresponden a los próximos cinco ejercicios fiscales ('+escapeHtml(start)+'–'+escapeHtml(end)+').</strong> Son hipótesis sobre el futuro, no datos que debas copiar del pasado.</p>';
+  const medianFor=key=>{const v=five.map(z=>jValue(z.amounts?.[key])).filter(Number.isFinite).sort((a,b)=>a-b);if(v.length<3)return null;return v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2;};
+  const medianGrowth=medianFor('revenueGrowth'),medianMargin=medianFor('ebitMargin');
   html+='<div class="valuation-facts">'+jSource('Crecimiento de ventas pasado',jPercent(jValue(a.revenueGrowth)),'ÚLTIMO EJERCICIO · '+r.year)
       +jSource('Margen operativo pasado',jPercent(jValue(a.ebitMargin)),'ÚLTIMO EJERCICIO · '+r.year)
       +jSource('Tasa efectiva de impuestos',jPercent(jValue(a.taxRate)),'REFERENCIA HISTÓRICA, NO IMPUESTO OPERATIVO FUTURO')+'</div>';
+  html+='<div class="valuation-info source-data"><strong>Referencia de varios años:</strong> mediana de crecimiento de ventas '+escapeHtml(jPercent(medianGrowth))+'; mediana de margen operativo '+escapeHtml(jPercent(medianMargin))+'. No son pronósticos ni recomendaciones.</div><div class="row"><button class="btn small" type="button" data-action="copy-growth-median" '+(medianGrowth===null?'disabled':'')+'>Probar crecimiento histórico como hipótesis</button><button class="btn small" type="button" data-action="copy-margin-median" '+(medianMargin===null?'disabled':'')+'>Probar margen histórico como hipótesis</button></div>';
   html+=jSection('1. ¿Qué esperas del negocio?',
    '<div class="valuation-fields">'+jField('salesGrowth','¿Cuánto crecerían las ventas por año? · %','Tu hipótesis anual para los próximos cinco ejercicios.','Porcentaje anual')
    +jField('ebitMargin','¿Qué parte de las ventas quedaría como beneficio operativo? · %','Ejemplo: si de 100 dólares vendidos quedan 25 antes de intereses e impuestos, introduce 25.','Porcentaje')
@@ -909,6 +912,16 @@ $('valuation-stage').addEventListener('toggle',e=>{
  if(e.target.id==='journey-technical')journey.technicalOpen=e.target.open;
 },true);
 $('valuation-stage').addEventListener('click',e=>{
+ const medianButton=e.target.closest('[data-action="copy-growth-median"],[data-action="copy-margin-median"]');
+ if(medianButton){
+  const metric=medianButton.dataset.action==='copy-growth-median'?'revenueGrowth':'ebitMargin';
+  const values=state.report.rows.slice(-5).map(r=>jValue(r.amounts?.[metric])).filter(Number.isFinite).sort((a,b)=>a-b);
+  if(values.length>=3){
+   const n=values.length,estimate=n%2?values[(n-1)/2]:(values[n/2-1]+values[n/2])/2;
+   journey.inputs[metric==='revenueGrowth'?'salesGrowth':'ebitMargin']=String(Number(estimate.toFixed(2)));
+   saveJourney();renderJourney();
+  }return;
+ }
  const copyDebt=e.target.closest('[data-action="copy-debt"]');
  if(copyDebt){const x=jValue(state.report?.rows?.at(-1)?.amounts?.netDebt);if(x!==null){journey.inputs.netDebt=String(Number((x/1e6).toFixed(5)));saveJourney();renderJourney();}return;}
  const copyShares=e.target.closest('[data-action="copy-shares"]');
