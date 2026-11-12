@@ -154,7 +154,7 @@ function renderStep(){
   var lastFcf=x.fcf&&Number.isFinite(x.fcf.v)?money(x.fcf.v):'—';
   return header('¿Cuánta caja puede generar?','Antes de proyectar, necesitamos una base de generación de caja sostenible. La historia sirve como referencia, pero una cifra aislada puede ser excepcional.')
   +(r?'<div class="facts">'+figure('Ejercicio de referencia',safe(year),'Fecha: '+safe(r.end))+figure('Flujo operativo',money(x.cfo&&x.cfo.v)+' M USD','Cifra histórica')+figure('FCF convencional',lastFcf+' M USD','CFO − CapEx')+'</div>':'<div class="info warn">Todavía no hay datos históricos cargados. Puedes avanzar para explorar el diseño, pero el flujo sostenible necesita una base verificada.</div>')
-  +'<div class="fields">'+field('fcffBasis','FCFF sostenible estimado · millones USD','Hipótesis del usuario. No se deduce automáticamente del FCF histórico.','Sin definir')+'</div>'
+  +'<div class="fields">'+field('fcffBasis','Caja anual sostenible estimada · millones USD','Tu hipótesis de FCFF disponible para toda la empresa. No se copia automáticamente del FCF histórico.','Sin definir')+'</div>'
   +explain('¿Por qué el FCF histórico no se copia automáticamente?','CFO menos CapEx es una referencia útil, pero el flujo disponible para valorar toda la empresa (FCFF) debe ser consistente con Enterprise Value. Puede requerir ajustes de intereses, capital de trabajo, impuestos y reinversión.')
   +'<div class="info">Por ahora puedes escribir o cambiar tu hipótesis. La cifra no se emplea todavía para producir un precio; la fórmula de FCFF está en validación.</div>';
  }
@@ -167,6 +167,7 @@ function renderStep(){
   }
   annual+='</tbody></table></div></details>';
   return header('¿Cómo imaginas los próximos cinco años?','Empieza con cuatro supuestos. Podrás usar un valor general para los cinco años y modificar cada ejercicio solo si lo necesitas.')
+   +(r?'<div class="info"><strong>Referencia histórica · '+safe(year)+':</strong> crecimiento de ventas '+safe(pct(x.revenueGrowth&&x.revenueGrowth.v))+', margen EBIT '+safe(pct(x.ebitMargin&&x.ebitMargin.v))+' y margen FCF '+safe(pct(x.fcfMargin&&x.fcfMargin.v))+'. Son cifras del pasado, no recomendaciones para tus estimaciones.</div>':'')
    +'<div class="fields">'
    +field('salesGrowth','Crecimiento anual de ventas · %','¿Qué ritmo de crecimiento consideras razonable?','Ej. 6')
    +field('ebitMargin','Margen EBIT esperado · %','Qué proporción de las ventas quedaría como beneficio operativo.','Ej. 22')
@@ -176,10 +177,10 @@ function renderStep(){
    +'<div class="info warn">Estas son hipótesis que introduce el usuario, no cifras recomendadas. Aún no proyectamos FCFF ni calculamos un valor: faltan ajustes metodológicos y pruebas financieras.</div>';
  }
  if(state.step===3){
-  return header('¿Qué pagarías por esos flujos?','Definimos los supuestos que se utilizarán en la valoración futura. El múltiplo refleja el precio relativo que atribuyes a la caja; el WACC descuenta los flujos a valor presente.')
+  return header('¿Con qué supuestos valoraremos el negocio?','Definimos cómo se estimaría el valor de la empresa. El múltiplo refleja una valoración relativa de la caja futura y el WACC permitiría descontar esos flujos a valor presente.')
    +'<div class="fields">'
    +field('multiple','Múltiplo de salida EV/FCFF · veces','Es una hipótesis, no una cifra universal.','Ej. 18','min="0"')
-   +field('wacc','Tasa de descuento WACC · %','Cuanto mayor sea, menor será el valor presente estimado.','Ej. 9','min="0"')
+   +field('wacc','Tasa para descontar flujos (WACC) · %','Cuanto mayor sea, menor será el valor presente estimado.','Ej. 9','min="0"')
    +field('safety','Margen de seguridad · %','Diferencia que exigirías respecto al valor estimado.','Ej. 25','min="0" max="99"')
    +'</div>'
    +explain('¿Por qué aparece WACC si utilizamos EV/FCF?','Nuestro método previsto es estimar cinco años de flujos de la empresa y un valor final con múltiplo EV/FCFF. El WACC permitiría expresar esos importes futuros en dinero de hoy. Ambos supuestos se documentarán por separado.')
@@ -210,10 +211,17 @@ function refresh(){
  $('back').hidden=state.step===0;
  $('next').textContent=state.step===4?'Volver al inicio':'Continuar';
  $('flow-status').textContent=state.report?((state.mode==='demo')?'Ejemplo ficticio':state.ticker+' · datos históricos cargados'):'Sin empresa seleccionada';
+ var historyLink=$('history-nav');
+ if(historyLink)historyLink.href='../historicos/'+(state.ticker&&state.ticker!=='DEMO'&&state.ticker!=='IMPORT'?'?ticker='+encodeURIComponent(state.ticker):'');
  attach();
 }
 function move(step){
  if(step<0||step>=STEPS.length)return;
+ if(step>0&&!recent()){
+  notify('Para comenzar, busca una empresa o utiliza el ejemplo ficticio.',true);
+  var input=$('ticker-input');if(input)input.focus();
+  return;
+ }
  state.step=step;state.visited[step]=true;
  notify('',false);refresh();
  var h=$('stage-title');if(h)h.focus({preventScroll:true});
