@@ -55,3 +55,22 @@ Se aplicaron pruebas numéricas con casos sintéticos y simulación aislada de l
 Antes de un lanzamiento comercial: reconciliación SEC contra documentos primarios; validación de FCFF con múltiples empresas y sectores; revisión de tratamiento de gastos I+D, arrendamientos, impuestos, deuda y recompras; pruebas de accesibilidad y navegadores; revisión legal y aprobación expresa de la autora. No desplegar ni cobrar desde este laboratorio sin aprobación.
 
 **Uso educativo e informativo; no constituye asesoramiento ni recomendación de inversión.**
+
+
+## Mejora de experiencia v0.6.1 — referencia histórica opcional (12/11/2026)
+
+A partir de la dificultad de un usuario principiante para estimar «inversión por cada 100 USD de ventas adicionales» sin guía, la etapa 3 presenta primero una **referencia histórica calculada y explicada**; los dos campos técnicos se sitúan en un panel avanzado. No se copian porcentajes ni se calculan precios por decisión implícita del programa.
+
+**Muestra histórica:** máximo seis ejercicios disponibles, hasta cinco variaciones anuales consecutivas. Se analizan únicamente periodos con aumento de ventas mayor o igual a 2 %. Para cada referencia se exigen al menos tres observaciones que pasen criterios de integridad y rango.
+
+- **Expansión:** (CapEx registrado de activos fijos − D&A) / aumento de ventas × 100. Solo se usan años en los que CapEx registrado es al menos igual a D&A y existe un aumento de ventas suficiente. Se calcula la mediana de las razones anuales (0 a 500).
+- **Capital de trabajo operativo:** variación interanual del NWC aproximado / aumento de ventas × 100. El NWC es una aproximación basada en el balance; requiere contrastes de fuentes primarias. Puede ser negativo si la empresa liberó capital de trabajo. Rango admitido −200 a 200.
+- **Filtro de dispersión:** mediana de las desviaciones absolutas respecto a la mediana. Si supera el mayor entre 15 puntos porcentuales y 75 % de la razón central absoluta, no se recomienda una referencia automática. Es un umbral provisional para evitar periodos extremos, no una medida de fiabilidad estadística.
+- **Dos referencias independientes:** la falta de una no obliga a ocultar la otra, pero impide considerar completo el conjunto. Los botones solo se habilitan para una serie suficiente y no excesivamente volátil.
+- **Aplicación manual:** cada botón copia la referencia al campo editable y la conserva en el almacenamiento local de supuestos por empresa. La fuente SEC original no se altera. Se muestra el número de observaciones y los ejercicios utilizados.
+- **Sin datos suficientes:** el modelo mantiene los campos vacíos, explica la ausencia de referencia y no inventa supuestos o un precio objetivo.
+
+Advertencia financiera: el cociente histórico puede no ser comparable entre periodos si las inversiones generan ventas con retrasos, si existen adquisiciones, cambios contables, arrendamientos o un CapEx de mantenimiento distinto a D&A. En empresas tecnológicas intensivas en infraestructura, **no debe interpretarse como una predicción de necesidades de inversión futuras**. Antes de comercializar se requiere contrastar casos AAPL, MSFT y KO con 10-K originales y revisar reglas de ajuste sectorial.
+
+Código: `laboratorio/historicos/referencia-inversion.js`.
+Pruebas: `tests/referencia-inversion.cjs`, `tests/valoracion-guiada-ui.cjs`.
