@@ -92,7 +92,7 @@ if(positive('debtTotal')){
  termKeys=['debtTotal'];
  termDescription='Deuda a plazo agregada (incluye vencimientos corrientes; puede incluir arrendamientos financieros)';
 }else if(positive('shortDebt')&&positive('longDebt')&&
-  (tagOf('shortDebt')==='LongTermDebtCurrent' || a.shortDebt?.meta?.manual) &&
+  tagOf('shortDebt')==='LongTermDebtCurrent' &&
   tagOf('longDebt')==='LongTermDebtNoncurrent'){
  termValue=g('shortDebt')+g('longDebt');
  termKeys=['shortDebt','longDebt'];
@@ -110,6 +110,7 @@ if(borrowed!==null&&borrowTag==='ShortTermBorrowings'){
   extra=borrowed;
   extraKeys=['shortBorrowings'];
   extraDescription='préstamos de corto plazo (pueden incluir papel comercial)';
+  d.status.push('Deuda de corto plazo: verificar en el 10-K que el agregado de préstamos no incluye vencimientos de deuda a plazo; el mapeo XBRL no garantiza ausencia de solapamientos en todas las compañías.');
  }
 }else if(cp!==null){
  if(borrowed!==null&&borrowTag==='ShortTermDebtCurrent'){
