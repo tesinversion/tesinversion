@@ -205,6 +205,7 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 .valuation-recap .user-review .review-label{display:block;margin-bottom:7px}
 .valuation-cash-table td,.valuation-cash-table th{background:#f9fbfe}
 @media(prefers-contrast:more){.valuation-field.user-estimate input{border-width:2px}.legend-source,.legend-edit{border-width:2px}}
+.valuation-cash-table table{min-width:940px}.valuation-cash-table td{white-space:nowrap}.valuation-cash-table th .tag-note{display:block;font-weight:400;font-size:10px;color:#8794a6}#maintenance-preview.user-review{background:#fffaf0;border-color:#ead4a5}#maintenance-preview p{margin:9px 0}
 </style>
 </head>
 <body>
@@ -553,9 +554,9 @@ const rows={
   {k:'roicApprox',label:'ROIC anual orientativo',kind:'pct',class:'ratio focus-metric',hint:'NOPAT orientativo / capital invertido medio'},
   {k:'roicMedian5',label:'ROIC histórico · mediana 5 años',kind:'pct',class:'ratio focus-metric',hint:'Al menos tres ROIC anuales disponibles; aproximado'}],
  cashflow:[
- {k:'cfo',label:'Flujo de efectivo de operaciones (CFO)',kind:'money',class:'key section'},
- {k:'capex',label:'Inversión en activos (CapEx)',kind:'money',class:'focus-metric',hint:'Salida de efectivo destinada a activos fijos'},
- {k:'fcf',label:'Flujo de caja libre convencional (FCF)',kind:'money',class:'key focus-metric'},
+ {k:'cfo',label:'Flujo de caja operativo (CFO / Cash Flow from Operations)',kind:'money',class:'key section'},
+ {k:'capex',label:'CapEx registrado en activos fijos (sin separar mantenimiento y crecimiento)',kind:'money',class:'focus-metric',hint:'Salida de efectivo destinada a activos fijos'},
+ {k:'fcf',label:'FCF histórico calculado (CFO − CapEx registrado)',kind:'money',class:'key focus-metric'},
  {k:'fcfMargin',label:'Margen FCF / ventas',kind:'pct',class:'ratio focus-metric'},
   {k:'reinvestmentRateApprox',label:'Tasa de reinversión histórica (aprox.)',kind:'pct',class:'ratio focus-metric',hint:'CapEx neto + variación de capital circulante / NOPAT; sin adquisiciones'},
  {k:'da',label:'Depreciación y amortización reportada',kind:'money',class:'section'},
@@ -642,8 +643,8 @@ function explain(year,key){
 
 // Asistente integrado. Usa state.report (con correcciones) sin otra búsqueda ni otra pantalla.
 const journey={
- step:1, highest:1, inputs:{fcffBasis:'',salesGrowth:'',ebitMargin:'',taxRate:'',reinvestRate:'',multiple:'',wacc:'',safety:'',netDebt:'',shares:'',otherAssets:''},
- yearly:{},annualOpen:false,bridgeOpen:false,technicalOpen:false
+ step:1, highest:1, inputs:{fcffBasis:'',maintenanceCapex:'',salesGrowth:'',ebitMargin:'',taxRate:'',reinvestRate:'',multiple:'',wacc:'',safety:'',netDebt:'',shares:'',otherAssets:''},
+ yearly:{},annualOpen:false,bridgeOpen:false,technicalOpen:false,maintenanceOpen:false
 };
 const assumptions=Object.keys(journey.inputs);
 function journeyTicker(){
@@ -680,6 +681,15 @@ function jFact(label,value){
 function jHelp(title,content){
  return '<details><summary>'+escapeHtml(title)+'</summary><p>'+escapeHtml(content)+'</p></details>';
 }
+function maintenancePreview(){
+ const a=state.report?.rows?.at(-1)?.amounts||{},capex=jValue(a.capex),cfo=jValue(a.cfo),hyp=jNum('maintenanceCapex');
+ if(hyp===null)return 'Todavía no has elegido una estimación de mantenimiento. No se presupone ningún valor.';
+ const m=Number(hyp)*1e6;
+ if(!Number.isFinite(m)||m<0)return 'Introduce un importe válido, mayor o igual a cero.';
+ if(capex===null)return 'CapEx registrado no disponible; no se puede hacer esta separación.';
+ if(m>Math.abs(capex))return 'La estimación de mantenimiento es mayor que el CapEx registrado. Revisa los datos.';
+ return '<strong>HIPÓTESIS TUYA · NO ES DATO SEC</strong><p>CapEx de crecimiento estimado = CapEx registrado − mantenimiento = <strong>'+escapeHtml(jMoney(Math.abs(capex)-m))+'</strong>.</p><p>FCF normalizado hipotético = flujo operativo − mantenimiento = <strong>'+escapeHtml(jMoney(cfo===null?null:cfo-m))+'</strong>.</p><p>El FCF histórico no cambia. Si esperamos crecimiento futuro también habrá que incorporar inversiones para financiarlo.</p>';
+}
 function jSummary(keys){
  return keys.map(([k,label,unit])=>'<p><strong>'+escapeHtml(label)+':</strong> '+escapeHtml(jNum(k)===null?'Sin definir':jNum(k)+(unit||''))+'</p>').join('');
 }
@@ -696,14 +706,23 @@ function renderJourney(){
   const cashRows=state.report.rows.slice(-5);
   const observed=cashRows.map(row=>jValue(row.amounts?.fcf)).filter(Number.isFinite).sort((x,y)=>x-y);
   const median=observed.length>=3?(observed.length%2?observed[(observed.length-1)/2]:(observed[observed.length/2-1]+observed[observed.length/2])/2):null;
-  html='<p class="valuation-intro">Primero mira cuánto efectivo ha generado la empresa en sus últimos ejercicios disponibles. Así tendrás una referencia con fechas y podrás comprobar si el último año fue habitual o excepcional.</p>'
-   +'<div class="valuation-facts">'+jFact('Último ejercicio disponible',escapeHtml(r.end))+jFact('FCF del último ejercicio',jMoney(jValue(a.fcf)))+jFact('Mediana histórica de FCF'+(median!==null?' ('+observed.length+' años)':''),median!==null?jMoney(median):'Datos insuficientes')+'</div>'
-   +'<div class="valuation-info"><strong>¿Qué significa FCF?</strong> FCF es flujo de caja libre: efectivo de las operaciones menos inversiones en activos fijos. La mediana permite comparar varios años, pero no representa todavía el valor de la empresa.</div>'
-   +'<div class="valuation-year-table valuation-cash-table"><table><thead><tr><th>Ejercicio fiscal</th><th>Flujo operativo</th><th>CapEx</th><th>FCF (CFO − CapEx)</th></tr></thead><tbody>'
-   +cashRows.map(row=>'<tr><th>'+escapeHtml(row.year)+'<span class="tag-note">'+escapeHtml(row.end)+'</span></th><td>'+escapeHtml(jMoney(jValue(row.amounts?.cfo)))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.capex)))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.fcf)))+'</td></tr>').join('')
-   +'</tbody></table></div>'
-   +jHelp('Detalles del cálculo de FCF (avanzado)','El FCF mostrado corresponde al flujo operativo menos CapEx. Para una valoración empresarial puede hacer falta ajustarlo de modo coherente con el múltiplo y la deuda. Estamos validando esa metodología y no pediremos que hagas estos ajustes manualmente.')
-   +'<div class="valuation-info warning"><strong>En esta etapa solo revisas los datos. No tienes que introducir ninguna cifra.</strong> La herramienta deberá ofrecer una base de FCF explicada y verificable cuando estén listos los cálculos. Puedes continuar.</div>';
+  const capex=jValue(a.capex),da=jValue(a.da);
+  html='<p class="valuation-intro">Vamos a distinguir cuánto efectivo generó el negocio y cuánto destinó a activos fijos. El CapEx que viene de la SEC está <strong>sin separar entre mantenimiento y crecimiento</strong>.</p>'
+  +'<div class="valuation-facts">'+jFact('Ejercicio fiscal',r.end)+jFact('Flujo de caja operativo (CFO)',jMoney(jValue(a.cfo)))+jFact('CapEx registrado sin separar',jMoney(capex===null?null:Math.abs(capex)))+jFact('FCF calculado con CapEx registrado',jMoney(jValue(a.fcf)))+'</div>'
+  +'<div class="valuation-info source-data"><span class="source-label">▣ DATO DE LA EMPRESA + CÁLCULO</span>El <strong>FCF histórico = flujo de caja operativo (Cash Flow from Operations) − CapEx registrado</strong>. Este CapEx corresponde a compras de activos fijos identificadas en SEC; todavía no distingue mantenimiento y crecimiento, y podría excluir otras inversiones o pagos de arrendamientos.</div>'
+  +'<div class="valuation-year-table valuation-cash-table"><table><thead><tr><th>Ejercicio fiscal</th><th>Flujo de caja operativo (CFO)</th><th>CapEx registrado (sin separar)</th><th>Depreciación y amortización (D&A)</th><th>FCF histórico calculado</th></tr></thead><tbody>'
+  +cashRows.map(row=>'<tr><th>'+escapeHtml(row.year)+'<span class="tag-note">'+escapeHtml(row.end)+'</span></th><td>'+escapeHtml(jMoney(jValue(row.amounts?.cfo)))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.capex)===null?null:Math.abs(jValue(row.amounts?.capex))))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.da)))+'</td><td>'+escapeHtml(jMoney(jValue(row.amounts?.fcf)))+'</td></tr>').join('')
+  +'</tbody></table></div>'
+  +'<div class="valuation-info source-data"><strong>Mediana histórica de FCF:</strong> '+escapeHtml(median===null?'Datos insuficientes':jMoney(median))+' (últimos cinco ejercicios, con al menos tres observaciones). No es una previsión.</div>'
+  +'<details id="journey-maintenance"'+(journey.maintenanceOpen?' open':'')+'><summary>Separar mantenimiento y crecimiento del CapEx (opcional)</summary>'
+  +'<p>CapEx de mantenimiento: inversiones para mantener funcionando el negocio actual. CapEx de crecimiento: inversiones para ampliarlo. Si la empresa no los separa, puedes probar la depreciación y amortización como aproximación de mantenimiento, pero es una hipótesis que debes revisar.</p>'
+  +'<div class="valuation-facts">'+jFact('CapEx registrado',jMoney(capex===null?null:Math.abs(capex)))+jFact('D&A histórico',jMoney(da))+'</div>'
+  +'<button class="btn small" type="button" data-action="use-da-proxy" '+(da===null||capex===null||da<0||da>Math.abs(capex)?'disabled':'')+'>Copiar D&A como aproximación editable</button>'
+  +'<div class="valuation-fields">'+jField('maintenanceCapex','CapEx de mantenimiento estimado · millones USD ('+r.year+')','Esta cifra es TU ESTIMACIÓN, no una partida reportada por separado. Se puede dejar vacía.','Sin estimar','min="0"')+'</div>'
+  +'<div id="maintenance-preview" class="valuation-info user-review" role="status">'+maintenancePreview()+'</div>'
+  +'<p><strong>Atención:</strong> el FCF calculado con solo CapEx de mantenimiento no sería el dinero que realmente quedó ese año. Para proyectar crecimiento también debemos considerar la inversión necesaria para conseguirlo.</p></details>'
+  +jHelp('Ver detalles del cálculo de FCF (avanzado)','El FCF convencional parte del flujo operativo menos CapEx registrado. Una valoración de toda la empresa puede exigir ajustes de intereses, impuestos, deuda y reinversión. No se aplican hasta validar el método.')
+  +'<div class="valuation-info warning">No es obligatorio estimar el CapEx de mantenimiento. En los históricos seguimos mostrando el FCF calculado con el CapEx registrado; cualquier normalización está claramente identificada como hipótesis.</div>';
  }else if(stage===3){
   const nextStart=Number(r.year)+1,nextEnd=Number(r.year)+5;
   html='<p class="valuation-intro">Vas a plantear hipótesis para los ejercicios fiscales '+escapeHtml(nextStart)+'–'+escapeHtml(nextEnd)+'. Comienza por ventas y rentabilidad. Los impuestos y la reinversión son ajustes avanzados que todavía estamos validando.</p>'
@@ -770,13 +789,18 @@ $('valuation-stage').addEventListener('input',e=>{
   const y=input.dataset.year;if(!journey.yearly[y])journey.yearly[y]={};journey.yearly[y][input.dataset.annual]=input.value.slice(0,50);
  }else return;
  saveJourney();
+ if(input.dataset.assumption==='maintenanceCapex'){const preview=$('maintenance-preview');if(preview)preview.innerHTML=maintenancePreview();}
 });
 $('valuation-stage').addEventListener('toggle',e=>{
  if(e.target.id==='journey-annual')journey.annualOpen=e.target.open;
  if(e.target.id==='journey-bridge')journey.bridgeOpen=e.target.open;
+ if(e.target.id==='journey-maintenance')journey.maintenanceOpen=e.target.open;
  if(e.target.id==='journey-technical')journey.technicalOpen=e.target.open;
 },true);
 $('valuation-stage').addEventListener('click',e=>{
+ const proxy=e.target.closest('[data-action="use-da-proxy"]');
+ if(proxy){const d=jValue(state.report?.rows?.at(-1)?.amounts?.da),cap=jValue(state.report?.rows?.at(-1)?.amounts?.capex);
+  if(d!==null&&cap!==null&&d>=0&&d<=Math.abs(cap)){journey.inputs.maintenanceCapex=String(Number((d/1e6).toFixed(4)));saveJourney();renderJourney();}return;}
  const b=e.target.closest('[data-edit-stage]');if(b)setJourneyStep(Number(b.dataset.editStage));
 });
 
