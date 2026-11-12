@@ -28,7 +28,7 @@
   return {available:true,observations:kept,rate:Math.round(rate*100)/100,method:kind,variability:deviation};
  };
  function analyze(rows){
-  if(!Array.isArray(rows)||rows.length<4)return {available:false,capex:{available:false,reason:'Se necesitan varios ejercicios anuales.'},workingCapital:{available:false,reason:'Se necesitan varios ejercicios anuales.'},notes:[]};
+  if(!Array.isArray(rows)||rows.length<4)return {available:false,capex:{available:false,observations:[],reason:'Se necesitan varios ejercicios anuales.'},workingCapital:{available:false,observations:[],reason:'Se necesitan varios ejercicios anuales.'},notes:[]};
   const years=rows.slice(-6),growth=[],working=[];
   let positiveYears=0;
   for(let i=1;i<years.length;i++){
