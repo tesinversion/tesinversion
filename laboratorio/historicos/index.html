@@ -562,7 +562,7 @@ async function lookupTicker(ticker){ticker=String(ticker||'').trim().toUpperCase
  $('ticker').value=ticker;setMessage('Consultando la SEC…');const host=location.protocol==='file:'?'':location.origin;try{if(!host)throw Error('Para la consulta automática necesitas abrir la versión alojada en Netlify. Mientras tanto puedes importar un archivo JSON de la SEC.');const endpoint=host+'/.netlify/functions/sec-historicos?ticker='+encodeURIComponent(ticker);const res=await fetch(endpoint);const raw=await res.text();let data;try{data=JSON.parse(raw);}catch{throw Error('Servidor HTTP '+res.status+': respuesta no JSON. Puede ser un error de ejecución de Netlify.');}if(!res.ok)throw Error('HTTP '+res.status+' ['+(data.code||'SIN_CODIGO')+']: '+(data.detail||data.error||'Error de consulta SEC'));setData(data,'live');setMessage('Datos obtenidos mediante SEC EDGAR. Comprueba cada concepto y el documento original antes de utilizarlos.','ok');}catch(err){setMessage('Consulta no disponible: '+err.message+' La demostración ficticia y la importación JSON siguen funcionando.','error');}}
 $('launch-wizard').addEventListener('click',()=>{
  if(!state.report)return;
- const ticker=state.mode==='demo'?'DEMO':String(state.report.ticker||'').toUpperCase();
+ const ticker=state.mode==='demo'?'DEMO':(state.mode==='file'?'IMPORT':String(state.report.ticker||'').toUpperCase());
  try{
   if(ticker)sessionStorage.setItem('adi-wizard-source',JSON.stringify({ticker,mode:state.mode,report:state.report}));
   else sessionStorage.removeItem('adi-wizard-source');
@@ -580,6 +580,18 @@ $('focus-only').addEventListener('click',()=>{state.focusOnly=!state.focusOnly;d
 $('restore-all').addEventListener('click',()=>{if(!Object.keys(state.overrides).length)return;if(!confirm('¿Restaurar todos los valores oficiales de esta empresa?'))return;state.overrides={};saveSaved();recalculate();setMessage('Se restauraron todos los datos SEC originales.','ok');});
 render();
 const openingTicker=new URLSearchParams(location.search).get('ticker');
-if(openingTicker&&openingTicker!=='DEMO'&&/^[A-Z][A-Z0-9.\-]{0,11}$/i.test(openingTicker))lookupTicker(openingTicker);
+if(openingTicker==='IMPORT'){
+ try{
+  const cached=JSON.parse(sessionStorage.getItem('adi-wizard-source')||'null');
+  if(cached?.ticker==='IMPORT'&&cached.report?.rows?.length){
+   state.original=cached.report;
+   state.report=cached.report;
+   state.mode='file';
+   state.overrides={};
+   state.count=5;state.tab='income';render();
+   setMessage('Datos importados recuperados de esta sesión. Las correcciones permanecen en los datos transferidos.','ok');
+  }
+ }catch(err){setMessage('No pudimos recuperar los datos importados de esta sesión. Importa el archivo de nuevo.','error');}
+}else if(openingTicker&&openingTicker!=='DEMO'&&/^[A-Z][A-Z0-9.\-]{0,11}$/i.test(openingTicker))lookupTicker(openingTicker);
 else if(openingTicker==='DEMO')loadDemo();
 </script></body></html>
