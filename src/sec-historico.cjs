@@ -28,6 +28,8 @@ const tags={
   liabilities:['Liabilities'],
   equity:['StockholdersEquity','StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest'],
   shortDebt:['LongTermDebtCurrent','ShortTermBorrowings','ShortTermDebtCurrent'],
+  shortBorrowings:['ShortTermBorrowings','ShortTermDebtCurrent'],
+  commercialPaper:['CommercialPaper'],
   longDebt:['LongTermDebtNoncurrent','LongTermDebt','LongTermDebtAndCapitalLeaseObligations'],
   debtTotal:['LongTermDebtAndFinanceLeaseObligationsIncludingCurrentMaturities'],
   sharesEnd:['CommonStockSharesOutstanding'],
@@ -76,8 +78,57 @@ if(g('gross')!==null&&g('revenue')!==null&&g('revenue')!==0)a.grossMargin=mk(g('
 if(g('ebit')!==null&&g('revenue')!==null&&g('revenue')!==0)a.ebitMargin=mk(g('ebit')/g('revenue')*100,'EBIT ÷ ventas',['ebit','revenue']);
 if(g('taxExpense')!==null&&g('preTax')!==null&&g('preTax')!==0)a.taxRate=mk(g('taxExpense')/g('preTax')*100,'Impuestos ÷ beneficio antes de impuestos',['taxExpense','preTax']);
 if(g('cfo')!==null&&g('capex')!==null){a.fcf=mk(g('cfo')-Math.abs(g('capex')),'Flujo operativo − compras de propiedades, planta y equipo',['cfo','capex']);if(g('revenue')!==null&&g('revenue')!==0)a.fcfMargin=mk(g('fcf')/g('revenue')*100,'FCF convencional ÷ ventas',['fcf','revenue']);}
-if(g('debtTotal')!==null)a.totalDebt=mk(g('debtTotal'),'Deuda financiera reportada',['debtTotal']);
-else if(g('shortDebt')!==null&&g('longDebt')!==null)a.totalDebt=mk(g('shortDebt')+g('longDebt'),'Deuda financiera a corto + largo plazo',['shortDebt','longDebt']);
+// Deuda: no agregar simultáneamente totales y componentes que puedan solaparse.
+// Un agregado de deuda a plazo incluye sus porciones corriente y no corriente.
+// ShortTermBorrowings puede incluir CommercialPaper: elegir el agregado, nunca sumar ambos.
+const tagOf=k=>{
+ const meta=a[k]?.meta;
+ return meta?.manual ? (meta.original?.meta?.tag||null) : (meta?.tag||null);
+};
+const positive=k=>g(k)!==null&&Number.isFinite(g(k))&&g(k)>=0;
+let termValue=null, termKeys=[],termDescription='';
+if(positive('debtTotal')){
+ termValue=g('debtTotal');
+ termKeys=['debtTotal'];
+ termDescription='Deuda a plazo agregada (incluye vencimientos corrientes; puede incluir arrendamientos financieros)';
+}else if(positive('shortDebt')&&positive('longDebt')&&
+  (tagOf('shortDebt')==='LongTermDebtCurrent' || a.shortDebt?.meta?.manual) &&
+  tagOf('longDebt')==='LongTermDebtNoncurrent'){
+ termValue=g('shortDebt')+g('longDebt');
+ termKeys=['shortDebt','longDebt'];
+ termDescription='Deuda a plazo: porción corriente + no corriente';
+}
+const cp=positive('commercialPaper')?g('commercialPaper'):null;
+const borrowed=positive('shortBorrowings')?g('shortBorrowings'):null;
+const borrowTag=tagOf('shortBorrowings');
+let extra=0,extraKeys=[],extraDescription='',ambiguous=false;
+if(borrowed!==null&&borrowTag==='ShortTermBorrowings'){
+ if(cp!==null&&borrowed+Math.max(1,borrowed)*0.001<cp){
+  ambiguous=true;
+  d.status.push('Deuda: el papel comercial supera los préstamos de corto plazo reportados; no se suman dos partidas potencialmente solapadas.');
+ }else{
+  extra=borrowed;
+  extraKeys=['shortBorrowings'];
+  extraDescription='préstamos de corto plazo (pueden incluir papel comercial)';
+ }
+}else if(cp!==null){
+ if(borrowed!==null&&borrowTag==='ShortTermDebtCurrent'){
+  ambiguous=true;
+  d.status.push('Deuda: la etiqueta agregada ShortTermDebtCurrent puede incluir papel comercial y vencimientos de deuda; se requiere conciliación del 10-K.');
+ }else{
+  extra=cp;
+  extraKeys=['commercialPaper'];
+  extraDescription='papel comercial';
+ }
+}else if(borrowed!==null&&borrowTag==='ShortTermDebtCurrent'){
+ ambiguous=true;
+ d.status.push('Deuda: ShortTermDebtCurrent puede solaparse con vencimientos de deuda a plazo. Se requiere revisión antes de calcular deuda total.');
+}
+if(termValue===null){
+ d.status.push('Deuda: faltan componentes identificados sin solapamiento (porción corriente/no corriente o agregado completo); deuda total y ratios derivados no calculados.');
+}else if(!ambiguous){
+ a.totalDebt=mk(termValue+extra,termDescription+(extraKeys.length?' + '+extraDescription:'')+'. No incluye pasivos operativos.',['debtTotal',...termKeys,...extraKeys].filter((x,i,arr)=>x!=='debtTotal'||termKeys.length===0));
+}
 if(g('totalDebt')!==null&&g('cash')!==null)a.netDebt=mk(g('totalDebt')-g('cash'),'Deuda financiera − efectivo',['totalDebt','cash']);
 if(g('currentAssets')!==null&&g('currentLiabilities')!==null&&g('currentLiabilities')!==0)a.currentRatio=mk(g('currentAssets')/g('currentLiabilities'),'Activos corrientes ÷ pasivos corrientes',['currentAssets','currentLiabilities']);
 // Ratios de historial: se muestran solo con todos los insumos necesarios. No se sustituyen faltantes por cero.
@@ -99,7 +150,7 @@ if(g('ebit')!==null&&g('opex')!==null&&g('gross')!==null&&Math.abs(g('gross')-g(
 return d;
 }
 function derive(facts,period){const d={year:period.year,end:period.end,start:period.start,amounts:{},status:[]};const keys=Object.keys(tags);
-for(const k of keys){d.amounts[k]=choose(facts,k,period.year,period.end,['assets','currentAssets','cash','receivables','inventory','ppe','goodwill','currentLiabilities','liabilities','equity','shortDebt','longDebt','debtTotal','sharesEnd'].includes(k)?null:period.start,units[k]||'USD');}
+for(const k of keys){d.amounts[k]=choose(facts,k,period.year,period.end,['assets','currentAssets','cash','receivables','inventory','ppe','goodwill','currentLiabilities','liabilities','equity','shortDebt','shortBorrowings','commercialPaper','longDebt','debtTotal','sharesEnd'].includes(k)?null:period.start,units[k]||'USD');}
 return deriveMetrics(d);
 }
 function deriveHistory(rows){
