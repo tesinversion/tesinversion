@@ -17,12 +17,32 @@ for(const id of ['history-years','mobile-year','financial-table','mobile-financi
  assert.match(html,new RegExp('id="'+id+'"'),id);
 }
 assert.match(html,/max-width:630px/,'Estilos móviles dedicados');
+assert.match(html,/id="history-years" type="range" min="1" max="10" step="1"/,'Selector continuo de 1 a 10 años');
+assert.match(html,/id="history-years-value"/,'Años seleccionados visibles');
+assert.match(html,/history-years'\)\.addEventListener\('input'/,'Actualización al desplazar la barra');
+assert.match(html,/var count=5|count=5/,'Mantener 5 años por defecto');
+assert.match(html,/fin='results'/,'Vista inicial de resultados');
 assert.match(html,/\.data-table-scroll\{display:none\}\.mobile-history\{display:block\}/,'Históricos móviles no comprimidos');
 assert.match(html,/DATO DEL INFORME/,'Distinguir cifras fuente');
+for(const row of [
+ 'Gastos operativos','Margen neto','Acciones en circulación','Variación de acciones en circulación','EPS','Crecimiento EPS',
+ 'Total activos corrientes','Total activos no corrientes','Cuentas por cobrar','Cuentas por pagar','Inventario','Capital de trabajo neto',
+ 'Total pasivos corrientes','Total pasivos no corrientes','Compensación en acciones','Depreciación y amortización',
+ 'Dividendos pagados','Recompras de acciones','Nueva deuda','Pago de deuda','Flujo neto de financiación'
+])assert.ok(html.includes(row),'Indicador omitido: '+row);
+for(const year of [2021,2022,2023,2024,2025]){
+ assert.match(html,new RegExp('<th scope="col">'+year+'</th>'),'Año histórico en proyecciones: '+year);
+}
+assert.match(html,/2026 <small>Tu estimación<\/small>/,'Año en curso editable separado de 5 históricos');
+assert.match(html,/Estimación anual para 2025 \(año base\)/,'Periodo explícito CapEx mantenimiento');
+assert.match(html,/depreciación y amortización \(D&A\) como aproximación inicial/,'Advertencia D&A como referencia');
+assert.match(html,/2026–2030/,'Horizonte futuro visible');
 assert.match(html,/TU ESTIMACIÓN/,'Distinguir edición');
 assert.match(html,/RESULTADO CALCULADO/,'Distinguir resultados');
 assert.match(html,/EJEMPLO VISUAL · PRECIOS FICTICIOS SIN CÁLCULO/,'No mostrar ficticios como reales');
 assert.doesNotMatch(html,/valoracion-modelo\.js|referencia-inversion\.js|sec-historicos/,'El wireframe no carga motores ni datos SEC');
+assert.match(html,/aria-valuetext/,'Lectura accesible del número de años');
+assert.match(html,/overflow-x:auto/,'Tablas anchas desplazables horizontalmente');
 assert.match(html,/aria-live="polite"/);
 assert.match(html,/prefers-reduced-motion/);
-console.log('OK: cinco pasos, controles, colores, versión móvil y aislamiento financiero del wireframe.');
+console.log('OK: boceto v0.7.1 cinco pasos, slider 1–10, estados ampliados, 5 históricos/2026, CapEx anual, móvil y sin fórmulas de valoración.');
