@@ -752,7 +752,7 @@ function jSection(name,content,variant=''){
 }
 function jMissing(label){return '<span class="missing-figure">'+escapeHtml(label||'Pendiente')+'</span>';}
 function jSource(name,value,sub){
- return '<div class="valuation-fact source-data"><dt>'+escapeHtml(name)+'</dt><dd>'+escapeHtml(value)+'</dd><span class="fact-source">'+escapeHtml(sub||'DATO HISTÓRICO · REVISAR FUENTE')+'</span></div>';
+ return '<dl class="valuation-fact source-data"><dt>'+escapeHtml(name)+'</dt><dd>'+escapeHtml(value)+'</dd><div class="fact-source">'+escapeHtml(sub||'DATO HISTÓRICO · REVISAR FUENTE')+'</div></dl>';
 }
 function renderJourney(){
  if(journey.step===1||!state.report)return;
@@ -843,8 +843,10 @@ function renderJourney(){
    html+=jSection('Revisa estos datos', '<ul class="valuation-errors">'+calculation.errors.map(x=>'<li>'+escapeHtml(x)+'</li>').join('')+'</ul><div class="row"><button type="button" class="btn small" data-edit-stage="2">FCF y mantenimiento</button><button type="button" class="btn small" data-edit-stage="3">Proyecciones</button><button type="button" class="btn small" data-edit-stage="4">Supuestos de valoración</button></div>','source-panel');
   }else{
    const sc=calculation.scenarios,low=sc.low,base=sc.base,high=sc.high;
+   const prices=[low.priceToday,base.priceToday,high.priceToday];
+   const rangeMin=Math.min(...prices),rangeMax=Math.max(...prices);
    const mini=(label,v,description)=>'<div class="scenario-card"><span>'+escapeHtml(label)+'</span><strong>'+escapeHtml(shareMoney(v.priceToday))+'</strong><small>'+escapeHtml(description)+'</small><div>Estimación año 5: '+escapeHtml(shareMoney(v.priceYear5))+'</div></div>';
-   html+='<div class="valuation-result result-ready"><span class="source-label">VALOR RAZONABLE ESTIMADO HOY · USD POR ACCIÓN</span><strong>'+escapeHtml(shareMoney(base.priceToday))+'</strong><p>Escenarios: '+escapeHtml(shareMoney(low.priceToday))+' a '+escapeHtml(shareMoney(high.priceToday))+'. Son resultados de supuestos distintos, no un intervalo estadístico.</p></div>';
+   html+='<div class="valuation-result result-ready"><span class="source-label">VALOR RAZONABLE ESTIMADO HOY · USD POR ACCIÓN</span><strong>'+escapeHtml(shareMoney(base.priceToday))+'</strong><p>Escenarios: '+escapeHtml(shareMoney(rangeMin))+' a '+escapeHtml(shareMoney(rangeMax))+'. Son resultados de supuestos distintos, no un intervalo estadístico.</p></div>';
    html+='<div class="scenario-grid">'+mini('Conservador',low,'Menor crecimiento, margen y múltiplo')+mini('Base',base,'Tus hipótesis centrales')+mini('Optimista',high,'Mayor crecimiento, margen y múltiplo')+'</div>';
    html+=jSection('Tu nivel de compra con margen de seguridad',
     '<div class="valuation-facts">'+jSource('Valor de hoy · escenario base',shareMoney(base.priceToday),'VALOR PRESENTE CALCULADO')
@@ -896,6 +898,9 @@ $('valuation-stage').addEventListener('input',e=>{
  }else return;
  saveJourney();
  if(input.dataset.assumption==='maintenanceCapex'){const preview=$('maintenance-preview');if(preview)preview.innerHTML=maintenancePreview();}
+});
+$('valuation-stage').addEventListener('change',e=>{
+ if(journey.step===3&&(e.target.dataset.assumption||e.target.dataset.annual))renderJourney();
 });
 $('valuation-stage').addEventListener('toggle',e=>{
  if(e.target.id==='journey-annual')journey.annualOpen=e.target.open;
