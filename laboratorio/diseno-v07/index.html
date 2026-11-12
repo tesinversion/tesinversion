@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F8F9FB">
+<title>Boceto v0.7 · Calculadora de valor intrínseco</title>
+<style>
+:root{--brand:#142169;--brand-hover:#253b87;--ink:#1e293b;--muted:#64748b;--line:#dfe6ef;--background:#f8f9fb;--source-bg:#edf3f9;--source-text:#365579;--editable-bg:#fff5df;--editable-line:#d7b46b;--editable-text:#805b1d;--white:#fff;--shadow:0 14px 40px rgba(19,39,83,.035)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-width:320px;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--ink);background:var(--background)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.48;cursor:not-allowed}
+:focus-visible{outline:3px solid #ab7d26;outline-offset:3px}
+[hidden]{display:none!important}
+a{color:var(--brand)}
+.container{max-width:1150px;margin:0 auto;padding:0 26px}
+.masthead{background:#fff;border-bottom:1px solid #e9eef4}
+.masthead-inner{min-height:73px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{font:700 20px/1.2 Georgia,"Times New Roman",serif;color:var(--brand);text-decoration:none;letter-spacing:-.025em}
+.version{font-size:11px;font-weight:750;color:#60718b;background:#f0f4f9;border:1px solid #e0e8f2;border-radius:99px;padding:7px 10px;white-space:nowrap}
+.intro{padding:34px 0 22px}
+.eyebrow{letter-spacing:.115em;color:#58719b;font-size:10px;font-weight:800;text-transform:uppercase}
+.intro h1{margin:5px 0 4px;color:var(--brand);font-size:clamp(27px,3.8vw,37px);font-weight:720;line-height:1.15;letter-spacing:-.045em}
+.intro p{margin:0;color:#64738b;font-size:13px;line-height:1.65}
+.app{background:#fff;border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.app-head{padding:20px 30px 17px;border-bottom:1px solid #eaf0f6}
+.stepper{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.step{display:flex;gap:8px;align-items:center;justify-content:center;min-height:47px;padding:9px 8px;border:1px solid #e5ebf3;border-radius:11px;background:#fafbfd;color:#8190a5;font-size:11px;font-weight:650;line-height:1.25;text-align:left}
+.step-num{display:grid;place-items:center;width:22px;height:22px;flex:none;border-radius:7px;background:#e8edf4;font-size:11px;font-weight:800;color:#647992}
+.step.active{background:#edf2fb;border-color:#bdcce5;color:var(--brand)}
+.step.active .step-num{background:var(--brand);color:#fff}
+.step.passed{color:#48648c;border-color:#d7e0ed;background:#fff}
+.step.passed .step-num{background:#edf3f9;color:#35577c}
+.bar{height:3px;background:#edf1f5;border-radius:5px;margin-top:15px;overflow:hidden}
+.bar-fill{height:100%;background:var(--brand);width:20%;border-radius:5px;transition:width .25s ease}
+.legend{display:flex;align-items:center;flex-wrap:wrap;gap:7px 9px;margin-top:16px}
+.legend .pill{display:inline-flex;gap:6px;align-items:center;border-radius:99px;padding:5px 9px;font-size:10px;font-weight:780}
+.pill.source{background:var(--source-bg);color:var(--source-text);border:1px solid #d5e1ef}
+.pill.edit{background:var(--editable-bg);color:var(--editable-text);border:1px solid #e4cb93}
+.pill.calc{background:#fff;color:var(--brand);border:1px solid #c9d5e9}
+.legend .explain{color:#8190a3;font-size:11px}
+.app-body{padding:27px 30px 34px;min-height:460px}
+.stage-head{margin-bottom:22px}
+.stage-index{font-size:10px;font-weight:780;color:#687fa2;letter-spacing:.1em;text-transform:uppercase}
+.stage-head h2{font-size:26px;font-weight:710;letter-spacing:-.035em;line-height:1.2;color:#223554;margin:5px 0 5px}
+.stage-head p{margin:0;font-size:13px;color:#68778f;max-width:780px}
+.box{border:1px solid #e0e7ef;border-radius:14px;padding:20px;margin-bottom:17px;background:#fff}
+.box h3{font-size:15px;letter-spacing:-.015em;margin:0 0 11px;color:#253a58}
+.box p{margin:5px 0;color:#68778d}
+.section-meta{font-size:11px;color:#76869c}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.titlebar h3{margin:0}
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.data-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.data-box{border:1px solid #dce6f2;border-radius:12px;padding:15px;background:var(--source-bg);min-width:0}
+.data-box .kind{font-size:9px;letter-spacing:.06em;font-weight:810;text-transform:uppercase;color:#577492}
+.data-box .caption{font-size:11px;color:#607795;margin-top:7px}
+.data-box strong{font-size:clamp(19px,2.3vw,24px);color:#264465;line-height:1.2;display:block;margin-top:7px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.data-box .note{display:block;font-size:10px;color:#7990a9;margin-top:5px}
+.company{border:1px solid #e1e7ef;border-radius:14px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.company h3{margin:4px 0 3px;color:var(--brand);font-size:22px}
+.company small{font-size:11px;color:#8491a2}
+.company-id{font-size:10px;font-weight:800;letter-spacing:.045em;color:#69819f}
+.company-tag{display:inline-block;background:var(--source-bg);color:#395a81;border:1px solid #d5e0ed;padding:7px 11px;border-radius:9px;font-size:11px;font-weight:750}
+.tabs{display:flex;gap:22px;border-bottom:1px solid #e5ebf3;margin-bottom:13px}
+.tab{border:0;border-bottom:3px solid transparent;background:transparent;color:#8290a5;font-size:13px;padding:11px 1px 10px;font-weight:650}
+.tab[aria-selected=true]{border-bottom-color:var(--brand);color:var(--brand)}
+.table-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:13px 0}
+.selector{border:1px solid #d7e0ed;border-radius:9px;padding:7px 10px;background:#fff;color:#354b6f;font-size:12px}
+.data-table-scroll{overflow:auto;border:1px solid #e1e9f2;border-radius:12px}
+.fin-table{border-collapse:collapse;width:100%;min-width:590px;font-size:12px;font-variant-numeric:tabular-nums}
+.fin-table th,.fin-table td{padding:12px 13px;border-bottom:1px solid #edf1f7;text-align:right;white-space:nowrap}
+.fin-table th:first-child,.fin-table td:first-child{text-align:left;font-weight:660}
+.fin-table thead th{background:#f4f7fb;color:#59718f;font-size:11px}
+.fin-table tr:last-child td{border-bottom:0}
+.fin-table .strong td{background:#f7faff;font-weight:780;color:#254570}
+.mobile-history{display:none}
+.text-link{background:none;border:0;color:var(--brand);font-size:12px;font-weight:700;padding:0;text-decoration:underline;text-underline-offset:3px}
+.text-link:disabled{text-decoration:none;color:#8b9aad}
+.ruleline{height:1px;background:#ebeff5;margin:16px 0}
+.source-group{border-radius:13px;background:var(--source-bg);border:1px solid #d8e5f0;padding:17px;margin-bottom:16px}
+.source-group .section-tag{font-size:10px;font-weight:800;color:#4a698d;letter-spacing:.055em}
+.source-group h3{margin:4px 0 3px;font-size:14px;color:#2a496e}
+.source-group p{color:#657b94;font-size:11px;margin:3px 0}
+.edit-group{border-radius:13px;background:#fffaf0;border:1px solid #e7d2a5;padding:18px;margin-bottom:16px}
+.edit-group .section-tag{font-size:10px;font-weight:800;color:#936c2e;letter-spacing:.055em}
+.edit-group h3{margin:5px 0 4px;font-size:15px;color:#56452c}
+.edit-group p{font-size:12px;margin:0 0 10px;color:#786b57}
+.input-stack{display:flex;flex-direction:column;gap:6px}
+.input-stack label{font-size:12px;font-weight:720;color:#5d4927}
+.input-stack small{color:#8a7760;font-size:11px}
+.field{border:1.5px solid var(--editable-line);border-radius:9px;padding:10px 11px;min-height:43px;background:#fff;color:#3c3b36;width:100%;max-width:210px;font-size:17px;font-weight:730;font-variant-numeric:tabular-nums}
+.field::placeholder{color:#a7a09a;font-weight:420;font-size:13px}
+.field:focus{outline:2px solid #b7882d;outline-offset:1px}
+.row-end{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.muted{color:#7c8ba0;font-size:11px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:17px}
+.kpi-row .data-box{min-height:123px}
+.num-matrix{border:1px solid #e1e9f1;border-radius:12px;overflow:hidden;margin-bottom:15px}
+.matrix-labels,.matrix-row{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center}
+.matrix-labels{background:#f5f7fb;color:#71829a;font-size:10px;font-weight:750;letter-spacing:.03em}
+.matrix-labels span,.matrix-row>*{padding:11px 14px}
+.matrix-row{border-top:1px solid #edf1f6;min-height:70px}
+.matrix-row .metric-label{font-weight:700;color:#314560;font-size:13px}
+.matrix-row .history-amount{color:#385777;font-weight:750;font-size:14px;background:#f3f7fb;padding:11px;display:inline-block;min-width:70px;text-align:center;border-radius:8px}
+.matrix-row .field{max-width:125px;font-size:16px;min-height:39px}
+.input-unit{font-size:11px;font-weight:650;color:#896528;margin-left:7px}
+.matrix-row .inputcell{background:#fffdf7}
+.details{border-top:1px solid #ecf0f4;padding-top:12px;margin-top:17px}
+.details summary{color:var(--brand);font-weight:730;cursor:pointer;font-size:12px}
+.details p{font-size:12px;color:#71809a;line-height:1.65;margin:10px 0}
+.year-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:13px}
+.year-item{border:1px solid #e8edf4;border-radius:10px;padding:12px;background:#fbfcfe}
+.year-item strong{display:block;color:#39557c;font-size:12px;margin-bottom:7px}
+.year-item label{display:block;color:#6b788c;font-size:10px;margin:8px 0 3px}
+.year-item input{width:100%;min-width:0;border:1px solid #d3b87f;border-radius:7px;padding:7px;font-variant-numeric:tabular-nums}
+.note-bar{border:1px solid #e7edf4;border-radius:10px;padding:12px 14px;color:#667a94;font-size:12px;background:#fafcfe}
+.side-by-side{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:16px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.form-grid .field{max-width:100%}
+.scenario-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.scenario{border:1px solid #e0e7f0;background:#fafbfd;border-radius:12px;padding:15px}
+.scenario.base{border-color:#b9c9e4;background:#f1f5fb}
+.scenario strong{display:block;font-size:13px;color:#33527b}
+.scenario small{display:block;font-size:11px;color:#71839b;line-height:1.5;margin-top:6px}
+.scenario .price{font-size:26px;font-weight:770;color:var(--brand);letter-spacing:-.03em;margin:8px 0 2px}
+.scenario .future{font-size:12px;color:#60738f}
+.result-label{font-size:10px;font-weight:800;color:#617995;letter-spacing:.045em}
+.result-main{padding:18px 21px;border:1px solid #ccd9eb;border-radius:13px;background:#f6f9fd;margin-bottom:16px}
+.result-main .big{font-size:clamp(24px,3.5vw,34px);line-height:1.2;font-weight:770;letter-spacing:-.04em;color:var(--brand);margin:5px 0}
+.result-main p{margin:0;font-size:12px;color:#667993}
+.result-mini{border:1px solid #dde6f0;padding:16px 20px;border-radius:11px;background:#fff}
+.result-mini strong{display:block;color:var(--brand);font-size:25px;letter-spacing:-.02em;margin-top:3px}
+.result-mini small{color:#78879e}
+.caption{font-size:11px;color:#75849a;line-height:1.6}
+.text-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--brand);border:1px solid #d9e2ee;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:720}
+.text-button:hover{background:#f6f8fc}
+.primary{border:1px solid var(--brand);background:var(--brand);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:720}
+.primary:hover{background:var(--brand-hover)}
+.app-footer{border-top:1px solid #e8edf4;padding:16px 30px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff}
+.footnote{margin:0 0 32px;color:#7e8da2;font-size:11px;line-height:1.7}
+.input-example{font-size:10px;color:#8b7654}
+.simulation{display:inline-flex;gap:5px;align-items:center;font-size:10px;font-weight:760;color:#815b23;background:#fff7e6;border:1px solid #ecd7aa;padding:6px 9px;border-radius:8px}
+@media(max-width:900px){
+ .container{padding:0 16px}.app-body{padding:21px}.app-head{padding:17px 21px}.app-footer{padding:15px 21px}
+ .data-grid,.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .year-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .step{font-size:10px;gap:5px;padding:8px 5px}
+ .split,.side-by-side{grid-template-columns:1fr}
+}
+@media(max-width:630px){
+ .container{padding:0 12px}.masthead-inner{min-height:62px}.brand{font-size:16px}.version{font-size:9px;padding:5px 7px}
+ .intro{padding:24px 0 18px}.intro h1{font-size:28px}.intro p{font-size:12px}
+ .app{border-radius:15px}.app-head{padding:14px 13px}.app-body{padding:18px 13px 22px;min-height:480px}.app-footer{padding:13px}
+ .stepper{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
+ .step{min-width:111px;flex:0 0 111px;scroll-snap-align:center;justify-content:flex-start}
+ .bar{margin-top:10px}.legend{margin-top:12px}.legend .explain{flex-basis:100%}
+ .stage-head h2{font-size:23px}.stage-head p{font-size:12px}
+ .company{padding:15px;align-items:flex-start}.company h3{font-size:19px}
+ .data-grid,.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .data-box{padding:11px;min-height:92px}.data-box strong{font-size:20px}.data-box .caption{font-size:10px}
+ .box,.edit-group,.source-group{padding:14px}
+ .tabs{gap:16px}.tab{font-size:12px}
+ .data-table-scroll{display:none}.mobile-history{display:block}
+ .mobile-year{width:100%;border:1px solid #d4deeb;border-radius:9px;padding:10px;font-size:12px;color:#385678;background:#fff;margin-bottom:9px}
+ .mobile-data{border:1px solid #e4eaf2;border-radius:10px;padding:12px}
+ .mobile-data .line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #edf1f6;font-size:12px}
+ .mobile-data .line:last-child{border-bottom:0}.mobile-data .line strong{color:#2c4d72;font-variant-numeric:tabular-nums}
+ .matrix-labels{grid-template-columns:1.4fr .8fr 1fr}.matrix-labels span,.matrix-row>*{padding:10px 8px}
+ .matrix-row .metric-label{font-size:12px}.matrix-row .history-amount{min-width:0;font-size:12px;padding:8px}
+ .matrix-row .field{width:60px;font-size:14px;padding:8px 5px}.input-unit{margin-left:3px}
+ .year-grid{grid-template-columns:1fr 1fr}
+ .scenario-strip{grid-template-columns:1fr;gap:8px}.scenario{padding:13px;display:grid;grid-template-columns:1fr 1fr;column-gap:8px}.scenario small{grid-column:1/-1}.scenario .price{font-size:23px;text-align:right;margin:0}.scenario .future{grid-column:1/-1}
+ .result-main{padding:15px}.result-mini{padding:14px}.form-grid{grid-template-columns:1fr}
+ .app-footer .text-button,.app-footer .primary{flex:1}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar-fill{transition:none}}
+</style>
+</head>
+<body>
+<header class="masthead"><div class="container masthead-inner">
+  <a class="brand" href="#inicio">Arquitectura de la Inversión</a>
+  <span class="version">Boceto de diseño v0.7</span>
+</div></header>
+<main class="container" id="inicio">
+  <div class="intro"><span class="eyebrow">Calculadora de valor intrínseco</span><h1>Valora una empresa, paso a paso.</h1><p>Una empresa. Cinco etapas. Solo los datos y las decisiones importantes.</p></div>
+  <div class="app" aria-label="Boceto navegable de la calculadora">
+    <div class="app-head">
+      <nav class="stepper" aria-label="Etapas de la valoración">
+        <button type="button" class="step active" data-goto="1" aria-current="step"><span class="step-num">1</span>Empresa</button>
+        <button type="button" class="step" data-goto="2"><span class="step-num">2</span>FCF</button>
+        <button type="button" class="step" data-goto="3"><span class="step-num">3</span>Proyecciones</button>
+        <button type="button" class="step" data-goto="4"><span class="step-num">4</span>Valoración</button>
+        <button type="button" class="step" data-goto="5"><span class="step-num">5</span>Resultados</button>
+      </nav>
+      <div class="bar" aria-hidden="true"><div class="bar-fill" id="progress"></div></div>
+      <div class="legend" aria-label="Significado de los colores">
+        <span class="pill source">▣ Dato del informe</span>
+        <span class="pill edit">✎ Tu estimación</span>
+        <span class="pill calc">◈ Resultado calculado</span>
+        <span class="explain">Todos los importes del boceto son ficticios.</span>
+      </div>
+    </div>
+    <div class="app-body">
+      <section id="step1" class="stage" aria-labelledby="s1-title">
+        <div class="stage-head"><span class="stage-index">Etapa 1 de 5</span><h2 id="s1-title" tabindex="-1">Conocer la empresa</h2><p>Revisa sus cifras antes de pensar en el futuro.</p></div>
+        <div class="company"><div><span class="company-id">EMPRESA SELECCIONADA · FICTICIA</span><h3>Empresa Ejemplo</h3><small>DEMO · Ejercicio fiscal 2025 · Datos simulados</small></div><span class="company-tag">DEMO</span></div>
+        <div class="data-grid" aria-label="Resumen de resultados ficticios">
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Ventas</div><strong>$1.460 M</strong><span class="note">Año fiscal 2025</span></div>
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Margen EBIT</div><strong>28 %</strong><span class="note">Año fiscal 2025</span></div>
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Beneficio neto</div><strong>$290 M</strong><span class="note">Año fiscal 2025</span></div>
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">FCF histórico</div><strong>$240 M</strong><span class="note">Año fiscal 2025</span></div>
+        </div>
+        <div class="box">
+          <div class="titlebar"><h3>Estados financieros</h3><span class="section-meta">USD millones · datos simulados</span></div>
+          <div class="tabs" role="tablist" aria-label="Estados financieros ficticios">
+            <button class="tab" id="tab-results" role="tab" aria-controls="financial-panel" aria-selected="true" type="button" data-fin="results">Resultados</button>
+            <button class="tab" id="tab-balance" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="balance" tabindex="-1">Balance</button>
+            <button class="tab" id="tab-cash" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="cash" tabindex="-1">Flujos de efectivo</button>
+          </div>
+          <div class="table-head"><span class="muted">Ver evolución de las cifras</span><label class="muted">Mostrar <select id="history-years" class="selector" aria-label="Número de ejercicios"><option value="5">5 años</option><option value="10">10 años</option></select></label></div>
+          <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla histórica desplazable"><table class="fin-table" id="financial-table"></table></div>
+          <div class="mobile-history"><label class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
+          <div style="margin-top:11px" class="row-end"><span class="muted">En la calculadora real cada cifra tendrá su fuente y opción de corrección.</span><button type="button" class="text-link" disabled>Corregir un dato</button></div>
+        </div>
+      </section>
+
+      <section id="step2" class="stage" aria-labelledby="s2-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 2 de 5</span><h2 id="s2-title" tabindex="-1">Analizar el FCF</h2><p>Distingue la caja generada de las inversiones necesarias.</p></div>
+        <div class="kpi-row">
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Flujo de caja operativo</div><strong>$355 M</strong><span class="note">2025</span></div>
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">CapEx total registrado</div><strong>$115 M</strong><span class="note">2025 · Sin separar</span></div>
+          <div class="data-box"><span class="kind">CÁLCULO HISTÓRICO · EJEMPLO</span><div class="caption">FCF histórico</div><strong>$240 M</strong><span class="note">Flujo operativo − CapEx</span></div>
+          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Depreciación y amortización</div><strong>$58 M</strong><span class="note">2025</span></div>
+        </div>
+        <div class="split">
+          <div class="edit-group">
+            <span class="section-tag">✎ TU ESTIMACIÓN</span><h3>CapEx de mantenimiento</h3><p>¿Cuánto crees que necesita invertir la empresa para mantener su negocio actual?</p>
+            <div class="input-stack"><label for="maintenance-input">Mantenimiento estimado · millones USD</label><input class="field" type="number" min="0" step="1" id="maintenance-input" placeholder="Sin definir" aria-describedby="maintenance-help"><small id="maintenance-help">Una referencia posible es la depreciación ($58 M), pero debes comprobarla.</small></div>
+            <div style="margin-top:13px"><button type="button" class="text-button" id="use-da">Usar $58 M como estimación</button></div>
+          </div>
+          <div class="source-group">
+            <span class="section-tag">▣ LECTURA DE LOS DATOS</span><h3>Mantenimiento y crecimiento</h3><p>El CapEx total está en los informes. Su reparto entre mantenimiento y crecimiento debe justificarse.</p>
+            <div class="ruleline"></div>
+            <div class="row-end"><span class="muted">CapEx de crecimiento estimado</span><strong id="growth-capex-preview" style="color:#365579;font-size:20px">Pendiente</strong></div>
+            <p style="margin-top:10px" class="muted">Esta es solo una representación del diseño; no realiza cálculos.</p>
+          </div>
+        </div>
+        <details class="details"><summary>Ver cómo se calcula el FCF</summary><p>FCF histórico: flujo de caja operativo menos CapEx registrado. Un FCF normalizado puede utilizar mantenimiento estimado, pero la inversión necesaria para crecer no debe desaparecer de las proyecciones.</p></details>
+      </section>
+
+      <section id="step3" class="stage" aria-labelledby="s3-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 3 de 5</span><h2 id="s3-title" tabindex="-1">Estimar los próximos cinco años</h2><p>2026–2030 · Compara el pasado con lo que esperas del negocio.</p></div>
+        <div class="num-matrix" aria-label="Estimaciones de crecimiento, margen e impuestos">
+          <div class="matrix-labels"><span>Indicador</span><span>Histórico 2025</span><span>Tu estimación</span></div>
+          <div class="matrix-row"><span class="metric-label">Crecimiento de ventas</span><span><span class="history-amount">12 %</span></span><span class="inputcell"><label class="muted" for="estimate-sales" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">Crecimiento de ventas previsto, porcentaje anual</label><input id="estimate-sales" class="field" type="number" inputmode="decimal" step=".5" value="8"><span class="input-unit">%</span></span></div>
+          <div class="matrix-row"><span class="metric-label">Margen EBIT</span><span><span class="history-amount">28 %</span></span><span class="inputcell"><label class="muted" for="estimate-ebit" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">Margen EBIT previsto</label><input id="estimate-ebit" class="field" type="number" inputmode="decimal" step=".5" value="26"><span class="input-unit">%</span></span></div>
+          <div class="matrix-row"><span class="metric-label">Impuestos</span><span><span class="history-amount">20 %</span></span><span class="inputcell"><label class="muted" for="estimate-tax" style="position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden">Tasa de impuestos operativos prevista</label><input id="estimate-tax" class="field" type="number" inputmode="decimal" step=".5" value="21"><span class="input-unit">%</span></span></div>
+        </div>
+        <p class="caption" style="margin:0 0 16px">En este boceto, los porcentajes son ejemplos editables. No se han calculado referencias ni previsiones reales.</p>
+        <details class="details"><summary>Cambiar las estimaciones año por año</summary><div class="year-grid" id="year-grid"></div></details>
+        <div class="source-group" style="margin-top:18px"><div class="row-end"><div><span class="section-tag">◈ RESULTADO CALCULADO</span><h3>Ventas, EBIT y FCF proyectados</h3></div><span class="muted">2026–2030</span></div><div class="note-bar">Aquí aparecerá la proyección cuando validemos las fórmulas. No se muestran cifras estimadas todavía.</div></div>
+        <details class="details"><summary>Ver inversión para crecer y otros cálculos</summary><p>La futura calculadora tendrá que estimar las inversiones necesarias para conseguir ese crecimiento. Si no dispone de información fiable, indicará qué dato requiere revisión en vez de pedirte un porcentaje que no puedes justificar.</p></details>
+      </section>
+
+      <section id="step4" class="stage" aria-labelledby="s4-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 4 de 5</span><h2 id="s4-title" tabindex="-1">Definir la valoración</h2><p>Elige los supuestos centrales. Después podrás ver tres escenarios.</p></div>
+        <div class="side-by-side">
+          <div class="edit-group">
+            <span class="section-tag">✎ TUS ESTIMACIONES</span><h3>Supuestos principales</h3>
+            <div class="form-grid">
+              <div class="input-stack"><label for="multiple-input">Múltiplo EV/FCF</label><input class="field" id="multiple-input" type="number" step="1" min="1" value="16"><small>Veces el FCF</small></div>
+              <div class="input-stack"><label for="safety-input">Margen de seguridad</label><input class="field" id="safety-input" type="number" step="1" min="0" max="99" value="25"><small>Porcentaje (%)</small></div>
+            </div>
+          </div>
+          <div class="source-group">
+            <span class="section-tag">▣ DATOS PARA REVISAR</span><h3>Antes del valor por acción</h3>
+            <div class="row-end"><span class="muted">Deuda neta · ejemplo</span><strong style="color:#34557a">$150 M</strong></div>
+            <div class="ruleline"></div>
+            <div class="row-end"><span class="muted">Acciones · ejemplo</span><strong style="color:#34557a">100 M</strong></div>
+            <p class="caption" style="margin-top:13px">En la herramienta final podrás revisar la fuente y corregir estas cifras.</p>
+          </div>
+        </div>
+        <div class="box"><div class="titlebar"><h3>Tres escenarios</h3><span class="section-meta">Misma empresa, distintas hipótesis</span></div>
+          <div class="scenario-strip">
+            <div class="scenario"><strong>Conservador</strong><small>Menor crecimiento, margen y múltiplo.</small></div>
+            <div class="scenario base"><strong>Base</strong><small>Las estimaciones que elegiste.</small></div>
+            <div class="scenario"><strong>Optimista</strong><small>Mayor crecimiento, margen y múltiplo.</small></div>
+          </div>
+          <details class="details"><summary>Personalizar los escenarios (opcional)</summary><p>Los controles financieros y las diferencias entre escenarios se definirán en la fase de fórmulas. Aquí aprobamos primero su lugar y jerarquía.</p></details>
+        </div>
+      </section>
+
+      <section id="step5" class="stage" aria-labelledby="s5-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 5 de 5</span><h2 id="s5-title" tabindex="-1">Tu rango de valoración</h2><p>Valores de ejemplo para revisar la presentación; no proceden de cálculos.</p></div>
+        <div class="simulation">EJEMPLO VISUAL · PRECIOS FICTICIOS SIN CÁLCULO</div>
+        <div class="result-main" style="margin-top:13px"><span class="result-label">◈ VALOR RAZONABLE ESTIMADO HOY · EJEMPLO</span><div class="big">$82 – $142 por acción</div><p>Rango ilustrativo a partir de tres escenarios.</p></div>
+        <div class="scenario-strip" style="margin-bottom:16px">
+          <div class="scenario"><strong>Conservador</strong><span class="price">$82</span><span class="future">Precio teórico en 5 años: $130</span></div>
+          <div class="scenario base"><strong>Base</strong><span class="price">$108</span><span class="future">Precio teórico en 5 años: $180</span></div>
+          <div class="scenario"><strong>Optimista</strong><span class="price">$142</span><span class="future">Precio teórico en 5 años: $225</span></div>
+        </div>
+        <div class="split">
+          <div class="result-mini"><span class="result-label">◈ PRECIO DE COMPRA CON SEGURIDAD · EJEMPLO</span><strong>$81</strong><small>Ilustración del escenario base con descuento del 25 %.</small></div>
+          <div class="result-mini"><span class="result-label">PRECIO DE MERCADO</span><strong>—</strong><small>Solo aparecerá con precio verificado y fecha, o con un dato manual identificado.</small></div>
+        </div>
+        <details class="details"><summary>Ver cómo se obtuvo el resultado (en la versión final)</summary><p>Se explicarán los flujos proyectados, el múltiplo, los ajustes por deuda y el valor por acción. En este boceto todos los precios son cifras ficticias y no se actualizan al cambiar las estimaciones.</p></details>
+        <div style="margin-top:16px"><button type="button" class="text-button" id="edit-estimates">Cambiar mis estimaciones</button></div>
+      </section>
+    </div>
+    <div class="app-footer"><button type="button" class="text-button" id="previous" disabled>← Anterior</button><span id="page-status" class="muted" aria-live="polite">Etapa 1 de 5</span><button type="button" class="primary" id="continue">Continuar →</button></div>
+  </div>
+  <p class="footnote">Este boceto permite evaluar el orden, los colores y la lectura en computadora y móvil. No consulta la SEC, no sustituye la calculadora anterior y no calcula precios de acciones. Las cifras son completamente ficticias.</p>
+</main>
+<script>
+(function(){
+'use strict';
+var stage=1,fin='results',count=5,year=2025;
+var titles=['','Conocer la empresa','Analizar el FCF','Estimar los próximos cinco años','Definir la valoración','Tu rango de valoración'];
+var rows={
+ results:[['Ventas',[800,835,860,910,960,1030,1110,1190,1303,1460]],['Crecimiento de ventas',[6,4,3,6,5,7,8,7,9,12]],['Margen EBIT (%)',[19,19,20,21,21,23,24,25,27,28]],['Beneficio neto',[100,105,117,133,146,164,188,215,252,290]],['FCF',[116,120,131,146,151,160,170,191,210,240]]],
+ balance:[['Activos totales',[1350,1390,1450,1510,1560,1640,1715,1830,1930,2110]],['Efectivo',[190,200,210,225,230,240,255,275,290,310]],['Deuda financiera',[325,333,340,345,350,371,390,415,446,460]],['Deuda neta',[135,133,130,120,120,131,135,140,156,150]],['Patrimonio',[710,740,769,802,855,920,994,1045,1136,1260]]],
+ cash:[['Flujo de caja operativo',[165,170,181,198,210,221,230,260,296,355]],['CapEx registrado',[49,50,50,52,59,61,60,69,86,115]],['FCF',[116,120,131,146,151,160,170,191,210,240]],['Depreciación y amortización',[21,23,25,28,30,32,35,40,47,58]]]
+};
+var years=Array.from({length:10},function(_,i){return 2016+i});
+function el(id){return document.getElementById(id)}
+function escapeText(x){return String(x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
+function renderTable(){
+ var list=years.slice(-count),data=rows[fin];
+ var table='<thead><tr><th>Indicador</th>'+list.map(function(y){return '<th>'+y+'</th>'}).join('')+'</tr></thead><tbody>';
+ data.forEach(function(row){table+='<tr class="'+(row[0]==='FCF'?'strong':'')+'"><td>'+escapeText(row[0])+'</td>'+list.map(function(y){var n=row[1][y-2016];return '<td>'+escapeText(n.toLocaleString('es-ES'))+(row[0].includes('(%)')||row[0]==='Crecimiento de ventas'?' %':'')+'</td>'}).join('')+'</tr>'});
+ el('financial-table').innerHTML=table+'</tbody>';
+ el('mobile-year').innerHTML=list.slice().reverse().map(function(y){return '<option value="'+y+'">'+y+'</option>'}).join('');
+ if(!list.includes(year))year=list[list.length-1];
+ el('mobile-year').value=String(year);
+ renderMobile();
+}
+function renderMobile(){
+ var data=rows[fin];
+ el('mobile-financial').innerHTML=data.map(function(row){
+  var n=row[1][year-2016],unit=(row[0].includes('(%)')||row[0]==='Crecimiento de ventas')?' %':'';
+  return '<div class="line"><span>'+escapeText(row[0])+'</span><strong>'+escapeText(n.toLocaleString('es-ES'))+unit+'</strong></div>';
+ }).join('');
+}
+function go(next){
+ if(next<1||next>5)return;
+ stage=next;
+ document.querySelectorAll('.stage').forEach(function(x){x.hidden=x.id!=='step'+stage});
+ document.querySelectorAll('[data-goto]').forEach(function(btn){
+  var current=Number(btn.dataset.goto),active=current===stage;
+  btn.classList.toggle('active',active);btn.classList.toggle('passed',current<stage);
+  if(active)btn.setAttribute('aria-current','step');else btn.removeAttribute('aria-current');
+ });
+ el('progress').style.width=(stage*20)+'%';
+ el('previous').disabled=stage===1;
+ el('continue').textContent=stage===5?'Volver al inicio ↺':'Continuar →';
+ el('page-status').textContent='Etapa '+stage+' de 5';
+ el('step'+stage).querySelector('h2').focus({preventScroll:true});
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)window.scrollTo(0,0);
+ else window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){go(Number(b.dataset.goto))})});
+el('previous').addEventListener('click',function(){go(stage-1)});
+el('continue').addEventListener('click',function(){go(stage===5?1:stage+1)});
+document.querySelectorAll('[data-fin]').forEach(function(b){
+ b.addEventListener('click',function(){
+  fin=b.dataset.fin;
+  document.querySelectorAll('[data-fin]').forEach(function(t){var active=t===b;t.setAttribute('aria-selected',active?'true':'false');t.tabIndex=active?0:-1});
+  renderTable();
+ });
+});
+el('history-years').addEventListener('change',function(e){count=Number(e.target.value);renderTable()});
+el('mobile-year').addEventListener('change',function(e){year=Number(e.target.value);renderMobile()});
+el('use-da').addEventListener('click',function(){el('maintenance-input').value='58';el('maintenance-input').focus()});
+el('edit-estimates').addEventListener('click',function(){go(3)});
+el('year-grid').innerHTML=[2026,2027,2028,2029,2030].map(function(y){
+ return '<div class="year-item"><strong>'+y+'</strong><label for="sales-'+y+'">Ventas (%)</label><input type="number" step=".5" placeholder="General" id="sales-'+y+'"><label for="ebit-'+y+'">Margen EBIT (%)</label><input type="number" step=".5" placeholder="General" id="ebit-'+y+'"><label for="tax-'+y+'">Impuestos (%)</label><input type="number" step=".5" placeholder="General" id="tax-'+y+'"></div>';
+}).join('');
+renderTable();
+})();
+</script>
+</body>
+</html>
