@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Valoración guiada | Arquitectura de la Inversión · Laboratorio</title>
+<style>
+:root{--blue:#142169;--navy:#1b2c52;--ink:#202b40;--muted:#6d7b91;--line:#e3e9f2;--background:#f5f6f8;--soft:#f7f9fd;--white:#fff;--gold:#b8904b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--background);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}button{cursor:pointer}a{color:var(--blue)}[hidden]{display:none!important}
+a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #c2cdf1;outline-offset:3px}
+.wrap{width:min(1200px,calc(100% - 40px));margin:auto}
+.top{background:rgba(255,255,255,.95);border-bottom:1px solid var(--line)}.top-inner{min-height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{color:var(--blue);text-decoration:none;font-size:15px;font-weight:750;letter-spacing:-.03em}.tag{font-size:10px;letter-spacing:.02em;background:#f1f4f9;border:1px solid #e5e9f1;border-radius:99px;padding:6px 11px;color:#718097}
+.topnav{display:flex;align-items:center;gap:20px}.topnav a{font-size:12px;text-decoration:none;color:#64748c}.topnav a:hover{color:var(--blue)}
+.intro{padding:31px 0 22px}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#7786a0;font-size:10px;font-weight:750}
+.intro h1{font-size:clamp(30px,4vw,44px);letter-spacing:-.05em;line-height:1.12;font-weight:770;color:#1a284b;margin:10px 0}.intro p{color:var(--muted);font-size:13px;max-width:730px;margin:0}
+.shell{display:grid;grid-template-columns:245px minmax(0,1fr);gap:18px;align-items:start;padding-bottom:54px}
+.sidebar,.panel{background:var(--white);border:1px solid var(--line);border-radius:20px;box-shadow:0 2px 10px rgba(17,36,76,.025),0 12px 34px rgba(17,36,76,.025)}
+.sidebar{padding:20px 13px;position:sticky;top:18px}.side-caption{color:#8290a5;text-transform:uppercase;font-size:10px;letter-spacing:.12em;font-weight:730;padding:0 13px 13px}
+.steplink{display:flex;gap:11px;align-items:center;width:100%;text-align:left;border:0;background:transparent;color:#66748c;border-radius:12px;padding:12px 10px;font-size:12px;min-height:49px}
+.steplink:hover{background:#f7f9fd}.steplink.active{background:#edf2fc;color:var(--blue);font-weight:750}
+.number{flex:none;display:grid;place-items:center;width:26px;height:26px;border:1px solid #d7deea;border-radius:9px;color:#7b8ba2;background:#fff;font-size:11px;font-weight:750}
+.steplink.active .number{background:var(--blue);border-color:var(--blue);color:#fff}.steplink.done .number{background:#e7f1ed;border-color:#d3e5dc;color:#467b67}
+.sidefooter{margin:17px 11px 4px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:#8290a5;line-height:1.6}
+.panel{overflow:hidden}.panel-top{padding:27px 30px 0}.meta{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px;font-size:11px;color:#71819a}
+.progress{height:5px;background:#edf0f5;border-radius:99px;overflow:hidden}.progress span{display:block;width:20%;height:100%;background:var(--blue);border-radius:99px;transition:width .2s}
+.stage{padding:27px 30px 18px;min-height:385px}.stage h2{font-size:clamp(22px,3vw,29px);letter-spacing:-.04em;color:#19294e;font-weight:755;line-height:1.25;margin:0 0 9px}
+.desc{color:#6b7a91;font-size:13px;line-height:1.65;max-width:670px;margin:0 0 22px}
+.panel-bottom{padding:18px 30px;background:#fbfcfe;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.button{display:inline-flex;justify-content:center;align-items:center;min-height:42px;border-radius:11px;border:1px solid #d7dfeb;background:#fff;color:var(--blue);padding:10px 17px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s}
+.button:hover{background:#f2f5fb}.button.primary{background:var(--blue);border-color:var(--blue);color:#fff}.button.primary:hover{background:#2a3a83}
+.button:disabled{opacity:.5;cursor:not-allowed}.button.ghost{background:transparent;border-color:transparent;color:#526583}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.flow-status{font-size:11px;color:#8290a4}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:12px;color:#354764;font-weight:670}.field .hint{font-size:11px;color:#8794a8;line-height:1.45}
+.field input{height:44px;width:100%;min-width:0;padding:11px 12px;border-radius:10px;border:1px solid #d4ddea;color:#203560;background:#fcfdff;font-variant-numeric:tabular-nums}
+.field input:focus{background:#fff;outline:0;box-shadow:0 0 0 3px #e0e6fa;border-color:#8298d3}.field input:disabled{background:#f5f6f8}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:19px 16px}.fields .span2{grid-column:1/-1}
+.info{border:1px solid #e1e8f3;background:#f7f9fd;border-radius:14px;padding:15px 17px;font-size:12px;color:#526580;line-height:1.65;margin:18px 0}
+.info strong{color:#243a71}.info.warn{background:#fffaf3;border-color:#efe5d6;color:#7c684c}
+.info.success{background:#f4faf7;border-color:#dcece1;color:#4b7461}
+.company-box{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fbfcff;margin-bottom:16px}
+.company-box h3{font-size:20px;letter-spacing:-.03em;color:#1e315c;margin:0}.company-box p{margin:6px 0 0;font-size:11px;color:#71819b}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 18px}
+.fact{border:1px solid #e6eaf1;border-radius:12px;padding:14px;background:#fff}.fact dt{font-size:11px;color:#79879b}.fact dd{font-size:21px;font-weight:750;letter-spacing:-.04em;color:#142169;margin:6px 0 2px;font-variant-numeric:tabular-nums}.fact small{color:#8a97aa;font-size:10px}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.small{font-size:11px;color:#728199}.separator{height:1px;background:#e9edf3;margin:19px 0}
+.subheading{font-size:14px;font-weight:740;color:#243757;margin:0 0 8px}.muted{color:#8190a5}
+.help{border:1px solid var(--line);border-radius:12px;padding:0 14px;background:#fcfdff;margin:14px 0}.help summary{padding:12px 0;cursor:pointer;color:#263e79;font-size:12px;font-weight:650}.help p{font-size:12px;line-height:1.7;color:#5d6d86;margin:0 0 14px}
+.assumption-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-radius:13px;background:#f6f8fc;border:1px solid #e9edf4;font-size:12px;margin-bottom:19px}
+.annual-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:12px}.annual{border-collapse:collapse;width:100%;min-width:550px;font-size:11px}
+.annual td,.annual th{border-bottom:1px solid #e9edf3;text-align:left;padding:10px 12px}.annual th{color:#607390;background:#f4f6fa;font-size:11px}.annual input{border:1px solid #d8e0eb;border-radius:8px;padding:8px;width:82px;min-height:35px;color:#142169}.annual tr:last-child td{border-bottom:0}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:15px}.summary .tile{background:#fbfcff;border:1px solid #e5eaf2;border-radius:13px;padding:16px}.summary .tile h3{color:#20335e;font-size:12px;margin:0 0 9px}.summary dl{margin:0}.summary .item{display:flex;align-items:baseline;justify-content:space-between;gap:9px;padding:5px 0;font-size:12px;border-top:1px solid #edf1f6}.summary dt{color:#687994}.summary dd{margin:0;color:#193264;font-weight:700;text-align:right}.price-box{border:1px solid #d9e4f5;border-radius:15px;background:linear-gradient(155deg,#f7faff,#eef3fc);padding:22px;margin-bottom:19px}.price-box .label{font-size:12px;color:#657897}.price-box .figure{font-size:34px;letter-spacing:-.05em;line-height:1.25;color:#142169;font-weight:750;margin:6px 0}.price-box p{font-size:12px;color:#6b7e99;margin:0}
+button:focus-visible{outline-offset:3px}.field.invalid input{border-color:#b65f66;background:#fffafa}.field.invalid .hint{color:#a95862}
+.save-toast{margin:0 0 16px;font-size:12px;padding:12px 14px;border:1px solid #e5eaf2;background:#fafcff;border-radius:10px;color:#5a6c87}
+.save-toast.error{background:#fff6f6;border-color:#e8c8cd;color:#96565b}.save-toast[hidden]{display:none}
+@media(max-width:950px){.shell{grid-template-columns:1fr}.sidebar{position:static;padding:12px}.side-caption,.sidefooter{display:none}.steps-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.steplink{min-height:65px;padding:8px 4px;flex-direction:column;justify-content:center;text-align:center;gap:5px;font-size:10px}.number{width:23px;height:23px}}
+@media(max-width:600px){.wrap{width:min(100% - 26px,1200px)}.top-inner{min-height:60px}.brand{font-size:12px}.topnav{gap:10px}.topnav a{font-size:10px}.top .tag{display:none}.intro{padding:23px 0 15px}.intro h1{font-size:32px}.intro p{font-size:12px}.panel,.sidebar{border-radius:16px}.panel-top{padding:20px 18px 0}.stage{padding:21px 18px 14px;min-height:320px}.panel-bottom{padding:15px 18px}.fields{grid-template-columns:1fr;gap:16px}.fields .span2{grid-column:auto}.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.facts .fact:last-child{grid-column:1/-1}.summary{grid-template-columns:1fr}.company-box{flex-direction:column}.steplink{font-size:9px;line-height:1.2}.meta{font-size:10px}.button{min-height:40px;padding:10px 12px}.flow-status{display:none}.fact dd{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.progress span,.button{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap top-inner"><a class="brand" href="https://tesinversion.com/">Arquitectura de la Inversión</a><nav class="topnav" aria-label="Herramientas"><a href="../historicos/" id="history-nav">Históricos financieros</a><span class="tag">Laboratorio · No publicado</span></nav></div></header>
+<main class="wrap">
+<section class="intro"><div class="eyebrow">Herramienta en desarrollo · v0.4</div><h1>Valora una empresa, paso a paso.</h1><p>Revisa su historia, plantea tus expectativas y descubre cómo se construirá una estimación de valor. Cada etapa explica qué estás decidiendo y por qué importa.</p></section>
+<div class="shell">
+<aside class="sidebar" aria-label="Etapas de la valoración"><div class="side-caption">Tu recorrido</div>
+<nav class="steps-nav" id="steps-nav" aria-label="Pasos">
+<button type="button" class="steplink active" data-step="0" aria-current="step"><span class="number">1</span><span>Entender el pasado</span></button>
+<button type="button" class="steplink" data-step="1"><span class="number">2</span><span>Caja sostenible</span></button>
+<button type="button" class="steplink" data-step="2"><span class="number">3</span><span>Proyectar 5 años</span></button>
+<button type="button" class="steplink" data-step="3"><span class="number">4</span><span>Valorar el negocio</span></button>
+<button type="button" class="steplink" data-step="4"><span class="number">5</span><span>Tu resultado</span></button>
+</nav>
+<div class="sidefooter">Tus supuestos se conservan en este navegador. Puedes retroceder y modificarlos sin empezar de nuevo.</div>
+</aside>
+<section class="panel" aria-label="Formulario de valoración guiada">
+<div class="panel-top"><div class="meta"><span id="step-kicker">PASO 1 DE 5</span><span>Experiencia de prueba · Sin precio calculado</span></div><div class="progress" aria-hidden="true"><span id="progress-fill"></span></div></div>
+<div id="status" class="save-toast" role="status" aria-live="polite" hidden></div>
+<div class="stage" id="stage" aria-live="polite"></div>
+<div class="panel-bottom"><div class="actions"><button id="back" class="button ghost" type="button">Anterior</button><span id="flow-status" class="flow-status"></span></div><div class="actions"><button id="next" class="button primary" type="button">Continuar</button></div></div>
+</section>
+</div>
+</main>
+<script>
+(function(){
+'use strict';
+var params=new URLSearchParams(location.search);
+var firstTicker=(params.get('ticker')||'').trim().toUpperCase();
+if(!/^[A-Z][A-Z0-9.-]{0,11}$/.test(firstTicker))firstTicker='';
+var STEPS=['Entender el pasado','Caja sostenible','Proyectar 5 años','Valorar el negocio','Tu resultado'];
+var assumptions=['fcffBasis','salesGrowth','ebitMargin','taxRate','reinvestRate','multiple','wacc','safety','netDebt','shares','otherAssets'];
+var state={
+ step:0,ticker:firstTicker,mode:'empty',report:null,source:'none',loading:false,
+ inputs:{fcffBasis:'',salesGrowth:'',ebitMargin:'',taxRate:'',reinvestRate:'',multiple:'',wacc:'',safety:'',netDebt:'',shares:'',otherAssets:''},
+ yearly:{},annualExpanded:false,bridgeExpanded:false,visited:[true,false,false,false,false]
+};
+var $=function(id){return document.getElementById(id);};
+var safe=function(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var validNum=function(x){return x!==''&&x!==null&&x!==undefined&&Number.isFinite(Number(x));};
+var money=function(x){return Number.isFinite(x)?new Intl.NumberFormat('es-ES',{maximumFractionDigits:1}).format(x/1e6):'—';};
+var pct=function(x){return Number.isFinite(x)?new Intl.NumberFormat('es-ES',{maximumFractionDigits:1}).format(x)+' %':'—';};
+var storageKey=function(){return 'adi-guided-v04-'+(state.ticker||'sin-ticker');};
+function notify(message,isError){var el=$('status');el.hidden=!message;el.textContent=message||'';el.className='save-toast'+(isError?' error':'');}
+function loadSaved(){
+ try{
+  var data=JSON.parse(localStorage.getItem(storageKey())||'null');
+  if(data&&typeof data==='object'&&data.inputs){
+   assumptions.forEach(function(k){if(typeof data.inputs[k]==='string')state.inputs[k]=data.inputs[k].slice(0,50);});
+   if(data.yearly&&typeof data.yearly==='object'&&!Array.isArray(data.yearly))state.yearly=data.yearly;
+  }
+ }catch(err){}
+}
+function save(){
+ try{localStorage.setItem(storageKey(),JSON.stringify({inputs:state.inputs,yearly:state.yearly,version:4}));return true;}
+ catch(err){notify('Los cambios siguen disponibles durante esta visita, pero el navegador no permitió guardarlos.',true);return false;}
+}
+function snapshot(){
+ try{
+  var data=JSON.parse(sessionStorage.getItem('adi-wizard-source')||'null');
+  if(data&&data.report&&Array.isArray(data.report.rows)&&String(data.ticker||'').toUpperCase()===state.ticker)
+   return data;
+ }catch(err){}
+ return null;
+}
+var demo={
+ ticker:'DEMO',name:'Empresa de demostración (ficticia)',cik:'0',rows:[{
+ year:2025,end:'2025-12-31',amounts:{
+ revenue:{v:100000000000},ebit:{v:20000000000},ebitMargin:{v:20},
+ cfo:{v:19000000000},capex:{v:6000000000},fcf:{v:13000000000},
+ fcfMargin:{v:13},netDebt:{v:14000000000},diluted:{v:1000000000}
+ }
+ }],source:'EJEMPLO FICTICIO'};
+function recent(){return state.report&&Array.isArray(state.report.rows)?state.report.rows[state.report.rows.length-1]:null;}
+function figure(name,value,sub){return '<dl class="fact"><dt>'+safe(name)+'</dt><dd>'+safe(value)+'</dd><small>'+safe(sub)+'</small></dl>';}
+function field(key,label,hint,placeholder,extra){
+ var val=state.inputs[key]||'';
+ return '<div class="field" data-field="'+safe(key)+'"><label for="field-'+safe(key)+'">'+safe(label)+'</label><input id="field-'+safe(key)+'" type="number" inputmode="decimal" step="any" value="'+safe(val)+'" placeholder="'+safe(placeholder||'')+'" '+(extra||'')+'><span class="hint">'+safe(hint)+'</span></div>';
+}
+function explain(summary,text){return '<details class="help"><summary>'+safe(summary)+'</summary><p>'+safe(text)+'</p></details>';}
+function header(title,description){return '<h2 tabindex="-1" id="stage-title">'+title+'</h2><p class="desc">'+description+'</p>';}
+function renderStep(){
+ var r=recent(),x=r&&r.amounts||{},year=r&&r.year||null,mode=state.mode;
+ if(state.step===0){
+  var tickerValue=state.ticker==='DEMO'?'':state.ticker;
+  return header('Primero, conoce el negocio.','¿Cómo ha evolucionado la empresa? Sus resultados históricos te ayudan a decidir qué supuestos son razonables.')
+  +'<div class="fields"><div class="field"><label for="ticker-input">Símbolo de la empresa (ticker)</label><input id="ticker-input" maxlength="12" spellcheck="false" autocomplete="off" placeholder="Por ejemplo, AAPL" value="'+safe(tickerValue)+'"><span class="hint">Consultaremos los datos anuales públicos de la SEC.</span></div><div class="field"><label>Consultar la información</label><div class="row"><button type="button" class="button primary" id="fetch-data">Buscar empresa</button><button type="button" class="button" id="use-demo">Usar ejemplo ficticio</button></div><span class="hint">El ejemplo permite recorrer todas las pantallas sin consultar la SEC.</span></div></div>'
+  +(r?'<div class="separator"></div><div class="company-box"><div><h3>'+safe(state.report.name||state.ticker)+'</h3><p>'+(mode==='demo'?'DEMO FICTICIA · Sin información bursátil real':mode==='snapshot'?'Datos de la sesión del histórico · Pueden incluir correcciones del usuario':'Datos públicos de SEC · Requieren contrastación con 10-K')+'</p><p>Último ejercicio del conjunto: '+safe(r.end)+'</p></div><a class="button" href="../historicos/'+(state.ticker&&state.ticker!=='DEMO'?'?ticker='+encodeURIComponent(state.ticker):'')+'">Explorar las 3 pestañas</a></div><div class="facts">'+figure('Ventas','USD '+money(x.revenue&&x.revenue.v)+' M','Ejercicio '+year)+figure('Margen EBIT',pct(x.ebitMargin&&x.ebitMargin.v),'Orientativo si la fuente es incompleta')+figure('FCF convencional','USD '+money(x.fcf&&x.fcf.v)+' M','CFO − CapEx; no equivale a FCFF')+'</div>':'<div class="info">Si ya revisaste una empresa en <a href="../historicos/">Históricos financieros</a>, puedes volver aquí con sus datos. De lo contrario, busca su ticker o prueba el recorrido ficticio.</div>')
+  +'<div class="info warn">Los datos automáticos no sustituyen revisar el 10-K. El usuario conserva sus correcciones históricas; en esta etapa no hacemos ninguna valoración.</div>';
+ }
+ if(state.step===1){
+  var lastFcf=x.fcf&&Number.isFinite(x.fcf.v)?money(x.fcf.v):'—';
+  return header('¿Cuánta caja puede generar?','Antes de proyectar, necesitamos una base de generación de caja sostenible. La historia sirve como referencia, pero una cifra aislada puede ser excepcional.')
+  +(r?'<div class="facts">'+figure('Ejercicio de referencia',safe(year),'Fecha: '+safe(r.end))+figure('Flujo operativo',money(x.cfo&&x.cfo.v)+' M USD','Cifra histórica')+figure('FCF convencional',lastFcf+' M USD','CFO − CapEx')+'</div>':'<div class="info warn">Todavía no hay datos históricos cargados. Puedes avanzar para explorar el diseño, pero el flujo sostenible necesita una base verificada.</div>')
+  +'<div class="fields">'+field('fcffBasis','FCFF sostenible estimado · millones USD','Hipótesis del usuario. No se deduce automáticamente del FCF histórico.','Sin definir')+'</div>'
+  +explain('¿Por qué el FCF histórico no se copia automáticamente?','CFO menos CapEx es una referencia útil, pero el flujo disponible para valorar toda la empresa (FCFF) debe ser consistente con Enterprise Value. Puede requerir ajustes de intereses, capital de trabajo, impuestos y reinversión.')
+  +'<div class="info">Por ahora puedes escribir o cambiar tu hipótesis. La cifra no se emplea todavía para producir un precio; la fórmula de FCFF está en validación.</div>';
+ }
+ if(state.step===2){
+  var annual='<details class="help" id="annual-detail"'+(state.annualExpanded?' open':'')+'><summary>Personalizar año por año (opcional)</summary><p>Si crees que la empresa crecerá de manera distinta cada año, puedes reemplazar un supuesto concreto. Las casillas en blanco conservarán la hipótesis general. Estos cambios se guardan como estimaciones; todavía no producen un precio.</p><div class="annual-wrap"><table class="annual"><thead><tr><th>Año futuro</th><th>Crecimiento %</th><th>Margen EBIT %</th><th>Impuestos %</th><th>Reinversión %</th></tr></thead><tbody>';
+  for(var i=1;i<=5;i++){
+   annual+='<tr><th>Año '+i+'</th>';
+   ['salesGrowth','ebitMargin','taxRate','reinvestRate'].forEach(function(k){var value=(state.yearly[i]&&state.yearly[i][k])||'';annual+='<td><input type="number" inputmode="decimal" step="any" data-year="'+i+'" data-key="'+k+'" aria-label="'+k+' año '+i+'" value="'+safe(value)+'" placeholder="—"></td>';});
+   annual+='</tr>';
+  }
+  annual+='</tbody></table></div></details>';
+  return header('¿Cómo imaginas los próximos cinco años?','Empieza con cuatro supuestos. Podrás usar un valor general para los cinco años y modificar cada ejercicio solo si lo necesitas.')
+   +'<div class="fields">'
+   +field('salesGrowth','Crecimiento anual de ventas · %','¿Qué ritmo de crecimiento consideras razonable?','Ej. 6')
+   +field('ebitMargin','Margen EBIT esperado · %','Qué proporción de las ventas quedaría como beneficio operativo.','Ej. 22')
+   +field('taxRate','Impuestos operativos · %','Tipo estimado sobre el beneficio operativo.','Ej. 21')
+   +field('reinvestRate','Reinversión neta · % del NOPAT','Definición provisional; incluye inversión operativa neta que esperamos verificar.','Ej. 30')
+   +'</div>'+annual
+   +'<div class="info warn">Estas son hipótesis que introduce el usuario, no cifras recomendadas. Aún no proyectamos FCFF ni calculamos un valor: faltan ajustes metodológicos y pruebas financieras.</div>';
+ }
+ if(state.step===3){
+  return header('¿Qué pagarías por esos flujos?','Definimos los supuestos que se utilizarán en la valoración futura. El múltiplo refleja el precio relativo que atribuyes a la caja; el WACC descuenta los flujos a valor presente.')
+   +'<div class="fields">'
+   +field('multiple','Múltiplo de salida EV/FCFF · veces','Es una hipótesis, no una cifra universal.','Ej. 18','min="0"')
+   +field('wacc','Tasa de descuento WACC · %','Cuanto mayor sea, menor será el valor presente estimado.','Ej. 9','min="0"')
+   +field('safety','Margen de seguridad · %','Diferencia que exigirías respecto al valor estimado.','Ej. 25','min="0" max="99"')
+   +'</div>'
+   +explain('¿Por qué aparece WACC si utilizamos EV/FCF?','Nuestro método previsto es estimar cinco años de flujos de la empresa y un valor final con múltiplo EV/FCFF. El WACC permitiría expresar esos importes futuros en dinero de hoy. Ambos supuestos se documentarán por separado.')
+   +'<details class="help" id="bridge-detail"'+(state.bridgeExpanded?' open':'')+'><summary>Ver los ajustes del valor empresarial (avanzado)</summary><p>Para pasar del valor de toda la empresa al valor por acción debemos revisar deuda neta, otros activos y número de acciones. Las cifras SEC actuales necesitan conciliación antes de precargarse automáticamente.</p><div class="fields">'
+   +field('netDebt','Deuda neta considerada · millones USD','No se copia automáticamente mientras seguimos validando la clasificación de deuda y caja.','Sin definir')
+   +field('shares','Acciones diluidas · millones','Se debe verificar el período y el tipo de acciones.','Sin definir','min="0"')
+   +field('otherAssets','Otros activos no operativos netos · millones USD','Solo si corresponde y sin duplicar la caja.','Opcional')
+   +'</div></details>'
+   +'<div class="info warn">Por seguridad, estos supuestos no activan aún el motor de precios. Los datos que faltan quedarán visibles como pendientes en el resumen.</div>';
+ }
+ var items=function(keys){return keys.map(function(t){var k=t[0],label=t[1],u=t[2]||'';return '<div class="item"><dt>'+safe(label)+'</dt><dd>'+safe(validNum(state.inputs[k])?state.inputs[k]+u:'Sin definir')+'</dd></div>';}).join('');};
+ return header('Revisa tu análisis.','Este resumen te permite comprobar cada decisión antes de estimar un valor. El cálculo de precio estará disponible cuando el modelo financiero esté auditado.')
+ +'<div class="price-box"><div class="label">Precio objetivo por acción</div><div class="figure">Pendiente de validación</div><p>El prototipo no muestra cifras de valoración. Evitamos un precio que parezca preciso sin haber validado FCFF, descuento, deuda y acciones.</p></div>'
+ +'<div class="summary"><section class="tile"><h3>Tu empresa y caja</h3><dl><div class="item"><dt>Empresa</dt><dd>'+safe(state.report&&state.report.name||'Sin seleccionar')+'</dd></div>'+items([['fcffBasis','FCFF sostenible',' M USD']])+'</dl><div class="row" style="margin-top:12px"><button class="button" type="button" data-goto="0">Revisar históricos</button><button class="button" type="button" data-goto="1">Editar caja</button></div></section>'
+ +'<section class="tile"><h3>Proyección de cinco años</h3><dl>'+items([['salesGrowth','Ventas',' %'],['ebitMargin','Margen EBIT',' %'],['taxRate','Impuestos',' %'],['reinvestRate','Reinversión',' %']])+'</dl><div class="row" style="margin-top:12px"><button class="button" type="button" data-goto="2">Editar hipótesis</button></div></section>'
+ +'<section class="tile"><h3>Valoración y descuento</h3><dl>'+items([['multiple','EV/FCFF',' ×'],['wacc','WACC',' %'],['safety','Seguridad',' %']])+'</dl><div class="row" style="margin-top:12px"><button class="button" type="button" data-goto="3">Editar valoración</button></div></section>'
+ +'<section class="tile"><h3>Revisión de datos pendientes</h3><p class="small">Antes de ofrecer un valor fiable debemos confirmar la caja empresarial, el puente entre deuda y patrimonio y las acciones diluidas. Podrás regresar a cada paso y revisar tus supuestos.</p><p class="small">Los cambios se guardan en tu navegador, no en una cuenta ni en un servidor.</p></section></div>';
+}
+function refresh(){
+ $('step-kicker').textContent='PASO '+(state.step+1)+' DE 5';
+ $('progress-fill').style.width=((state.step+1)*20)+'%';
+ document.querySelectorAll('.steplink').forEach(function(btn){
+  var i=Number(btn.dataset.step),active=i===state.step;
+  btn.classList.toggle('active',active);btn.classList.toggle('done',state.visited[i]&&!active);
+  if(active)btn.setAttribute('aria-current','step');else btn.removeAttribute('aria-current');
+ });
+ $('stage').innerHTML=renderStep();
+ $('back').hidden=state.step===0;
+ $('next').textContent=state.step===4?'Volver al inicio':'Continuar';
+ $('flow-status').textContent=state.report?((state.mode==='demo')?'Ejemplo ficticio':state.ticker+' · datos históricos cargados'):'Sin empresa seleccionada';
+ attach();
+}
+function move(step){
+ if(step<0||step>=STEPS.length)return;
+ state.step=step;state.visited[step]=true;
+ notify('',false);refresh();
+ var h=$('stage-title');if(h)h.focus({preventScroll:true});
+ window.scrollTo({top:0,behavior:'auto'});
+}
+function resetCompany(ticker){
+ state.ticker=ticker;
+ state.inputs={fcffBasis:'',salesGrowth:'',ebitMargin:'',taxRate:'',reinvestRate:'',multiple:'',wacc:'',safety:'',netDebt:'',shares:'',otherAssets:''};
+ state.yearly={};loadSaved();
+}
+async function fetchCompany(ticker){
+ if(!/^[A-Z][A-Z0-9.-]{0,11}$/.test(ticker)){notify('Escribe un ticker válido, por ejemplo AAPL.',true);return;}
+ state.loading=true;notify('Consultando datos históricos de SEC…',false);
+ var trigger=$('fetch-data');if(trigger)trigger.disabled=true;
+ var ctrl=new AbortController(),id=setTimeout(function(){ctrl.abort();},16000);
+ try{
+  var response=await fetch('/.netlify/functions/sec-historicos?ticker='+encodeURIComponent(ticker),{signal:ctrl.signal});
+  var data=await response.json();
+  if(!response.ok)throw new Error(data.detail||data.error||'La SEC no respondió.');
+  if(!data||!Array.isArray(data.rows)||!data.rows.length)throw new Error('No hay ejercicios anuales disponibles para este ticker.');
+  if(state.ticker!==ticker)resetCompany(ticker);
+  state.report=data;state.ticker=ticker;state.mode='live';state.source='sec';save();
+  notify('Datos históricos cargados. Puedes consultar su origen en la pestaña Históricos financieros.',false);refresh();
+ }catch(err){notify('No se pudieron cargar los datos SEC: '+err.message+'. Puedes usar la demostración ficticia.',true);}
+ finally{clearTimeout(id);state.loading=false;if($('fetch-data'))$('fetch-data').disabled=false;}
+}
+function loadDemo(){
+ if(state.ticker!=='DEMO')resetCompany('DEMO');
+ state.report=demo;state.ticker='DEMO';state.mode='demo';state.source='demo';
+ notify('Ejemplo completamente ficticio. Las cifras no representan una compañía.',false);refresh();
+}
+function updateField(key,value){
+ if(!assumptions.includes(key))return;
+ state.inputs[key]=value.slice(0,50);
+ var node=document.querySelector('[data-field="'+key+'"]');
+ if(node)node.classList.remove('invalid');
+ save();
+}
+function attach(){
+ document.querySelectorAll('input[id^="field-"]').forEach(function(input){
+  var key=input.id.slice(6);
+  input.addEventListener('input',function(){updateField(key,input.value);});
+ });
+ if($('ticker-input'))$('ticker-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();fetchCompany($('ticker-input').value.trim().toUpperCase());}
+ });
+ if($('fetch-data'))$('fetch-data').addEventListener('click',function(){fetchCompany($('ticker-input').value.trim().toUpperCase());});
+ if($('use-demo'))$('use-demo').addEventListener('click',loadDemo);
+ document.querySelectorAll('[data-year][data-key]').forEach(function(input){
+  input.addEventListener('input',function(){
+   var y=input.dataset.year,k=input.dataset.key;
+   if(!state.yearly[y])state.yearly[y]={};
+   state.yearly[y][k]=input.value.slice(0,50);save();
+  });
+ });
+ if($('annual-detail'))$('annual-detail').addEventListener('toggle',function(){state.annualExpanded=$('annual-detail').open;});
+ if($('bridge-detail'))$('bridge-detail').addEventListener('toggle',function(){state.bridgeExpanded=$('bridge-detail').open;});
+ document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){move(Number(b.dataset.goto));});});
+}
+$('back').addEventListener('click',function(){move(state.step-1);});
+$('next').addEventListener('click',function(){move(state.step===4?0:state.step+1);});
+document.querySelectorAll('.steplink').forEach(function(btn){btn.addEventListener('click',function(){move(Number(btn.dataset.step));});});
+loadSaved();
+var snap=snapshot();
+if(snap){
+ state.report=snap.report;state.mode=snap.mode==='demo'?'demo':'snapshot';state.source='session';
+ notify('Recuperamos la empresa que acabas de consultar en Históricos, con sus ajustes visibles de esa sesión.',false);
+}else if(firstTicker){
+ notify('Cargando el historial de '+firstTicker+' desde la SEC…',false);
+ setTimeout(function(){fetchCompany(firstTicker);},0);
+}
+refresh();
+})();
+</script>
+</body>
+</html>
