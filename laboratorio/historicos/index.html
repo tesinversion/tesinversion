@@ -115,6 +115,25 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 @media(max-width:580px){.wrap{padding-inline:14px}.top-inner{min-height:58px}.hero{padding-top:24px}.hero h1{font-size:32px}.card{padding:17px;border-radius:16px}.section-head h2{font-size:19px}.brand{font-size:13px}.lab{font-size:9px}.searchbox input{max-width:none;width:100%}.searchbox .btn,.searchbox .file{flex:1;justify-content:center;text-align:center}.tabbar{width:100%;gap:1px;padding:3px}.tab{font-size:11px;padding:10px 7px}.metrics{gap:8px}.metric{min-height:80px;padding:11px}.metric .n{font-size:17px}th.label,td.label{min-width:195px;max-width:195px}th,td{padding:10px 11px}.focus-legend{display:none}}
 @media(prefers-reduced-motion:reduce){.btn,.tab,.value{transition:none}}
 @media print{.top,.queryhelp,.searchbox,.table-toolbar,.tabbar,.sourcebox,.notice,.foot{display:none!important}.card{box-shadow:none!important}.gridwrap{border:0}table{min-width:0}}
+
+/* Glosario financiero contextual: definiciones y advertencias sin alterar los cálculos. */
+.method-help{margin-top:20px;border:1px solid #e0e7f1;border-radius:15px;background:linear-gradient(180deg,#fcfdff,#f8faff);overflow:hidden}
+.method-help summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px;padding:17px 20px;cursor:pointer;color:#182b58;font-weight:730;font-size:13px}
+.method-help summary::-webkit-details-marker{display:none}
+.method-help summary:focus-visible{outline:2px solid #142169;outline-offset:-3px;border-radius:10px}
+.method-help .method-kicker{display:block;font-size:10px;font-weight:600;color:#71829e;margin-top:4px}
+.method-help .method-toggle{font-size:22px;line-height:1;color:#8794a9;font-weight:400;transition:transform .16s ease}
+.method-help[open] .method-toggle{transform:rotate(45deg)}
+.method-help .method-content{border-top:1px solid #e4eaf3;padding:18px 20px 20px}
+.method-help .method-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.method-help .method-panel{background:#fff;border:1px solid #e9edf4;border-radius:12px;padding:16px}
+.method-help .method-panel h3{margin:0 0 8px;font-size:13px;color:#162b5a}
+.method-help .method-panel p{font-size:12px;line-height:1.65;color:#52637c;margin:7px 0}
+.method-help .method-formula{display:block;padding:10px 12px;border:1px solid #e7ebf3;background:#f6f8fc;color:#17306b;font-size:12px;border-radius:9px;line-height:1.6;white-space:normal;font-variant-numeric:tabular-nums}
+.method-help .method-caution{background:#fffaf1;border:1px solid #ebe3d4;border-radius:10px;color:#786443;font-size:11px;line-height:1.6;padding:11px 13px;margin-top:13px}
+.method-help .method-footer{margin:13px 0 0;color:#75849a;font-size:11px}
+@media(max-width:720px){.method-help .method-grid{grid-template-columns:1fr}.method-help summary{padding:15px}.method-help .method-content{padding:14px}}
+@media(prefers-reduced-motion:reduce){.method-help .method-toggle{transition:none}}
 </style>
 </head>
 <body>
@@ -132,7 +151,36 @@ tbody tr.focus-metric:hover td,tbody tr.focus-metric:hover td.label{background:#
 <div id="report" hidden><nav class="tabbar" id="tabs" role="tablist" aria-label="Estados financieros"><button class="tab active" type="button" role="tab" aria-selected="true" data-tab="income">Resultados</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="balance">Balance general</button><button class="tab" type="button" role="tab" aria-selected="false" data-tab="cashflow">Flujos de efectivo</button></nav>
 <div class="table-toolbar"><div class="mutedlabel" id="table-help">Cifras anuales en millones de USD.</div><div class="controls"><span class="focus-legend">Indicador clave</span><button class="btn small" type="button" id="focus-only" aria-pressed="false">Solo indicadores clave</button><button class="btn small" type="button" id="restore-all" hidden>Restaurar valores oficiales</button><button class="btn small" type="button" id="history-years">Ver 10 años</button><button class="btn small" type="button" id="percent-toggle">Variaciones visibles</button></div></div>
 <div class="gridwrap" role="region" tabindex="0" aria-label="Tabla de datos financieros desplazable horizontalmente"><table><thead id="financial-head"></thead><tbody id="financial-body"></tbody></table></div>
-<div class="sourcebox" id="sourcebox" aria-live="polite"></div><p class="legend"><strong>Cómo leerlo:</strong> selecciona una cifra para consultar la fuente y corregirla si es necesario. La cifra SEC original siempre se conserva; los indicadores derivados se recalculan. Los valores manuales aparecen con la marca «Editado» y se guardan solo en este navegador. «—» indica información no disponible.</p><div id="warnings"></div></div>
+<div class="sourcebox" id="sourcebox" aria-live="polite"></div><p class="legend"><strong>Cómo leerlo:</strong> selecciona una cifra para consultar la fuente y corregirla si es necesario. La cifra SEC original siempre se conserva; los indicadores derivados se recalculan. Los valores manuales aparecen con la marca «Editado» y se guardan solo en este navegador. «—» indica información no disponible.</p><div id="warnings"></div>
+<details class="method-help" id="method-help">
+  <summary>
+    <span>Entender ROIC y reinversión <span class="method-kicker">Definiciones, fórmulas provisionales y cómo interpretarlas</span></span>
+    <span class="method-toggle" aria-hidden="true">+</span>
+  </summary>
+  <div class="method-content">
+    <div class="method-grid">
+      <section class="method-panel" aria-label="Explicación del ROIC">
+        <h3>ROIC · Rentabilidad del capital invertido</h3>
+        <p>Indica cuánto beneficio operativo después de impuestos produce el capital que una empresa mantiene en sus operaciones.</p>
+        <span class="method-formula">ROIC = NOPAT ÷ capital invertido medio × 100</span>
+        <p><strong>NOPAT:</strong> EBIT después de impuestos operativos. <strong>Capital invertido aproximado:</strong> patrimonio contable + deuda financiera identificada − efectivo. Se promedian los saldos de dos cierres consecutivos.</p>
+        <p><strong>Ejemplo:</strong> 100 millones de NOPAT ÷ 500 millones de capital invertido medio = 20 %.</p>
+      </section>
+      <section class="method-panel" aria-label="Explicación de reinversión">
+        <h3>Tasa de reinversión histórica · Aproximación</h3>
+        <p>Estima qué proporción del beneficio operativo después de impuestos se destina a ampliar o sostener la inversión operativa neta.</p>
+        <span class="method-formula">(CapEx − depreciación y amortización + cambio del capital de trabajo operativo) ÷ NOPAT × 100</span>
+        <p><strong>CapEx:</strong> efectivo gastado en activos fijos. <strong>Capital de trabajo:</strong> recursos operativos de corto plazo, excluyendo efectivo y deuda financiera.</p>
+        <p><strong>Ejemplo:</strong> 40 millones de reinversión neta ÷ 100 millones de NOPAT = 40 %.</p>
+      </section>
+    </div>
+    <div class="method-caution">
+      <strong>Importante:</strong> ambas métricas todavía son aproximadas. Los resultados pueden cambiar por recompras, impuestos extraordinarios, arrendamientos, inversiones en I+D, adquisiciones y diferencias entre las etiquetas SEC. En particular, el cálculo del capital de trabajo requiere conciliar correctamente todas las deudas corrientes antes de validar la tasa de reinversión. Un ROIC histórico elevado no demuestra que las inversiones nuevas rendirán lo mismo.
+    </div>
+    <p class="method-footer">Relación conceptual: reinversión × rentabilidad futura de nuevas inversiones ≈ crecimiento del beneficio operativo atribuible a esas inversiones, bajo determinados supuestos. Por ejemplo, 40 % × 20 % = 8 %. <a href="https://pages.stern.nyu.edu/~adamodar/New_Home_Page/definitions.html" target="_blank" rel="noopener noreferrer">Definiciones financieras de Damodaran</a>.</p>
+  </div>
+</details>
+</div>
 </section>
 <p class="foot"><strong>Información educativa y experimental.</strong> La aplicación está en pruebas y no constituye recomendación de compra, venta ni asesoramiento financiero. Las fuentes oficiales deben contrastarse con los documentos originales. Las cifras ficticias de demostración no corresponden a empresas reales. La plataforma no reproduce materiales de cursos de terceros.</p>
 </main>
