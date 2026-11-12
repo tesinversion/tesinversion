@@ -34,11 +34,13 @@
   for(const [key,label] of req){if(!finite(num(input[key])))errors.push(label+' — falta definir una cifra verificable o estimación explícita.');}
   if(errors.length)return errors;
   const check=(condition,text)=>{if(condition)errors.push(text);};
+  check(!Number.isInteger(input.year0)||input.year0<1900||input.year0>2200,'Ejercicio fiscal no válido.');
   check(input.sales0<=0,'Las ventas de partida deben ser positivas.');
   check(input.da0<0,'La depreciación no puede ser negativa.');
   check(input.maintenance0<0,'El mantenimiento estimado no puede ser negativo.');
   check(input.growthPct<=-100||input.growthPct>150,'Crecimiento fuera del rango admitido (-100 % a 150 %).');
   check(input.marginPct<=-100||input.marginPct>100,'Margen operativo fuera del rango admitido.');
+  check(input.maintenance0>input.sales0*10,'El mantenimiento estimado supera diez veces las ventas de partida. Verifica las unidades en millones.');
   check(input.taxPct<0||input.taxPct>60,'Impuestos operativos fuera del rango admitido (0 % a 60 %).');
   check(input.growthInvestmentPct<0||input.growthInvestmentPct>500,'Inversión de expansión fuera del rango admitido.');
   check(input.workingCapitalPct<0||input.workingCapitalPct>200,'Capital de trabajo fuera del rango admitido.');
@@ -49,7 +51,7 @@
   for(const [k,label] of [['growthGap','Variación de crecimiento'],['marginGap','Variación de margen'],['multipleGap','Variación de múltiplo']]){
    check(!finite(num(input[k]))||num(input[k])<0||num(input[k])>100,label+' debe ser un número válido no negativo.');
   }
-  for(const [k,label] of [['netDebt5','Deuda neta futura'],['shares5','Acciones futuras'],['otherAssets0','Otros activos no operativos']]){
+  for(const [k,label] of [['netDebt5','Deuda neta futura'],['shares5','Acciones futuras'],['otherAssets0','Otros activos no operativos'],['otherAssets5','Otros activos no operativos futuros'],['marketPrice','Cotización de mercado']]){
    const n=num(input[k]);if(n!==null)check(!finite(n)||(k==='shares5'&&n<=0),label+' no es válido.');
   }
   if(input.annual){
@@ -62,16 +64,26 @@
   }
   return errors;
  }
- function calculate(input){
+ function calculate(raw){
+  const input={...raw};
+  const numeric=['year0','sales0','da0','maintenance0','growthPct','marginPct','taxPct','growthInvestmentPct','workingCapitalPct','multiple','discountPct','netDebt0','shares0','safetyPct','growthGap','marginGap','multipleGap','netDebt5','shares5','otherAssets0','otherAssets5','marketPrice'];
+  for(const key of numeric)input[key]=num(raw[key]);
+  if(raw.annual){
+   input.annual={};
+   for(const [year,values] of Object.entries(raw.annual)){
+    input.annual[year]={};
+    for(const [key,value] of Object.entries(values||{}))input.annual[year][key]=num(value);
+   }
+  }
   const errors=validate(input);
   if(errors.length)return {ok:false,errors};
   const shifts={low:-1,base:0,high:1};
   const scenarios={};
   const discount=input.discountPct/100;
-  const shares5=num(input.shares5)===null?input.shares0:input.shares5;
-  const debt5=num(input.netDebt5)===null?input.netDebt0:input.netDebt5;
-  const extra0=num(input.otherAssets0)===null?0:input.otherAssets0;
-  const extra5=num(input.otherAssets5)===null?extra0:input.otherAssets5;
+  const shares5=input.shares5===null?input.shares0:input.shares5;
+  const debt5=input.netDebt5===null?input.netDebt0:input.netDebt5;
+  const extra0=input.otherAssets0===null?0:input.otherAssets0;
+  const extra5=input.otherAssets5===null?extra0:input.otherAssets5;
   for(const key of Object.keys(shifts)){
    const sign=shifts[key];
    const growthDelta=sign*input.growthGap,marginDelta=sign*input.marginGap;
