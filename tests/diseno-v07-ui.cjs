@@ -58,6 +58,15 @@ assert.match(html,/aria-valuetext/,'Lectura accesible del número de años');
 assert.match(html,/overflow-x:auto/,'Tablas anchas desplazables horizontalmente');
 assert.match(html,/aria-live="polite"/);
 assert.match(html,/prefers-reduced-motion/);
+assert.match(html,/id="financial-panel" role="tabpanel" aria-labelledby="tab-results"/,'Panel financiero accesible');
+assert.match(html,/function activateFinancialTab\(/,'Pestañas actualizan selección y panel');
+assert.match(html,/aria-labelledby',tab.id/,'Relación accesible con pestaña activa');
+for(const key of ['ArrowRight','ArrowLeft','Home','End'])
+ assert.ok(html.includes("e.key==='"+key+"'"),'Navegación teclado '+key);
+assert.match(html,/scrollIntoView\(\{block:'nearest',inline:'center'/,'Etapa seleccionada visible al desplazarse en móvil');
+assert.match(html,/\.fin-table tbody tr\.percentage-row/,'Porcentajes con fondo celeste');
+assert.match(html,/\.mobile-data \.line\.percentage-line/,'Móvil con porcentajes celestes');
+
 assert.match(html,/row\[2\]==='percent'/,'La jerarquía se basa en la unidad, no en resaltados arbitrarios');
 assert.match(html,/percentage-row/,'Porcentajes identificados por clase');
 assert.match(html,/plain-row/,'Importes identificados por clase');
@@ -66,4 +75,4 @@ assert.match(html,/\.fin-table tbody td\.plain-value\{font-weight:400;font-style
 assert.match(html,/\.mobile-data \.line strong\.percent-value\{font-weight:750;font-style:italic/,'Misma jerarquía en móvil');
 assert.match(html,/\.mobile-data \.line strong\.plain-value\{font-weight:400;font-style:normal/,'Importes móviles normales');
 assert.doesNotMatch(html,/emphasis=\[/,'Sin listas de filas destacadas arbitrariamente');
-console.log('OK: boceto v0.7.4, jerarquía de porcentajes y valores coherente, cinco etapas y sin motor.');
+console.log('OK: boceto v0.7.6, cinco etapas, navegación con teclado, pestañas accesibles y lectura móvil.');
