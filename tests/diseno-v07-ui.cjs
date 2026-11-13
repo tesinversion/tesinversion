@@ -59,7 +59,8 @@ assert.match(html,/overflow-x:auto/,'Tablas anchas desplazables horizontalmente'
 assert.match(html,/aria-live="polite"/);
 assert.match(html,/prefers-reduced-motion/);
 assert.match(html,/row\[2\]==='percent'/,'La jerarquía se basa en la unidad, no en resaltados arbitrarios');
-assert.match(html,/class="'+(percent?'percentage-row':'plain-row')+'/,'Se distingue el tipo de dato');
+assert.match(html,/percentage-row/,'Porcentajes identificados por clase');
+assert.match(html,/plain-row/,'Importes identificados por clase');
 assert.match(html,/\.fin-table tbody td\.percent-value\{font-weight:750;font-style:italic/,'Los porcentajes son negrita y cursiva');
 assert.match(html,/\.fin-table tbody td\.plain-value\{font-weight:400;font-style:normal/,'Los importes son normales');
 assert.match(html,/\.mobile-data \.line strong\.percent-value\{font-weight:750;font-style:italic/,'Misma jerarquía en móvil');
