@@ -122,3 +122,18 @@ La autora solicita corregir todas las referencias visuales que hagan parecer 202
 **Precaución:** la empresa ficticia del boceto cierra en diciembre y para noviembre 2026 el último año fiscal completo es 2025. En una compañía real la fecha fiscal y publicación pueden ser diferentes: la vista deberá identificar siempre el último ejercicio fiscal cerrado, periodos intermedios y fuentes 10-K/10-Q. **No sustituir todos los años 2025 indiscriminadamente por 2026** porque sería presentar cifras anuales incompletas como resultados cerrados. La revisión de fórmulas se mantiene en pausa.
 
 **Estado:** propuesta visual implementada en rama de prueba, pendiente de revisión y aprobación de autora.
+
+
+## QA de navegación v0.7.6 (13/11/2026)
+
+Se realizó una revisión de la interacción del wireframe ya aprobado visualmente, sin alterar valores ficticios, fórmulas financieras ni estilos editoriales.
+
+**Correcciones en el boceto independiente:**
+- Las pestañas de Resultados / Balance / Flujos ahora tienen un panel real `role=tabpanel`, con `aria-labelledby` actualizado a la pestaña activa.
+- Navegación por teclado en pestañas: **flecha derecha, flecha izquierda, Inicio y Fin**. Se actualizan foco, selección, panel e indicadores al mismo tiempo.
+- En pantallas móviles, al cambiar de etapa se hace visible el paso activo dentro de la barra horizontal; se conserva el desplazamiento y la navegación existente.
+- Continúan separados los datos parciales ficticios de 2026 y los ejercicios cerrados 2016–2025. Se conserva la banda celeste de porcentajes con negrita cursiva, sin resaltar importes corrientes.
+
+**Validaciones efectuadas:** test estático de estructura y sintaxis JavaScript, y prueba interactiva aislada del código para selector de 1 a 10 años, cambio de pestañas, navegación con teclas, anterior/continuar, volver a editar y copia ficticia de D&A. No se ejecutó una auditoría visual en Chromium/Firefox/Safari reales con múltiples tamaños y lectores de pantalla. Esa validación real continúa pendiente antes de declarar cerrada la fase de diseño.
+
+**Estado:** solo PR de prueba, sin `main`, sin publicar ni conectar la valoración. `tests/diseno-v07-ui.cjs` actualizado.
