@@ -106,3 +106,19 @@ La autora confirmó la dirección del diseño y solicitó dos precisiones: (1) a
 **En implementación funcional futura:** detectar la fecha de cierre de cada empresa, su última información anual y trimestral, y evitar suponer que todas cierran en diciembre o que todos los ejercicios 2026 siguen abiertos. Mostrar por separado el último año fiscal cerrado y los datos parciales acumulados del año fiscal en curso, con sus fechas y enlaces a fuentes. El horizonte proyectado se deriva del ejercicio fiscal base pertinente, no se fija universalmente en 2026–2030.
 
 Solo se ajustaron textos del wireframe; el modelo financiero y la calculadora operativa permanecen intactos.
+
+## Ajuste visual v0.7.3 — 2026 en primer plano y etapas 4–5 (13/11/2026)
+
+La autora solicita corregir todas las referencias visuales que hagan parecer 2025 el año actual y continuar con la siguiente fase del diseño. En el boceto aislado de `laboratorio/diseno-v07/index.html`:
+
+- Se muestra **Año en curso: 2026** y fecha de referencia 12/11/2026. El resumen usa un ejemplo hipotético de cifras acumuladas de enero a septiembre de 2026, **expresamente parciales y ficticias**.
+- Los ejercicios **2016–2025** permanecen en la tabla histórica cerrada; **2025 es el último ejercicio anual cerrado del ejemplo**, no una sustitución incorrecta de 2026. Se añade un bloque independiente «Año en curso · 2026» en cada pestaña de resultados, balance y flujos, sin incorporar el trimestre a sumas anuales ni al slider 1–10 años.
+- La etapa 2 muestra el FCF parcial del año en curso (ejemplo 2026), CapEx acumulado y D&A parcial; la estimación editable de mantenimiento se rotula explícitamente para el **periodo 2026–2030**. La D&A del último año cerrado 2025 puede usarse como simple referencia, **nunca como cifra confirmada para 2026–2030**.
+- La etapa 3 conserva cinco ejercicios anuales cerrados 2021–2025 para comparar, pero identifica por separado los datos parciales del año en curso y mantiene 2026–2030 como horizonte de supuestos.
+- La etapa 4 se reduce a los campos visibles **EV/FCF** y **Margen de seguridad**, revisión compacta de deuda/acciones parciales 2026 y tres escenarios conservador/base/optimista con múltiplos **ficticios** 13×/16×/19×. Detalles de sensibilidades y demás variables en ayuda opcional.
+- La etapa 5 simplifica resultados con **valor razonable hoy** (referencia de fecha 12/11/2026), **valor teórico en cinco años** (final de 2030) y **nivel de compra con margen de seguridad**. Precio de mercado queda vacío; todos los valores por acción son **ficticios y no reaccionan a las casillas del boceto**.
+- Se mantienen paleta, tipografía, selector deslizante de 1–10 años, navegación y estructura móviles. No se modificó la calculadora de producción, el parser SEC ni el motor de valoración.
+
+**Precaución:** la empresa ficticia del boceto cierra en diciembre y para noviembre 2026 el último año fiscal completo es 2025. En una compañía real la fecha fiscal y publicación pueden ser diferentes: la vista deberá identificar siempre el último ejercicio fiscal cerrado, periodos intermedios y fuentes 10-K/10-Q. **No sustituir todos los años 2025 indiscriminadamente por 2026** porque sería presentar cifras anuales incompletas como resultados cerrados. La revisión de fórmulas se mantiene en pausa.
+
+**Estado:** propuesta visual implementada en rama de prueba, pendiente de revisión y aprobación de autora.
