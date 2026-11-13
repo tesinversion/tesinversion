@@ -252,7 +252,7 @@ a{color:var(--brand)}
     <div class="app-body">
       <section id="step1" class="stage" aria-labelledby="s1-title">
         <div class="stage-head"><span class="stage-index">Etapa 1 de 5</span><h2 id="s1-title" tabindex="-1">Conocer la empresa</h2><p>Revisa sus cifras antes de pensar en el futuro.</p></div>
-        <div class="company"><div><span class="company-id">EMPRESA SELECCIONADA · FICTICIA</span><h3>Empresa Ejemplo</h3><small>DEMO · Ejercicio fiscal 2025 · Datos simulados</small></div><span class="company-tag">DEMO</span></div>
+        <div class="company"><div><span class="company-id">EMPRESA SELECCIONADA · FICTICIA</span><h3>Empresa Ejemplo</h3><small>DEMO · Último ejercicio cerrado del ejemplo: 2025 · Año en curso: 2026</small></div><span class="company-tag">DEMO</span></div>
         <div class="data-grid" aria-label="Resumen de resultados ficticios">
           <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Ventas</div><strong>$1.460 M</strong><span class="note">Año fiscal 2025</span></div>
           <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Margen EBIT</div><strong>28 %</strong><span class="note">Año fiscal 2025</span></div>
@@ -260,7 +260,7 @@ a{color:var(--brand)}
           <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">FCF histórico</div><strong>$240 M</strong><span class="note">Año fiscal 2025</span></div>
         </div>
         <div class="box">
-          <div class="titlebar"><h3>Estados financieros</h3><span class="section-meta">USD millones · datos simulados</span></div>
+          <div class="titlebar"><h3>Estados financieros</h3><span class="section-meta">USD millones · históricos ficticios, cierre 2025</span></div>
           <div class="tabs" role="tablist" aria-label="Estados financieros ficticios">
             <button class="tab" id="tab-results" role="tab" aria-controls="financial-panel" aria-selected="true" type="button" data-fin="results">Resultados</button>
             <button class="tab" id="tab-balance" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="balance" tabindex="-1">Balance</button>
@@ -299,21 +299,21 @@ a{color:var(--brand)}
 
       <section id="step3" class="stage" aria-labelledby="s3-title" hidden>
         <div class="stage-head"><span class="stage-index">Etapa 3 de 5</span><h2 id="s3-title" tabindex="-1">Estimar los próximos cinco años</h2><p>2026–2030 · Compara el pasado con lo que esperas del negocio.</p></div>
-        <div class="projection-panel" aria-label="Cinco años históricos frente al año actual estimado">
-          <div class="projection-title"><span class="muted">Referencias: últimos 5 ejercicios (2021–2025)</span><span class="projection-note">2026 · año en curso · editable</span></div>
-          <div class="projection-scroll" role="region" tabindex="0" aria-label="Históricos 2021 a 2025 y estimación para 2026; desplazar horizontalmente">
+        <div class="projection-panel" aria-label="Cinco ejercicios históricos frente a una estimación para los próximos cinco años">
+          <div class="projection-title"><span class="muted">Referencias: últimos 5 ejercicios (2021–2025)</span><span class="projection-note">2026–2030 · tu estimación</span></div>
+          <div class="projection-scroll" role="region" tabindex="0" aria-label="Históricos 2021 a 2025 y estimación para el periodo 2026 a 2030; desplazar horizontalmente">
             <table class="projection-table">
-              <thead><tr><th scope="col">Indicador</th><th scope="col">2021</th><th scope="col">2022</th><th scope="col">2023</th><th scope="col">2024</th><th scope="col">2025</th><th scope="col" class="current-year-head">2026 <small>Tu estimación</small></th></tr></thead>
+              <thead><tr><th scope="col">Indicador</th><th scope="col">2021</th><th scope="col">2022</th><th scope="col">2023</th><th scope="col">2024</th><th scope="col">2025</th><th scope="col" class="current-year-head">2026–2030 <small>Tu estimación</small></th></tr></thead>
               <tbody>
-                <tr><th scope="row">Crecimiento de ventas</th><td>7 %</td><td>8 %</td><td>7 %</td><td>9 %</td><td>12 %</td><td class="projection-edit"><label for="estimate-sales" class="sr-only">Crecimiento anual estimado 2026</label><div class="edit-cell"><input id="estimate-sales" type="number" inputmode="decimal" step=".5" value="8" aria-label="Crecimiento estimado 2026 en porcentaje"><span>%</span></div></td></tr>
-                <tr><th scope="row">Margen EBIT</th><td>23 %</td><td>24 %</td><td>25 %</td><td>27 %</td><td>28 %</td><td class="projection-edit"><label for="estimate-ebit" class="sr-only">Margen EBIT estimado 2026</label><div class="edit-cell"><input id="estimate-ebit" type="number" inputmode="decimal" step=".5" value="26" aria-label="Margen EBIT estimado 2026 en porcentaje"><span>%</span></div></td></tr>
-                <tr><th scope="row">Impuestos</th><td>20 %</td><td>20 %</td><td>21 %</td><td>21 %</td><td>20 %</td><td class="projection-edit"><label for="estimate-tax" class="sr-only">Impuestos estimados 2026</label><div class="edit-cell"><input id="estimate-tax" type="number" inputmode="decimal" step=".5" value="21" aria-label="Tasa de impuestos estimada 2026 en porcentaje"><span>%</span></div></td></tr>
+                <tr><th scope="row">Crecimiento de ventas</th><td>7 %</td><td>8 %</td><td>7 %</td><td>9 %</td><td>12 %</td><td class="projection-edit"><label for="estimate-sales" class="sr-only">Crecimiento anual estimado para 2026 a 2030</label><div class="edit-cell"><input id="estimate-sales" type="number" inputmode="decimal" step=".5" value="8" aria-label="Crecimiento anual estimado para 2026 a 2030, en porcentaje"><span>%</span></div></td></tr>
+                <tr><th scope="row">Margen EBIT</th><td>23 %</td><td>24 %</td><td>25 %</td><td>27 %</td><td>28 %</td><td class="projection-edit"><label for="estimate-ebit" class="sr-only">Margen EBIT estimado para 2026 a 2030</label><div class="edit-cell"><input id="estimate-ebit" type="number" inputmode="decimal" step=".5" value="26" aria-label="Margen EBIT estimado para 2026 a 2030 en porcentaje"><span>%</span></div></td></tr>
+                <tr><th scope="row">Impuestos</th><td>20 %</td><td>20 %</td><td>21 %</td><td>21 %</td><td>20 %</td><td class="projection-edit"><label for="estimate-tax" class="sr-only">Impuestos estimados para 2026 a 2030</label><div class="edit-cell"><input id="estimate-tax" type="number" inputmode="decimal" step=".5" value="21" aria-label="Tasa de impuestos estimada para 2026 a 2030, en porcentaje"><span>%</span></div></td></tr>
               </tbody>
             </table>
           </div>
-          <p class="projection-foot">Azul: datos históricos ficticios. Ámbar: tu estimación para 2026, que sirve como referencia inicial para 2027–2030. Puedes ajustar cada año por separado.</p>
+          <p class="projection-foot">Azul: últimos cinco ejercicios cerrados del ejemplo. Ámbar: una estimación para 2026–2030, editable por año. <strong>Año en curso: 2026.</strong> Las cifras son ficticias.</p>
         </div>
-        <details class="details"><summary>Cambiar las estimaciones año por año</summary><p class="caption">Los valores de 2026 aparecen arriba. Aquí podrás modificar 2027–2030; si una casilla queda vacía se mantiene la estimación general como referencia.</p><div class="year-grid" id="year-grid"></div></details>
+        <details class="details"><summary>Cambiar las estimaciones año por año</summary><p class="caption">La columna amarilla es tu estimación general para 2026–2030. Aquí podrás establecer valores distintos para 2027–2030; si dejas un año vacío se mantiene la estimación general.</p><div class="year-grid" id="year-grid"></div></details>
         <div class="source-group" style="margin-top:18px"><div class="row-end"><div><span class="section-tag">◈ RESULTADO CALCULADO</span><h3>Ventas, EBIT y FCF proyectados</h3></div><span class="muted">2026–2030</span></div><div class="note-bar">Aquí aparecerá la proyección cuando validemos las fórmulas. No se muestran cifras estimadas todavía.</div></div>
         <details class="details"><summary>Ver inversión para crecer y otros cálculos</summary><p>La futura calculadora tendrá que estimar las inversiones necesarias para conseguir ese crecimiento. Si no dispone de información fiable, indicará qué dato requiere revisión en vez de pedirte un porcentaje que no puedes justificar.</p></details>
       </section>
@@ -365,7 +365,7 @@ a{color:var(--brand)}
     </div>
     <div class="app-footer"><button type="button" class="text-button" id="previous" disabled>← Anterior</button><span id="page-status" class="muted" aria-live="polite">Etapa 1 de 5</span><button type="button" class="primary" id="continue">Continuar →</button></div>
   </div>
-  <p class="footnote">Este boceto permite evaluar el orden, los colores y la lectura en computadora y móvil. No consulta la SEC, no sustituye la calculadora anterior y no calcula precios de acciones. Las cifras son completamente ficticias.</p>
+  <p class="footnote">Corte de referencia del boceto: 12 de noviembre de 2026. Los históricos son ficticios y terminan en 2025; en la calculadora real se utilizará el último informe publicado de cada empresa y cualquier periodo abierto se identificará como «Año en curso». Este boceto no consulta la SEC, no reemplaza la calculadora real y no calcula precios de acciones.</p>
 </main>
 <script>
 (function(){
