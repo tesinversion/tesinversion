@@ -223,6 +223,14 @@ a{color:var(--brand)}
 .projection-table th:first-child{width:175px;padding-left:10px}
 .projection-title{align-items:flex-start}
 }
+
+.current-year-strip{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;border:1px solid #d1dfef;background:#f4f8fd;padding:11px 13px;border-radius:11px;margin:0 0 12px}
+.current-year-dot{font-weight:820;color:#284e7d;font-size:10px;letter-spacing:.04em}
+.current-year-meta{font-size:11px;color:#6a819c}
+.current-year-values{flex-basis:100%;display:flex;gap:10px 17px;flex-wrap:wrap}
+.current-year-values span{font-size:11px;color:#43658a}
+.current-year-values strong{color:#244971;font-variant-numeric:tabular-nums}
+@media(max-width:630px){.current-year-strip{padding:10px 11px}.current-year-values{display:grid;grid-template-columns:1fr 1fr;gap:8px}}
 </style>
 </head>
 <body>
@@ -252,45 +260,46 @@ a{color:var(--brand)}
     <div class="app-body">
       <section id="step1" class="stage" aria-labelledby="s1-title">
         <div class="stage-head"><span class="stage-index">Etapa 1 de 5</span><h2 id="s1-title" tabindex="-1">Conocer la empresa</h2><p>Revisa sus cifras antes de pensar en el futuro.</p></div>
-        <div class="company"><div><span class="company-id">EMPRESA SELECCIONADA · FICTICIA</span><h3>Empresa Ejemplo</h3><small>DEMO · Último ejercicio cerrado del ejemplo: 2025 · Año en curso: 2026</small></div><span class="company-tag">DEMO</span></div>
+        <div class="company"><div><span class="company-id">EMPRESA SELECCIONADA · FICTICIA</span><h3>Empresa Ejemplo</h3><small><strong>Año en curso: 2026</strong> · enero–septiembre · último ejercicio anual cerrado: 2025</small></div><span class="company-tag">12 NOV 2026 · EJEMPLO</span></div>
         <div class="data-grid" aria-label="Resumen de resultados ficticios">
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Ventas</div><strong>$1.460 M</strong><span class="note">Año fiscal 2025</span></div>
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Margen EBIT</div><strong>28 %</strong><span class="note">Año fiscal 2025</span></div>
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Beneficio neto</div><strong>$290 M</strong><span class="note">Año fiscal 2025</span></div>
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">FCF histórico</div><strong>$240 M</strong><span class="note">Año fiscal 2025</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Ventas acumuladas</div><strong>$1.225 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Margen EBIT</div><strong>29 %</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Beneficio neto acumulado</div><strong>$260 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">FCF acumulado</div><strong>$220 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
         </div>
         <div class="box">
-          <div class="titlebar"><h3>Estados financieros</h3><span class="section-meta">USD millones · históricos ficticios, cierre 2025</span></div>
+          <div class="titlebar"><h3>Estados financieros</h3><span class="section-meta">USD millones · corte 12 nov 2026</span></div>
           <div class="tabs" role="tablist" aria-label="Estados financieros ficticios">
             <button class="tab" id="tab-results" role="tab" aria-controls="financial-panel" aria-selected="true" type="button" data-fin="results">Resultados</button>
             <button class="tab" id="tab-balance" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="balance" tabindex="-1">Balance</button>
             <button class="tab" id="tab-cash" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="cash" tabindex="-1">Flujos de efectivo</button>
           </div>
-          <div class="table-head"><span class="muted">Ver evolución de las cifras</span><div class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong></label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div></div>
-          <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla histórica desplazable"><table class="fin-table" id="financial-table"></table></div>
+          <div class="table-head"><span class="muted">Ejercicios anuales cerrados · hasta 2025</span><div class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong> cerrados</label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div></div>
+          <div class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
+          <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla de ejercicios anuales cerrados desplazable"><table class="fin-table" id="financial-table"></table></div>
           <div class="mobile-history"><label class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
           <div style="margin-top:11px" class="row-end"><span class="muted">En la calculadora real cada cifra tendrá su fuente y opción de corrección.</span><button type="button" class="text-link" disabled>Corregir un dato</button></div>
         </div>
       </section>
 
       <section id="step2" class="stage" aria-labelledby="s2-title" hidden>
-        <div class="stage-head"><span class="stage-index">Etapa 2 de 5</span><h2 id="s2-title" tabindex="-1">Analizar el FCF</h2><p>Distingue la caja generada de las inversiones necesarias.</p></div>
+        <div class="stage-head"><span class="stage-index">Etapa 2 de 5</span><h2 id="s2-title" tabindex="-1">Analizar el FCF</h2><p>Año en curso: 2026 · cifras parciales hasta septiembre.</p></div>
         <div class="kpi-row">
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Flujo de caja operativo</div><strong>$355 M</strong><span class="note">2025</span></div>
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">CapEx total registrado</div><strong>$115 M</strong><span class="note">2025 · Sin separar</span></div>
-          <div class="data-box"><span class="kind">CÁLCULO HISTÓRICO · EJEMPLO</span><div class="caption">FCF histórico</div><strong>$240 M</strong><span class="note">Flujo operativo − CapEx</span></div>
-          <div class="data-box"><span class="kind">DATO DEL INFORME · EJEMPLO</span><div class="caption">Depreciación y amortización</div><strong>$58 M</strong><span class="note">2025</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Flujo de caja operativo</div><strong>$320 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">CapEx total registrado</div><strong>$100 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">CÁLCULO PARCIAL · EJEMPLO</span><div class="caption">FCF acumulado</div><strong>$220 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Depreciación y amortización</div><strong>$49 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
         </div>
         <div class="split">
           <div class="edit-group">
-            <span class="section-tag">✎ TU ESTIMACIÓN</span><h3>CapEx de mantenimiento</h3><p><strong>Estimación anual para 2025 (año base).</strong> Servirá como referencia para proyectar los ejercicios 2026–2030 cuando validemos las fórmulas.</p>
-            <div class="input-stack"><label for="maintenance-input">Mantenimiento anual estimado para 2025 · millones USD</label><input class="field" type="number" min="0" step="1" id="maintenance-input" placeholder="Sin definir" aria-describedby="maintenance-help"><small id="maintenance-help">Puedes usar la depreciación y amortización (D&A) como aproximación inicial del CapEx de mantenimiento. No siempre coincide con lo que cuesta conservar los activos: revisa inflación, antigüedad de equipos y necesidades de renovación.</small></div>
-            <div style="margin-top:13px"><button type="button" class="text-button" id="use-da">Tomar D&amp;A ($58 M) como referencia</button></div>
+            <span class="section-tag">✎ TU ESTIMACIÓN</span><h3>CapEx de mantenimiento</h3><p><strong>Tu estimación anual para 2026–2030.</strong> El último ejercicio cerrado (2025) es una referencia; los datos parciales de 2026 no representan un año completo.</p>
+            <div class="input-stack"><label for="maintenance-input">CapEx de mantenimiento anual previsto · 2026–2030 · millones USD</label><input class="field" type="number" min="0" step="1" id="maintenance-input" placeholder="Sin definir" aria-describedby="maintenance-help"><small id="maintenance-help">Una referencia inicial es la depreciación y amortización (D&amp;A) anual de 2025: $58 M. Puede diferir del gasto real de reposición; la inflación y la edad de los activos importan.</small></div>
+            <div style="margin-top:13px"><button type="button" class="text-button" id="use-da">Probar D&amp;A anual de 2025 ($58 M)</button></div>
           </div>
           <div class="source-group">
-            <span class="section-tag">▣ REFERENCIA DEL INFORME · 2025</span><h3>Mantenimiento y crecimiento</h3><p>CapEx registrado: $115 M en 2025. Su reparto es una estimación; la depreciación es solo una posible referencia.</p>
+            <span class="section-tag">▣ REFERENCIAS · AÑO EN CURSO</span><h3>Mantenimiento y crecimiento</h3><p>CapEx parcial de 2026: $100 M (enero–septiembre). El CapEx completo de 2025 fue $115 M. No son periodos equivalentes.</p>
             <div class="ruleline"></div>
-            <div class="row-end"><span class="muted">CapEx de crecimiento · año base 2025</span><strong id="growth-capex-preview" style="color:#365579;font-size:20px">Por calcular</strong></div>
+            <div class="row-end"><span class="muted">CapEx de crecimiento previsto · 2026–2030</span><strong id="growth-capex-preview" style="color:#365579;font-size:20px">Por calcular</strong></div>
             <p style="margin-top:10px" class="muted">Esta es solo una representación del diseño; no realiza cálculos.</p>
           </div>
         </div>
@@ -300,7 +309,7 @@ a{color:var(--brand)}
       <section id="step3" class="stage" aria-labelledby="s3-title" hidden>
         <div class="stage-head"><span class="stage-index">Etapa 3 de 5</span><h2 id="s3-title" tabindex="-1">Estimar los próximos cinco años</h2><p>2026–2030 · Compara el pasado con lo que esperas del negocio.</p></div>
         <div class="projection-panel" aria-label="Cinco ejercicios históricos frente a una estimación para los próximos cinco años">
-          <div class="projection-title"><span class="muted">Referencias: últimos 5 ejercicios (2021–2025)</span><span class="projection-note">2026–2030 · tu estimación</span></div>
+          <div class="projection-title"><span class="muted">Ejercicios anuales cerrados: 2021–2025 · Año en curso: 2026</span><span class="projection-note">2026–2030 · tu estimación</span></div>
           <div class="projection-scroll" role="region" tabindex="0" aria-label="Históricos 2021 a 2025 y estimación para el periodo 2026 a 2030; desplazar horizontalmente">
             <table class="projection-table">
               <thead><tr><th scope="col">Indicador</th><th scope="col">2021</th><th scope="col">2022</th><th scope="col">2023</th><th scope="col">2024</th><th scope="col">2025</th><th scope="col" class="current-year-head">2026–2030 <small>Tu estimación</small></th></tr></thead>
@@ -311,7 +320,7 @@ a{color:var(--brand)}
               </tbody>
             </table>
           </div>
-          <p class="projection-foot">Azul: últimos cinco ejercicios cerrados del ejemplo. Ámbar: una estimación para 2026–2030, editable por año. <strong>Año en curso: 2026.</strong> Las cifras son ficticias.</p>
+          <p class="projection-foot"><strong>2026 · año en curso:</strong> datos parciales ficticios de enero–septiembre (crecimiento comparable: 9 %, margen EBIT: 29 %, impuestos: 21 %). No son resultados anuales completos. Ámbar: tus supuestos para 2026–2030.</p>
         </div>
         <details class="details"><summary>Cambiar las estimaciones año por año</summary><p class="caption">La columna amarilla es tu estimación general para 2026–2030. Aquí podrás establecer valores distintos para 2027–2030; si dejas un año vacío se mantiene la estimación general.</p><div class="year-grid" id="year-grid"></div></details>
         <div class="source-group" style="margin-top:18px"><div class="row-end"><div><span class="section-tag">◈ RESULTADO CALCULADO</span><h3>Ventas, EBIT y FCF proyectados</h3></div><span class="muted">2026–2030</span></div><div class="note-bar">Aquí aparecerá la proyección cuando validemos las fórmulas. No se muestran cifras estimadas todavía.</div></div>
@@ -365,13 +374,18 @@ a{color:var(--brand)}
     </div>
     <div class="app-footer"><button type="button" class="text-button" id="previous" disabled>← Anterior</button><span id="page-status" class="muted" aria-live="polite">Etapa 1 de 5</span><button type="button" class="primary" id="continue">Continuar →</button></div>
   </div>
-  <p class="footnote">Corte de referencia del boceto: 12 de noviembre de 2026. Los históricos son ficticios y terminan en 2025; en la calculadora real se utilizará el último informe publicado de cada empresa y cualquier periodo abierto se identificará como «Año en curso». Este boceto no consulta la SEC, no reemplaza la calculadora real y no calcula precios de acciones.</p>
+  <p class="footnote">Referencia del diseño: 12 de noviembre de 2026. El ejemplo muestra 2026 como año en curso, con cifras ficticias parciales, y 2025 como último ejercicio anual cerrado. En la herramienta real se usarán los informes publicados de cada empresa y sus propias fechas fiscales. Este boceto no consulta la SEC ni calcula precios.</p>
 </main>
 <script>
 (function(){
 'use strict';
 var stage=1,fin='results',count=5,year=2025;
 var titles=['','Conocer la empresa','Analizar el FCF','Estimar los próximos cinco años','Definir la valoración','Tu rango de valoración'];
+var current2026={
+ results:[['Ventas acumuladas','$1.225 M'],['Margen EBIT','29 %'],['Beneficio neto acumulado','$260 M'],['FCF acumulado','$220 M']],
+ balance:[['Efectivo','$325 M'],['Deuda financiera','$473 M'],['Deuda neta','$148 M'],['Acciones en circulación','99 M']],
+ cash:[['Flujo de caja operativo','$320 M'],['CapEx registrado','$100 M'],['FCF acumulado','$220 M'],['Depreciación y amortización','$49 M']]
+};
 var years=Array.from({length:10},function(_,i){return 2016+i});
 var sales=[800,835,860,910,960,1030,1110,1190,1303,1460];
 var salesGrowth=[6,4,3,6,5,7,8,7,9,12];
@@ -470,6 +484,7 @@ function formatValue(value,type){
 }
 function renderTable(){
  var list=years.slice(-count),data=rows[fin];
+ el('current-year-values').innerHTML=current2026[fin].map(function(row){return '<span>'+escapeText(row[0])+': <strong>'+escapeText(row[1])+'</strong></span>'}).join('');
  var table='<thead><tr><th scope="col">Indicador</th>'+list.map(function(y){return '<th scope="col">'+y+'</th>'}).join('')+'</tr></thead><tbody>';
  data.forEach(function(row){
   if(row.section){table+='<tr class="group-row"><th scope="rowgroup" colspan="'+(list.length+1)+'">'+escapeText(row.section)+'</th></tr>';return}
