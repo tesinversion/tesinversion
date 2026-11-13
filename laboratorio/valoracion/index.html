@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="refresh" content="0;url=../historicos/">
+<title>Calculadora de empresas · Arquitectura de la Inversión</title>
+<style>body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f7f9fc;color:#243451;margin:0;display:grid;place-items:center;min-height:100vh;padding:24px;text-align:center}a{color:#142169}</style>
+<script>
+'use strict';
+// Enlace histórico conservado, pero una sola interfaz y un solo motor de navegación.
+var target=new URL('../historicos/',location.href);
+var qs=new URLSearchParams(location.search);
+var ticker=(qs.get('ticker')||'').toUpperCase();
+if(/^[A-Z][A-Z0-9.-]{0,11}$/.test(ticker))target.searchParams.set('ticker',ticker);
+location.replace(target.href);
+</script>
+</head>
+<body><main><p>La valoración guiada ahora forma parte de una sola calculadora.</p><p><a href="../historicos/">Abrir calculadora unificada</a></p></main></body>
+</html>

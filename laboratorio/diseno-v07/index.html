@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F8F9FB">
+<title>Boceto v0.7 · Calculadora de valor intrínseco</title>
+<style>
+:root{--brand:#142169;--brand-hover:#253b87;--ink:#1e293b;--muted:#64748b;--line:#dfe6ef;--background:#f8f9fb;--source-bg:#edf3f9;--source-text:#365579;--editable-bg:#fff5df;--editable-line:#d7b46b;--editable-text:#805b1d;--white:#fff;--shadow:0 14px 40px rgba(19,39,83,.035)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-width:320px;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Arial,sans-serif;color:var(--ink);background:var(--background)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.48;cursor:not-allowed}
+:focus-visible{outline:3px solid #ab7d26;outline-offset:3px}
+[hidden]{display:none!important}
+a{color:var(--brand)}
+.container{max-width:1150px;margin:0 auto;padding:0 26px}
+.masthead{background:#fff;border-bottom:1px solid #e9eef4}
+.masthead-inner{min-height:73px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{font:700 20px/1.2 Georgia,"Times New Roman",serif;color:var(--brand);text-decoration:none;letter-spacing:-.025em}
+.version{font-size:11px;font-weight:750;color:#60718b;background:#f0f4f9;border:1px solid #e0e8f2;border-radius:99px;padding:7px 10px;white-space:nowrap}
+.intro{padding:34px 0 22px}
+.eyebrow{letter-spacing:.115em;color:#58719b;font-size:10px;font-weight:800;text-transform:uppercase}
+.intro h1{margin:5px 0 4px;color:var(--brand);font-size:clamp(27px,3.8vw,37px);font-weight:720;line-height:1.15;letter-spacing:-.045em}
+.intro p{margin:0;color:#64738b;font-size:13px;line-height:1.65}
+.app{background:#fff;border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px}
+.app-head{padding:20px 30px 17px;border-bottom:1px solid #eaf0f6}
+.stepper{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.step{display:flex;gap:8px;align-items:center;justify-content:center;min-height:47px;padding:9px 8px;border:1px solid #e5ebf3;border-radius:11px;background:#fafbfd;color:#8190a5;font-size:11px;font-weight:650;line-height:1.25;text-align:left}
+.step-num{display:grid;place-items:center;width:22px;height:22px;flex:none;border-radius:7px;background:#e8edf4;font-size:11px;font-weight:800;color:#647992}
+.step.active{background:#edf2fb;border-color:#bdcce5;color:var(--brand)}
+.step.active .step-num{background:var(--brand);color:#fff}
+.step.passed{color:#48648c;border-color:#d7e0ed;background:#fff}
+.step.passed .step-num{background:#edf3f9;color:#35577c}
+.bar{height:3px;background:#edf1f5;border-radius:5px;margin-top:15px;overflow:hidden}
+.bar-fill{height:100%;background:var(--brand);width:20%;border-radius:5px;transition:width .25s ease}
+.legend{display:flex;align-items:center;flex-wrap:wrap;gap:7px 9px;margin-top:16px}
+.legend .pill{display:inline-flex;gap:6px;align-items:center;border-radius:99px;padding:5px 9px;font-size:10px;font-weight:780}
+.pill.source{background:var(--source-bg);color:var(--source-text);border:1px solid #d5e1ef}
+.pill.edit{background:var(--editable-bg);color:var(--editable-text);border:1px solid #e4cb93}
+.pill.calc{background:#fff;color:var(--brand);border:1px solid #c9d5e9}
+.legend .explain{color:#8190a3;font-size:11px}
+.app-body{padding:27px 30px 34px;min-height:460px}
+.stage-head{margin-bottom:22px}
+.stage-index{font-size:10px;font-weight:780;color:#687fa2;letter-spacing:.1em;text-transform:uppercase}
+.stage-head h2{font-size:26px;font-weight:710;letter-spacing:-.035em;line-height:1.2;color:#223554;margin:5px 0 5px}
+.stage-head p{margin:0;font-size:13px;color:#68778f;max-width:780px}
+.box{border:1px solid #e0e7ef;border-radius:14px;padding:20px;margin-bottom:17px;background:#fff}
+.box h3{font-size:15px;letter-spacing:-.015em;margin:0 0 11px;color:#253a58}
+.box p{margin:5px 0;color:#68778d}
+.section-meta{font-size:11px;color:#76869c}
+.titlebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.titlebar h3{margin:0}
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.data-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.data-box{border:1px solid #dce6f2;border-radius:12px;padding:15px;background:var(--source-bg);min-width:0}
+.data-box .kind{font-size:9px;letter-spacing:.06em;font-weight:810;text-transform:uppercase;color:#577492}
+.data-box .caption{font-size:11px;color:#607795;margin-top:7px}
+.data-box strong{font-size:clamp(19px,2.3vw,24px);color:#264465;line-height:1.2;display:block;margin-top:7px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.data-box .note{display:block;font-size:10px;color:#7990a9;margin-top:5px}
+.company{border:1px solid #e1e7ef;border-radius:14px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.company h3{margin:4px 0 3px;color:var(--brand);font-size:22px}
+.company small{font-size:11px;color:#8491a2}
+.company-id{font-size:10px;font-weight:800;letter-spacing:.045em;color:#69819f}
+.company-tag{display:inline-block;background:var(--source-bg);color:#395a81;border:1px solid #d5e0ed;padding:7px 11px;border-radius:9px;font-size:11px;font-weight:750}
+.tabs{display:flex;gap:22px;border-bottom:1px solid #e5ebf3;margin-bottom:13px}
+.tab{border:0;border-bottom:3px solid transparent;background:transparent;color:#8290a5;font-size:13px;padding:11px 1px 10px;font-weight:650}
+.tab[aria-selected=true]{border-bottom-color:var(--brand);color:var(--brand)}
+.table-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:13px 0}
+.selector{border:1px solid #d7e0ed;border-radius:9px;padding:7px 10px;background:#fff;color:#354b6f;font-size:12px}
+.data-table-scroll{overflow:auto;border:1px solid #e1e9f2;border-radius:12px}
+.fin-table{border-collapse:collapse;width:100%;min-width:590px;font-size:12px;font-variant-numeric:tabular-nums}
+.fin-table th,.fin-table td{padding:12px 13px;border-bottom:1px solid #edf1f7;text-align:right;white-space:nowrap}
+.fin-table th:first-child,.fin-table td:first-child{text-align:left;font-weight:660}
+.fin-table thead th{background:#f4f7fb;color:#59718f;font-size:11px}
+.fin-table tr:last-child td{border-bottom:0}
+.fin-table .strong td{background:#f7faff;font-weight:780;color:#254570}
+.mobile-history{display:none}
+.text-link{background:none;border:0;color:var(--brand);font-size:12px;font-weight:700;padding:0;text-decoration:underline;text-underline-offset:3px}
+.text-link:disabled{text-decoration:none;color:#8b9aad}
+.ruleline{height:1px;background:#ebeff5;margin:16px 0}
+.source-group{border-radius:13px;background:var(--source-bg);border:1px solid #d8e5f0;padding:17px;margin-bottom:16px}
+.source-group .section-tag{font-size:10px;font-weight:800;color:#4a698d;letter-spacing:.055em}
+.source-group h3{margin:4px 0 3px;font-size:14px;color:#2a496e}
+.source-group p{color:#657b94;font-size:11px;margin:3px 0}
+.edit-group{border-radius:13px;background:#fffaf0;border:1px solid #e7d2a5;padding:18px;margin-bottom:16px}
+.edit-group .section-tag{font-size:10px;font-weight:800;color:#936c2e;letter-spacing:.055em}
+.edit-group h3{margin:5px 0 4px;font-size:15px;color:#56452c}
+.edit-group p{font-size:12px;margin:0 0 10px;color:#786b57}
+.input-stack{display:flex;flex-direction:column;gap:6px}
+.input-stack label{font-size:12px;font-weight:720;color:#5d4927}
+.input-stack small{color:#8a7760;font-size:11px}
+.field{border:1.5px solid var(--editable-line);border-radius:9px;padding:10px 11px;min-height:43px;background:#fff;color:#3c3b36;width:100%;max-width:210px;font-size:17px;font-weight:730;font-variant-numeric:tabular-nums}
+.field::placeholder{color:#a7a09a;font-weight:420;font-size:13px}
+.field:focus{outline:2px solid #b7882d;outline-offset:1px}
+.row-end{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.muted{color:#7c8ba0;font-size:11px}
+.kpi-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin-bottom:17px}
+.kpi-row .data-box{min-height:123px}
+.num-matrix{border:1px solid #e1e9f1;border-radius:12px;overflow:hidden;margin-bottom:15px}
+.matrix-labels,.matrix-row{display:grid;grid-template-columns:1.5fr 1fr 1fr;align-items:center}
+.matrix-labels{background:#f5f7fb;color:#71829a;font-size:10px;font-weight:750;letter-spacing:.03em}
+.matrix-labels span,.matrix-row>*{padding:11px 14px}
+.matrix-row{border-top:1px solid #edf1f6;min-height:70px}
+.matrix-row .metric-label{font-weight:700;color:#314560;font-size:13px}
+.matrix-row .history-amount{color:#385777;font-weight:750;font-size:14px;background:#f3f7fb;padding:11px;display:inline-block;min-width:70px;text-align:center;border-radius:8px}
+.matrix-row .field{max-width:125px;font-size:16px;min-height:39px}
+.input-unit{font-size:11px;font-weight:650;color:#896528;margin-left:7px}
+.matrix-row .inputcell{background:#fffdf7}
+.details{border-top:1px solid #ecf0f4;padding-top:12px;margin-top:17px}
+.details summary{color:var(--brand);font-weight:730;cursor:pointer;font-size:12px}
+.details p{font-size:12px;color:#71809a;line-height:1.65;margin:10px 0}
+.year-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:13px}
+.year-item{border:1px solid #e8edf4;border-radius:10px;padding:12px;background:#fbfcfe}
+.year-item strong{display:block;color:#39557c;font-size:12px;margin-bottom:7px}
+.year-item label{display:block;color:#6b788c;font-size:10px;margin:8px 0 3px}
+.year-item input{width:100%;min-width:0;border:1px solid #d3b87f;border-radius:7px;padding:7px;font-variant-numeric:tabular-nums}
+.note-bar{border:1px solid #e7edf4;border-radius:10px;padding:12px 14px;color:#667a94;font-size:12px;background:#fafcfe}
+.side-by-side{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.85fr);gap:16px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.form-grid .field{max-width:100%}
+.scenario-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.scenario{border:1px solid #e0e7f0;background:#fafbfd;border-radius:12px;padding:15px}
+.scenario.base{border-color:#b9c9e4;background:#f1f5fb}
+.scenario strong{display:block;font-size:13px;color:#33527b}
+.scenario small{display:block;font-size:11px;color:#71839b;line-height:1.5;margin-top:6px}
+.scenario .price{font-size:26px;font-weight:770;color:var(--brand);letter-spacing:-.03em;margin:8px 0 2px}
+.scenario .future{font-size:12px;color:#60738f}
+.result-label{font-size:10px;font-weight:800;color:#617995;letter-spacing:.045em}
+.result-main{padding:18px 21px;border:1px solid #ccd9eb;border-radius:13px;background:#f6f9fd;margin-bottom:16px}
+.result-main .big{font-size:clamp(24px,3.5vw,34px);line-height:1.2;font-weight:770;letter-spacing:-.04em;color:var(--brand);margin:5px 0}
+.result-main p{margin:0;font-size:12px;color:#667993}
+.result-mini{border:1px solid #dde6f0;padding:16px 20px;border-radius:11px;background:#fff}
+.result-mini strong{display:block;color:var(--brand);font-size:25px;letter-spacing:-.02em;margin-top:3px}
+.result-mini small{color:#78879e}
+.caption{font-size:11px;color:#75849a;line-height:1.6}
+.text-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--brand);border:1px solid #d9e2ee;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:720}
+.text-button:hover{background:#f6f8fc}
+.primary{border:1px solid var(--brand);background:var(--brand);color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:720}
+.primary:hover{background:var(--brand-hover)}
+.app-footer{border-top:1px solid #e8edf4;padding:16px 30px;display:flex;justify-content:space-between;align-items:center;gap:12px;background:#fff}
+.footnote{margin:0 0 32px;color:#7e8da2;font-size:11px;line-height:1.7}
+.input-example{font-size:10px;color:#8b7654}
+.simulation{display:inline-flex;gap:5px;align-items:center;font-size:10px;font-weight:760;color:#815b23;background:#fff7e6;border:1px solid #ecd7aa;padding:6px 9px;border-radius:8px}
+@media(max-width:900px){
+ .container{padding:0 16px}.app-body{padding:21px}.app-head{padding:17px 21px}.app-footer{padding:15px 21px}
+ .data-grid,.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .year-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .step{font-size:10px;gap:5px;padding:8px 5px}
+ .split,.side-by-side{grid-template-columns:1fr}
+}
+@media(max-width:630px){
+ .container{padding:0 12px}.masthead-inner{min-height:62px}.brand{font-size:16px}.version{font-size:9px;padding:5px 7px}
+ .intro{padding:24px 0 18px}.intro h1{font-size:28px}.intro p{font-size:12px}
+ .app{border-radius:15px}.app-head{padding:14px 13px}.app-body{padding:18px 13px 22px;min-height:480px}.app-footer{padding:13px}
+ .stepper{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:2px}
+ .step{min-width:111px;flex:0 0 111px;scroll-snap-align:center;justify-content:flex-start}
+ .bar{margin-top:10px}.legend{margin-top:12px}.legend .explain{flex-basis:100%}
+ .stage-head h2{font-size:23px}.stage-head p{font-size:12px}
+ .company{padding:15px;align-items:flex-start}.company h3{font-size:19px}
+ .data-grid,.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .data-box{padding:11px;min-height:92px}.data-box strong{font-size:20px}.data-box .caption{font-size:10px}
+ .box,.edit-group,.source-group{padding:14px}
+ .tabs{gap:16px}.tab{font-size:12px}
+ .data-table-scroll{display:none}.mobile-history{display:block}
+ .mobile-year{width:100%;border:1px solid #d4deeb;border-radius:9px;padding:10px;font-size:12px;color:#385678;background:#fff;margin-bottom:9px}
+ .mobile-data{border:1px solid #e4eaf2;border-radius:10px;padding:12px}
+ .mobile-data .line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #edf1f6;font-size:12px}
+ .mobile-data .line:last-child{border-bottom:0}.mobile-data .line strong{color:#2c4d72;font-variant-numeric:tabular-nums}
+ .matrix-labels{grid-template-columns:1.4fr .8fr 1fr}.matrix-labels span,.matrix-row>*{padding:10px 8px}
+ .matrix-row .metric-label{font-size:12px}.matrix-row .history-amount{min-width:0;font-size:12px;padding:8px}
+ .matrix-row .field{width:60px;font-size:14px;padding:8px 5px}.input-unit{margin-left:3px}
+ .year-grid{grid-template-columns:1fr 1fr}
+ .scenario-strip{grid-template-columns:1fr;gap:8px}.scenario{padding:13px;display:grid;grid-template-columns:1fr 1fr;column-gap:8px}.scenario small{grid-column:1/-1}.scenario .price{font-size:23px;text-align:right;margin:0}.scenario .future{grid-column:1/-1}
+ .result-main{padding:15px}.result-mini{padding:14px}.form-grid{grid-template-columns:1fr}
+ .app-footer .text-button,.app-footer .primary{flex:1}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar-fill{transition:none}}
+
+/* v0.7.1 · años 1–10 y lectura financiera simplificada */
+.year-range-control{display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.year-range-control label{font-size:12px;color:#6b7d94;white-space:nowrap}
+.year-range-control label strong{font-weight:800;color:#142169;font-variant-numeric:tabular-nums}
+.year-range-line{display:flex;gap:8px;align-items:center;min-width:220px}
+.year-range-line span{font-size:11px;color:#6d83a1;font-weight:650}
+.year-range-line input[type=range]{width:200px;max-width:100%;accent-color:var(--brand);cursor:pointer}
+.fin-table{min-width:590px}
+.fin-table tr.group-row th{text-align:left;background:#f5f8fc;color:#627a99;letter-spacing:.05em;font-size:10px;font-weight:800;padding:10px 12px;border-top:1px solid #e4eaf3}
+.fin-table tbody tr th[scope=row]{font-weight:650;color:#263d5c;text-align:left;min-width:240px;position:sticky;left:0;background:#fff;border-right:1px solid #edf1f7}
+.fin-table tbody tr.strong th,.fin-table tbody tr.strong td{background:#f7faff;color:#213d67;font-weight:760}
+.fin-table thead th:first-child{position:sticky;left:0;z-index:2;min-width:240px}
+.mobile-group{font-size:10px;font-weight:820;color:#5b7899;background:#f3f7fb;border-radius:8px;padding:10px;margin-top:12px;letter-spacing:.05em}
+.mobile-group:first-child{margin-top:0}
+.mobile-data .line.highlight{background:#f5f8fc;padding-left:7px;padding-right:7px;margin-left:-5px;margin-right:-5px}
+.projection-title{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.projection-note{background:#fff3da;color:#866223;border:1px solid #e4cc91;border-radius:8px;padding:6px 9px;font-weight:750;font-size:11px}
+.projection-scroll{overflow-x:auto;border:1px solid #dce5f0;border-radius:13px;scrollbar-color:#c2cedd transparent}
+.projection-table{border-collapse:separate;border-spacing:0;min-width:790px;width:100%;table-layout:fixed;font-variant-numeric:tabular-nums}
+.projection-table th,.projection-table td{padding:14px 8px;white-space:nowrap;text-align:center;border-bottom:1px solid #e6edf5;font-size:12px}
+.projection-table thead th{background:#edf3f9;color:#46688c;font-size:11px;font-weight:790}
+.projection-table th:first-child{position:sticky;left:0;z-index:1;width:200px;text-align:left;padding-left:17px;background:#fff}
+.projection-table thead th:first-child{background:#edf3f9;z-index:2}
+.projection-table tbody tr:last-child th,.projection-table tbody tr:last-child td{border-bottom:0}
+.projection-table tbody th{color:#283e5b;font-weight:750}
+.projection-table td{color:#365579;font-weight:690}
+.projection-table .current-year-head{background:#fff2d8;color:#8b651f}
+.projection-table .current-year-head small{display:block;font-weight:500;font-size:10px}
+.projection-table .projection-edit{background:#fffaf0}
+.projection-table .edit-cell{display:flex;align-items:center;justify-content:center;gap:5px}
+.projection-table .edit-cell input{min-width:0;width:59px;border:1px solid #d7b46b;border-radius:8px;background:#fff;padding:10px 4px 10px 9px;color:#805b1d;font-size:15px;font-weight:770;text-align:center}
+.projection-table .edit-cell span{color:#805b1d;font-size:12px;font-weight:800}
+.projection-foot{margin:11px 0 16px;color:#73829a;font-size:11px;line-height:1.6}
+.sr-only{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden;white-space:nowrap}
+@media(max-width:630px){
+.year-range-control{width:100%;justify-content:space-between}
+.year-range-line{flex:1;min-width:160px}
+.year-range-line input[type=range]{width:100%}
+.fin-table tbody tr th[scope=row]{position:static}
+.projection-table{min-width:780px}
+.projection-table th:first-child{width:175px;padding-left:10px}
+.projection-title{align-items:flex-start}
+}
+
+.current-year-strip{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;border:1px solid #d1dfef;background:#f4f8fd;padding:11px 13px;border-radius:11px;margin:0 0 12px}
+.current-year-dot{font-weight:820;color:#284e7d;font-size:10px;letter-spacing:.04em}
+.current-year-meta{font-size:11px;color:#6a819c}
+.current-year-values{flex-basis:100%;display:flex;gap:10px 17px;flex-wrap:wrap}
+.current-year-values span{font-size:11px;color:#43658a}
+.current-year-values strong{color:#244971;font-variant-numeric:tabular-nums}
+@media(max-width:630px){.current-year-strip{padding:10px 11px}.current-year-values{display:grid;grid-template-columns:1fr 1fr;gap:8px}}
+
+/* v0.7.3 · escenarios y precios, jerarquía visual antes de fórmulas */
+.stage4-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:stretch}
+.scenario-summary{color:#74869e;font-size:11px;line-height:1.55;margin-top:7px;min-height:34px}
+.scenario-number{display:block;color:#304f7a;font-size:24px;font-weight:770;margin-top:10px}
+.scenario-number small{color:#8190a5;font-size:10px;font-weight:500;margin-left:4px}
+.results-table-scroll{overflow-x:auto;border:1px solid #e2e9f2;border-radius:12px}
+.results-table{border-collapse:collapse;width:100%;min-width:610px;font-variant-numeric:tabular-nums}
+.results-table th,.results-table td{padding:16px 13px;border-bottom:1px solid #edf0f5;text-align:center;color:#355479}
+.results-table th:first-child{text-align:left;width:35%;color:#31455f}
+.results-table thead th{background:#f5f8fb;font-size:11px;font-weight:770;color:#5a7191}
+.results-table tbody td{font-size:22px;font-weight:790;letter-spacing:-.02em}
+.results-table tbody th{font-size:13px;font-weight:740}
+.results-table tbody th small{display:block;font-size:10px;color:#8b98a8;font-weight:470;margin-top:4px}
+.results-table .result-base{background:#eef3fb;color:#142169}
+.results-table tr:last-child td,.results-table tr:last-child th{border-bottom:0}
+@media(max-width:650px){
+.stage4-key{grid-template-columns:1fr}
+.scenario-number{font-size:19px;margin-top:5px}
+.scenario-summary{min-height:0}
+.results-table th,.results-table td{padding:13px 9px}
+.results-table tbody td{font-size:18px}
+}
+
+/* v0.7.4 · jerarquía tipográfica financiera simplificada */
+.fin-table tbody tr:not(.group-row) th[scope=row],
+.fin-table tbody tr:not(.group-row) td{background:#fff;color:#26384f}
+.fin-table tbody tr:not(.group-row) th[scope=row]{font-weight:550;font-style:normal}
+.fin-table tbody tr.percentage-row th[scope=row],
+.fin-table tbody tr.percentage-row td{background:#f1f6fc;color:#243e63}
+.fin-table tbody td.plain-value{font-weight:400;font-style:normal;color:#26384f}
+.fin-table tbody td.percent-value{font-weight:750;font-style:italic;color:#243e63}
+.fin-table tbody tr.group-row th{background:#f5f8fc;color:#647b9a}
+.mobile-data .line{background:#fff!important;margin:0!important;padding:10px 0!important}
+.mobile-data .line span{font-weight:500;font-style:normal}
+.mobile-data .line.percentage-line{background:#f1f6fc!important;border-radius:7px;margin:2px 0!important;padding:10px 8px!important}
+.mobile-data .line strong.plain-value{font-weight:400;font-style:normal;color:#26384f}
+.mobile-data .line strong.percent-value{font-weight:750;font-style:italic;color:#243e63}
+.current-year-values strong.plain-value{font-style:normal;font-weight:430}
+.current-year-values strong.percent-value{font-style:italic;font-weight:750}
+.projection-table tbody td:not(.projection-edit){font-style:italic;font-weight:750}
+.projection-table .edit-cell input{font-style:italic;font-weight:750}
+
+/* QA v0.7.6: navegación por teclado y etapas visibles en móvil */
+#financial-panel:focus-visible{outline-offset:5px}
+.stepper{overscroll-behavior-inline:contain}
+</style>
+</head>
+<body>
+<header class="masthead"><div class="container masthead-inner">
+  <a class="brand" href="#inicio">Arquitectura de la Inversión</a>
+  <span class="version">Boceto de diseño v0.7</span>
+</div></header>
+<main class="container" id="inicio">
+  <div class="intro"><span class="eyebrow">Calculadora de valor intrínseco</span><h1>Valora una empresa, paso a paso.</h1><p>Una empresa. Cinco etapas. Solo los datos y las decisiones importantes.</p></div>
+  <div class="app" aria-label="Boceto navegable de la calculadora">
+    <div class="app-head">
+      <nav class="stepper" aria-label="Etapas de la valoración">
+        <button type="button" class="step active" data-goto="1" aria-current="step"><span class="step-num">1</span>Empresa</button>
+        <button type="button" class="step" data-goto="2"><span class="step-num">2</span>FCF</button>
+        <button type="button" class="step" data-goto="3"><span class="step-num">3</span>Proyecciones</button>
+        <button type="button" class="step" data-goto="4"><span class="step-num">4</span>Valoración</button>
+        <button type="button" class="step" data-goto="5"><span class="step-num">5</span>Resultados</button>
+      </nav>
+      <div class="bar" aria-hidden="true"><div class="bar-fill" id="progress"></div></div>
+      <div class="legend" aria-label="Significado de los colores">
+        <span class="pill source">▣ Dato del informe</span>
+        <span class="pill edit">✎ Tu estimación</span>
+        <span class="pill calc">◈ Resultado calculado</span>
+        <span class="explain">Todos los importes del boceto son ficticios.</span>
+      </div>
+    </div>
+    <div class="app-body">
+      <section id="step1" class="stage" aria-labelledby="s1-title">
+        <div class="stage-head"><span class="stage-index">Etapa 1 de 5</span><h2 id="s1-title" tabindex="-1">Conocer la empresa</h2><p>Revisa sus cifras antes de pensar en el futuro.</p></div>
+        <div class="company"><div><span class="company-id">EMPRESA SELECCIONADA · FICTICIA</span><h3>Empresa Ejemplo</h3><small><strong>Año en curso: 2026</strong> · enero–septiembre · último ejercicio anual cerrado: 2025</small></div><span class="company-tag">12 NOV 2026 · EJEMPLO</span></div>
+        <div class="data-grid" aria-label="Resumen de resultados ficticios">
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Ventas acumuladas</div><strong>$1.225 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Margen EBIT</div><strong>29 %</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Beneficio neto acumulado</div><strong>$260 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">FCF acumulado</div><strong>$220 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+        </div>
+        <div class="box">
+          <div class="titlebar"><h3>Estados financieros</h3><span class="section-meta">USD millones · corte 12 nov 2026</span></div>
+          <div class="tabs" role="tablist" aria-label="Estados financieros ficticios">
+            <button class="tab" id="tab-results" role="tab" aria-controls="financial-panel" aria-selected="true" type="button" data-fin="results">Resultados</button>
+            <button class="tab" id="tab-balance" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="balance" tabindex="-1">Balance</button>
+            <button class="tab" id="tab-cash" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="cash" tabindex="-1">Flujos de efectivo</button>
+          </div>
+          <div id="financial-panel" role="tabpanel" aria-labelledby="tab-results" tabindex="0">
+          <div class="table-head"><span class="muted">Ejercicios anuales cerrados · hasta 2025</span><div class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong> cerrados</label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div></div>
+          <div class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
+          <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla de ejercicios anuales cerrados desplazable"><table class="fin-table" id="financial-table"></table></div>
+          <div class="mobile-history"><label class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
+          <div style="margin-top:11px" class="row-end"><span class="muted">En la calculadora real cada cifra tendrá su fuente y opción de corrección.</span><button type="button" class="text-link" disabled>Corregir un dato</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="step2" class="stage" aria-labelledby="s2-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 2 de 5</span><h2 id="s2-title" tabindex="-1">Analizar el FCF</h2><p>Año en curso: 2026 · cifras parciales hasta septiembre.</p></div>
+        <div class="kpi-row">
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Flujo de caja operativo</div><strong>$320 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">CapEx total registrado</div><strong>$100 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">CÁLCULO PARCIAL · EJEMPLO</span><div class="caption">FCF acumulado</div><strong>$220 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+          <div class="data-box"><span class="kind">AÑO EN CURSO · EJEMPLO</span><div class="caption">Depreciación y amortización</div><strong>$49 M</strong><span class="note">2026 · ene–sep · parcial</span></div>
+        </div>
+        <div class="split">
+          <div class="edit-group">
+            <span class="section-tag">✎ TU ESTIMACIÓN</span><h3>CapEx de mantenimiento</h3><p><strong>Tu estimación anual para 2026–2030.</strong> El último ejercicio cerrado (2025) es una referencia; los datos parciales de 2026 no representan un año completo.</p>
+            <div class="input-stack"><label for="maintenance-input">CapEx de mantenimiento anual previsto · 2026–2030 · millones USD</label><input class="field" type="number" min="0" step="1" id="maintenance-input" placeholder="Sin definir" aria-describedby="maintenance-help"><small id="maintenance-help">Una referencia inicial es la depreciación y amortización (D&amp;A) anual de 2025: $58 M. Puede diferir del gasto real de reposición; la inflación y la edad de los activos importan.</small></div>
+            <div style="margin-top:13px"><button type="button" class="text-button" id="use-da">Probar D&amp;A anual de 2025 ($58 M)</button></div>
+          </div>
+          <div class="source-group">
+            <span class="section-tag">▣ REFERENCIAS · AÑO EN CURSO</span><h3>Mantenimiento y crecimiento</h3><p>CapEx parcial de 2026: $100 M (enero–septiembre). El CapEx completo de 2025 fue $115 M. No son periodos equivalentes.</p>
+            <div class="ruleline"></div>
+            <div class="row-end"><span class="muted">CapEx de crecimiento previsto · 2026–2030</span><strong id="growth-capex-preview" style="color:#365579;font-size:20px">Por calcular</strong></div>
+            <p style="margin-top:10px" class="muted">Esta es solo una representación del diseño; no realiza cálculos.</p>
+          </div>
+        </div>
+        <details class="details"><summary>Ver cómo se calcula el FCF</summary><p>FCF histórico: flujo de caja operativo menos CapEx registrado. Un FCF normalizado puede utilizar mantenimiento estimado, pero la inversión necesaria para crecer no debe desaparecer de las proyecciones.</p></details>
+      </section>
+
+      <section id="step3" class="stage" aria-labelledby="s3-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 3 de 5</span><h2 id="s3-title" tabindex="-1">Estimar los próximos cinco años</h2><p>2026–2030 · Compara el pasado con lo que esperas del negocio.</p></div>
+        <div class="projection-panel" aria-label="Cinco ejercicios históricos frente a una estimación para los próximos cinco años">
+          <div class="projection-title"><span class="muted">Ejercicios anuales cerrados: 2021–2025 · Año en curso: 2026</span><span class="projection-note">2026–2030 · tu estimación</span></div>
+          <div class="projection-scroll" role="region" tabindex="0" aria-label="Históricos 2021 a 2025 y estimación para el periodo 2026 a 2030; desplazar horizontalmente">
+            <table class="projection-table">
+              <thead><tr><th scope="col">Indicador</th><th scope="col">2021</th><th scope="col">2022</th><th scope="col">2023</th><th scope="col">2024</th><th scope="col">2025</th><th scope="col" class="current-year-head">2026–2030 <small>Tu estimación</small></th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Crecimiento de ventas</th><td>7 %</td><td>8 %</td><td>7 %</td><td>9 %</td><td>12 %</td><td class="projection-edit"><label for="estimate-sales" class="sr-only">Crecimiento anual estimado para 2026 a 2030</label><div class="edit-cell"><input id="estimate-sales" type="number" inputmode="decimal" step=".5" value="8" aria-label="Crecimiento anual estimado para 2026 a 2030, en porcentaje"><span>%</span></div></td></tr>
+                <tr><th scope="row">Margen EBIT</th><td>23 %</td><td>24 %</td><td>25 %</td><td>27 %</td><td>28 %</td><td class="projection-edit"><label for="estimate-ebit" class="sr-only">Margen EBIT estimado para 2026 a 2030</label><div class="edit-cell"><input id="estimate-ebit" type="number" inputmode="decimal" step=".5" value="26" aria-label="Margen EBIT estimado para 2026 a 2030 en porcentaje"><span>%</span></div></td></tr>
+                <tr><th scope="row">Impuestos</th><td>20 %</td><td>20 %</td><td>21 %</td><td>21 %</td><td>20 %</td><td class="projection-edit"><label for="estimate-tax" class="sr-only">Impuestos estimados para 2026 a 2030</label><div class="edit-cell"><input id="estimate-tax" type="number" inputmode="decimal" step=".5" value="21" aria-label="Tasa de impuestos estimada para 2026 a 2030, en porcentaje"><span>%</span></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="projection-foot"><strong>2026 · año en curso:</strong> datos parciales ficticios de enero–septiembre (crecimiento comparable: 9 %, margen EBIT: 29 %, impuestos: 21 %). No son resultados anuales completos. Ámbar: tus supuestos para 2026–2030.</p>
+        </div>
+        <details class="details"><summary>Cambiar las estimaciones año por año</summary><p class="caption">La columna amarilla es tu estimación general para 2026–2030. Aquí podrás establecer valores distintos para 2027–2030; si dejas un año vacío se mantiene la estimación general.</p><div class="year-grid" id="year-grid"></div></details>
+        <div class="source-group" style="margin-top:18px"><div class="row-end"><div><span class="section-tag">◈ RESULTADO CALCULADO</span><h3>Ventas, EBIT y FCF proyectados</h3></div><span class="muted">2026–2030</span></div><div class="note-bar">Aquí aparecerá la proyección cuando validemos las fórmulas. No se muestran cifras estimadas todavía.</div></div>
+        <details class="details"><summary>Ver inversión para crecer y otros cálculos</summary><p>La futura calculadora tendrá que estimar las inversiones necesarias para conseguir ese crecimiento. Si no dispone de información fiable, indicará qué dato requiere revisión en vez de pedirte un porcentaje que no puedes justificar.</p></details>
+      </section>
+
+      <section id="step4" class="stage" aria-labelledby="s4-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 4 de 5</span><h2 id="s4-title" tabindex="-1">Definir la valoración</h2><p>Revisa los supuestos principales para el periodo 2026–2030.</p></div>
+        <div class="stage4-key">
+          <div class="edit-group" style="margin:0">
+            <span class="section-tag">✎ TU ESTIMACIÓN · 2026–2030</span><h3>Valoración base</h3>
+            <div class="form-grid">
+              <div class="input-stack"><label for="multiple-input">Múltiplo EV/FCF</label><input class="field" id="multiple-input" type="number" step="1" min="1" value="16"><small>Veces el FCF futuro</small></div>
+              <div class="input-stack"><label for="safety-input">Margen de seguridad</label><input class="field" id="safety-input" type="number" step="1" min="0" max="99" value="25"><small>Porcentaje (%)</small></div>
+            </div>
+          </div>
+          <div class="source-group" style="margin:0">
+            <span class="section-tag">▣ DATOS DEL AÑO EN CURSO · EJEMPLO</span><h3>Datos para revisar</h3>
+            <div class="row-end"><span class="muted">Deuda neta · 2026 parcial</span><strong style="color:#34557a">$148 M</strong></div>
+            <div class="ruleline"></div>
+            <div class="row-end"><span class="muted">Acciones en circulación · 2026</span><strong style="color:#34557a">99 M</strong></div>
+            <p class="caption" style="margin-top:13px">En la herramienta real podrás revisar y corregir los datos originales.</p>
+          </div>
+        </div>
+        <div class="box" style="margin-top:17px">
+          <div class="titlebar"><h3>Escenarios</h3><span class="section-meta">Tres maneras de mirar el mismo negocio</span></div>
+          <div class="scenario-strip">
+            <div class="scenario"><strong>Conservador</strong><div class="scenario-summary">Menor crecimiento y margen; múltiplo más bajo.</div><span class="scenario-number">13× <small>múltiplo de ejemplo</small></span></div>
+            <div class="scenario base"><strong>Base</strong><div class="scenario-summary">Tus estimaciones principales.</div><span class="scenario-number">16× <small>múltiplo de ejemplo</small></span></div>
+            <div class="scenario"><strong>Optimista</strong><div class="scenario-summary">Mayor crecimiento y margen; múltiplo más alto.</div><span class="scenario-number">19× <small>múltiplo de ejemplo</small></span></div>
+          </div>
+          <details class="details"><summary>Ver y ajustar los escenarios (opcional)</summary><p>Más adelante podrás modificar por separado crecimiento, margen y múltiplo de cada escenario. No es necesario mostrar todos esos controles durante el recorrido principal.</p></details>
+        </div>
+        <p class="caption">Los múltiplos son ejemplos visuales. No proceden de comparables reales, y cambiar los campos de este boceto no actualiza los resultados.</p>
+      </section>
+
+      <section id="step5" class="stage" aria-labelledby="s5-title" hidden>
+        <div class="stage-head"><span class="stage-index">Etapa 5 de 5</span><h2 id="s5-title" tabindex="-1">Tu rango de valoración</h2><p>Cómo se presentarían los resultados de los tres escenarios.</p></div>
+        <div class="simulation">PRECIOS FICTICIOS · EJEMPLO VISUAL · NO SE CALCULAN</div>
+        <div class="result-main" style="margin-top:13px">
+          <span class="result-label">◈ VALOR RAZONABLE ESTIMADO HOY · EJEMPLO AL 12 NOV 2026</span>
+          <div class="big">$82 – $142 por acción</div>
+          <p>Rango ilustrativo de los escenarios conservador, base y optimista.</p>
+        </div>
+        <div class="box">
+          <div class="titlebar"><h3>Valor por acción en cada escenario</h3><span class="section-meta">USD · cifras ficticias</span></div>
+          <div class="results-table-scroll" role="region" tabindex="0" aria-label="Comparación de resultados ficticios de los tres escenarios">
+            <table class="results-table">
+              <thead><tr><th scope="col">Valor estimado</th><th scope="col">Conservador</th><th scope="col" class="result-base">Base</th><th scope="col">Optimista</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Valor razonable hoy <small>12 nov 2026</small></th><td>$82</td><td class="result-base">$108</td><td>$142</td></tr>
+                <tr><th scope="row">Precio teórico en 5 años <small>2030 · final del horizonte</small></th><td>$130</td><td class="result-base">$180</td><td>$225</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="caption" style="margin-top:12px">El valor de hoy y el precio teórico futuro son cifras diferentes. Este ejemplo no representa una proyección válida de ninguna acción.</p>
+        </div>
+        <div class="split">
+          <div class="result-mini"><span class="result-label">◈ PRECIO DE COMPRA CON MARGEN DE SEGURIDAD · EJEMPLO</span><strong>$81</strong><small>Ilustración con valor base de $108 y margen de seguridad del 25 %.</small></div>
+          <div class="result-mini"><span class="result-label">PRECIO ACTUAL DE MERCADO · EJEMPLO</span><strong>—</strong><small>Se mostrará únicamente con una cotización identificada y su fecha.</small></div>
+        </div>
+        <details class="details"><summary>Ver detalles del cálculo (en la versión final)</summary><p>Aquí estarán el FCF proyectado, el múltiplo utilizado y los ajustes por deuda y acciones. Las fórmulas todavía requieren revisión.</p></details>
+        <div style="margin-top:16px"><button type="button" class="text-button" id="edit-estimates">Cambiar mis estimaciones</button></div>
+      </section>
+    </div>
+    <div class="app-footer"><button type="button" class="text-button" id="previous" disabled>← Anterior</button><span id="page-status" class="muted" aria-live="polite">Etapa 1 de 5</span><button type="button" class="primary" id="continue">Continuar →</button></div>
+  </div>
+  <p class="footnote">Referencia del diseño: 12 de noviembre de 2026. El ejemplo muestra 2026 como año en curso, con cifras ficticias parciales, y 2025 como último ejercicio anual cerrado. En la herramienta real se usarán los informes publicados de cada empresa y sus propias fechas fiscales. Este boceto no consulta la SEC ni calcula precios.</p>
+</main>
+<script>
+(function(){
+'use strict';
+var stage=1,fin='results',count=5,year=2025;
+var titles=['','Conocer la empresa','Analizar el FCF','Estimar los próximos cinco años','Definir la valoración','Tu rango de valoración'];
+var current2026={
+ results:[['Ventas acumuladas','$1.225 M'],['Margen EBIT','29 %'],['Beneficio neto acumulado','$260 M'],['FCF acumulado','$220 M']],
+ balance:[['Efectivo','$325 M'],['Deuda financiera','$473 M'],['Deuda neta','$148 M'],['Acciones en circulación','99 M']],
+ cash:[['Flujo de caja operativo','$320 M'],['CapEx registrado','$100 M'],['FCF acumulado','$220 M'],['Depreciación y amortización','$49 M']]
+};
+var years=Array.from({length:10},function(_,i){return 2016+i});
+var sales=[800,835,860,910,960,1030,1110,1190,1303,1460];
+var salesGrowth=[6,4,3,6,5,7,8,7,9,12];
+var ebitMargin=[19,19,20,21,21,23,24,25,27,28];
+var opExpenses=[190,199,209,223,236,250,266,289,315,357];
+var netIncome=[100,105,117,133,146,164,188,215,252,290];
+var shares=[130,128,125,121,118,114,111,107,103,100];
+var fcf=[116,120,131,146,151,160,170,191,210,240];
+var assets=[1350,1390,1450,1510,1560,1640,1715,1830,1930,2110];
+var cash=[190,200,210,225,230,240,255,275,290,310];
+var debt=[325,333,340,345,350,371,390,415,446,460];
+var equity=[710,740,769,802,855,920,994,1045,1136,1260];
+var currentAssets=[600,625,650,680,700,735,780,820,864,920];
+var currentLiabilities=[250,260,267,278,286,297,310,329,350,400];
+var receivables=[130,134,139,144,151,156,160,170,177,185];
+var inventory=[95,97,99,102,108,114,120,128,136,155];
+var accountsPayable=[125,127,130,136,140,147,152,162,173,185];
+var operatingCash=[165,170,181,198,210,221,230,260,296,355];
+var capex=[49,50,50,52,59,61,60,69,86,115];
+var da=[21,23,25,28,30,32,35,40,47,58];
+var sbc=[10,12,14,15,16,18,19,21,23,26];
+var acquisitions=[-5,-8,-7,-10,-11,-12,-15,-17,-20,-25];
+var otherInvestments=[-6,-3,-9,-11,-10,-15,-12,-16,-21,-22];
+var dividends=[-28,-30,-32,-35,-38,-40,-43,-46,-49,-52];
+var repurchases=[-22,-25,-27,-30,-32,-34,-36,-39,-42,-45];
+var debtIssued=[36,38,41,45,50,53,55,57,60,62];
+var debtRepaid=[-30,-31,-34,-37,-42,-44,-46,-50,-55,-58];
+var sharesIssued=[5,4,4,3,4,3,3,2,2,2];
+function difference(a,b){return a.map(function(v,i){return v-b[i]})}
+function totals(list){return list[0].map(function(_,i){return list.reduce(function(sum,x){return sum+x[i]},0)})}
+function changeRate(a){return a.map(function(v,i){return i===0?null:(v/a[i-1]-1)*100})}
+function sharesPct(a){return changeRate(a)}
+function perShare(a,b){return a.map(function(v,i){return v/b[i]})}
+var eps=perShare(netIncome,shares);
+var rows={
+ results:[
+  ['Ventas',sales,'money'],['Crecimiento de ventas',salesGrowth,'percent'],
+  ['Gastos operativos',opExpenses,'money'],
+  ['Margen EBIT',ebitMargin,'percent'],
+  ['Beneficio neto',netIncome,'money'],
+  ['Margen neto',netIncome.map(function(n,i){return n/sales[i]*100}),'percent'],
+  ['Acciones en circulación',shares,'shares'],
+  ['Variación de acciones en circulación',sharesPct(shares),'percent'],
+  ['EPS',eps,'eps'],
+  ['Crecimiento EPS',changeRate(eps),'percent'],
+  ['FCF',fcf,'money']
+ ],
+ balance:[
+  {section:'ACTIVOS CORRIENTES'},
+  ['Efectivo (cash)',cash,'money'],
+  ['Cuentas por cobrar',receivables,'money'],
+  ['Inventario',inventory,'money'],
+  ['Total activos corrientes',currentAssets,'money'],
+  {section:'ACTIVOS NO CORRIENTES Y TOTAL'},
+  ['Total activos no corrientes',difference(assets,currentAssets),'money'],
+  ['Total activos',assets,'money'],
+  {section:'PASIVOS CORRIENTES'},
+  ['Cuentas por pagar',accountsPayable,'money'],
+  ['Total pasivos corrientes',currentLiabilities,'money'],
+  ['Capital de trabajo neto',difference(currentAssets,currentLiabilities),'money'],
+  {section:'PASIVOS NO CORRIENTES Y TOTAL'},
+  ['Total pasivos no corrientes',assets.map(function(v,i){return v-equity[i]-currentLiabilities[i]}),'money'],
+  ['Total pasivos',difference(assets,equity),'money'],
+  {section:'DEUDA Y PATRIMONIO'},
+  ['Deuda financiera',debt,'money'],
+  ['Deuda neta',difference(debt,cash),'money'],
+  ['Patrimonio',equity,'money']
+ ],
+ cash:[
+  {section:'OPERACIÓN Y FCF'},
+  ['Flujo de caja operativo',operatingCash,'money'],
+  ['Compensación en acciones (SBC)',sbc,'money'],
+  ['Depreciación y amortización',da,'money'],
+  ['CapEx registrado',capex,'money'],
+  ['FCF',fcf,'money'],
+  {section:'INVERSIÓN'},
+  ['Adquisiciones de negocios',acquisitions,'money'],
+  ['Otras inversiones',otherInvestments,'money'],
+  ['Flujo neto de inversión',totals([capex.map(function(v){return -v}),acquisitions,otherInvestments]),'money'],
+  {section:'FINANCIACIÓN · ASIGNACIÓN DEL CAPITAL'},
+  ['Dividendos pagados',dividends,'money'],
+  ['Recompras de acciones',repurchases,'money'],
+  ['Emisión de acciones',sharesIssued,'money'],
+  ['Nueva deuda',debtIssued,'money'],
+  ['Pago de deuda',debtRepaid,'money'],
+  ['Flujo neto de financiación',totals([dividends,repurchases,sharesIssued,debtIssued,debtRepaid]),'money']
+ ]
+};
+function el(id){return document.getElementById(id)}
+function escapeText(x){return String(x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]})}
+function formatValue(value,type){
+ if(value===null||value===undefined||!Number.isFinite(value))return '—';
+ var precision=type==='eps'?2:type==='percent'?1:0;
+ var result=Number(value.toFixed(precision)).toLocaleString('es-ES',{minimumFractionDigits:type==='eps'?2:0,maximumFractionDigits:precision});
+ return result+(type==='percent'?' %':type==='shares'?' M':type==='eps'?' USD':'');
+}
+function renderTable(){
+ var list=years.slice(-count),data=rows[fin];
+ el('current-year-values').innerHTML=current2026[fin].map(function(row){
+  var percent=row[1].includes('%');
+  return '<span>'+escapeText(row[0])+': <strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(row[1])+'</strong></span>';
+ }).join('');
+ var table='<thead><tr><th scope="col">Indicador</th>'+list.map(function(y){return '<th scope="col">'+y+'</th>'}).join('')+'</tr></thead><tbody>';
+ data.forEach(function(row){
+  if(row.section){table+='<tr class="group-row"><th scope="rowgroup" colspan="'+(list.length+1)+'">'+escapeText(row.section)+'</th></tr>';return}
+  var percent=row[2]==='percent';
+  table+='<tr class="'+(percent?'percentage-row':'plain-row')+'"><th scope="row">'+escapeText(row[0])+'</th>'+list.map(function(y){
+   var value=escapeText(formatValue(row[1][y-2016],row[2]));
+   return '<td class="'+(percent?'percent-value':'plain-value')+'">'+value+'</td>';
+  }).join('')+'</tr>';
+ });
+ el('financial-table').style.minWidth=(265+list.length*93)+'px';
+ el('financial-table').innerHTML=table+'</tbody>';
+ el('mobile-year').innerHTML=list.slice().reverse().map(function(y){return '<option value="'+y+'">'+y+'</option>'}).join('');
+ if(!list.includes(year))year=list[list.length-1];
+ el('mobile-year').value=String(year);
+ el('history-years-value').textContent=count===1?'1 año':count+' años';
+ el('history-years').setAttribute('aria-valuetext',count===1?'1 año':count+' años');
+ renderMobile();
+}
+function renderMobile(){
+ var data=rows[fin];
+ el('mobile-financial').innerHTML=data.map(function(row){
+  if(row.section)return '<div class="mobile-group">'+escapeText(row.section)+'</div>';
+  var value=formatValue(row[1][year-2016],row[2]);
+  var percent=row[2]==='percent';
+  return '<div class="line'+(percent?' percentage-line':'')+'"><span>'+escapeText(row[0])+'</span><strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(value)+'</strong></div>';
+ }).join('');
+}
+function go(next){
+ if(next<1||next>5)return;
+ stage=next;
+ document.querySelectorAll('.stage').forEach(function(x){x.hidden=x.id!=='step'+stage});
+ document.querySelectorAll('[data-goto]').forEach(function(btn){
+  var current=Number(btn.dataset.goto),active=current===stage;
+  btn.classList.toggle('active',active);btn.classList.toggle('passed',current<stage);
+  if(active)btn.setAttribute('aria-current','step');else btn.removeAttribute('aria-current');
+  if(active&&typeof btn.scrollIntoView==='function'){
+   btn.scrollIntoView({block:'nearest',inline:'center',behavior:'auto'});
+  }
+ });
+ el('progress').style.width=(stage*20)+'%';
+ el('previous').disabled=stage===1;
+ el('continue').textContent=stage===5?'Volver al inicio ↺':'Continuar →';
+ el('page-status').textContent='Etapa '+stage+' de 5';
+ el('step'+stage).querySelector('h2').focus({preventScroll:true});
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)window.scrollTo(0,0);
+ else window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){go(Number(b.dataset.goto))})});
+el('previous').addEventListener('click',function(){go(stage-1)});
+el('continue').addEventListener('click',function(){go(stage===5?1:stage+1)});
+var financialTabs=Array.from(document.querySelectorAll('[data-fin]'));
+function activateFinancialTab(tab,moveFocus){
+ if(!tab)return;
+ fin=tab.dataset.fin;
+ financialTabs.forEach(function(t){
+  var selected=t===tab;
+  t.setAttribute('aria-selected',selected?'true':'false');
+  t.tabIndex=selected?0:-1;
+ });
+ el('financial-panel').setAttribute('aria-labelledby',tab.id);
+ renderTable();
+ if(moveFocus)tab.focus();
+}
+financialTabs.forEach(function(tab,index){
+ tab.addEventListener('click',function(){activateFinancialTab(tab,false)});
+ tab.addEventListener('keydown',function(e){
+  var next=null;
+  if(e.key==='ArrowRight')next=financialTabs[(index+1)%financialTabs.length];
+  else if(e.key==='ArrowLeft')next=financialTabs[(index-1+financialTabs.length)%financialTabs.length];
+  else if(e.key==='Home')next=financialTabs[0];
+  else if(e.key==='End')next=financialTabs[financialTabs.length-1];
+  if(next){e.preventDefault();activateFinancialTab(next,true)}
+ });
+});
+el('history-years').addEventListener('input',function(e){count=Number(e.target.value);renderTable()});
+el('history-years').addEventListener('change',function(e){count=Number(e.target.value);renderTable()});
+el('mobile-year').addEventListener('change',function(e){year=Number(e.target.value);renderMobile()});
+el('use-da').addEventListener('click',function(){el('maintenance-input').value='58';el('maintenance-input').focus()});
+el('edit-estimates').addEventListener('click',function(){go(3)});
+el('year-grid').innerHTML=[2027,2028,2029,2030].map(function(y){
+ return '<div class="year-item"><strong>'+y+'</strong><label for="sales-'+y+'">Ventas (%)</label><input type="number" step=".5" placeholder="General" id="sales-'+y+'"><label for="ebit-'+y+'">Margen EBIT (%)</label><input type="number" step=".5" placeholder="General" id="ebit-'+y+'"><label for="tax-'+y+'">Impuestos (%)</label><input type="number" step=".5" placeholder="General" id="tax-'+y+'"></div>';
+}).join('');
+renderTable();
+})();
+</script>
+</body>
+</html>
