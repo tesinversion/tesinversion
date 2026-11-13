@@ -98,3 +98,11 @@ La autora revisó y aprobó la dirección visual de las tablas simplificadas y l
 5. **Proyecciones:** tabla con las tres filas conocidas (crecimiento ventas, margen EBIT e impuestos) y cinco columnas de ejercicios reales **2021–2025**, seguidas de una columna en ámbar para el **año en curso del ejemplo 2026**. La estimación general sirve de referencia para 2027–2030, editables por año en desplegable. Los datos históricos de 2026 y otros años se actualizarán según ejercicio realmente disponible al construir la herramienta funcional.
 
 **Estado:** ejecutado **solo en el boceto visual v0.7.1** de `laboratorio/diseno-v07/index.html`; el motor financiero y la calculadora real permanecen intactos. Los datos de la demostración son ficticios y no hay cálculos reales de valores por acción. Tests estáticos y simulación aislada de navegación pasaron; todavía falta inspección real de navegador y confirmación visual de la autora.
+
+## Ajuste de calendario aprobado · v0.7.2 (12/11/2026)
+
+La autora confirmó la dirección del diseño y solicitó dos precisiones: (1) al tratar información real, utilizar lo más reciente efectivamente **publicado** a la fecha de consulta, incluido 2026 cuando corresponda; los ejercicios abiertos se identificarán como **«Año en curso»** y no se mezclarán con ejercicios anuales cerrados; (2) la columna amarilla de la etapa 3 debe titularse **«2026–2030 · Tu estimación»** (cinco ejercicios), no «2026 · Tu estimación». El rótulo «Año en curso» se presenta por separado. El boceto ilustrativo mantiene resultados completos ficticios 2016–2025: su fecha de corte es el 12 de noviembre de 2026, pero no pretende representar cifras verificadas ni mostrar un trimestre 2026 simulado como anual completo.
+
+**En implementación funcional futura:** detectar la fecha de cierre de cada empresa, su última información anual y trimestral, y evitar suponer que todas cierran en diciembre o que todos los ejercicios 2026 siguen abiertos. Mostrar por separado el último año fiscal cerrado y los datos parciales acumulados del año fiscal en curso, con sus fechas y enlaces a fuentes. El horizonte proyectado se deriva del ejercicio fiscal base pertinente, no se fija universalmente en 2026–2030.
+
+Solo se ajustaron textos del wireframe; el modelo financiero y la calculadora operativa permanecen intactos.
