@@ -273,6 +273,10 @@ a{color:var(--brand)}
 .current-year-values strong.percent-value{font-style:italic;font-weight:750}
 .projection-table tbody td:not(.projection-edit){font-style:italic;font-weight:750}
 .projection-table .edit-cell input{font-style:italic;font-weight:750}
+
+/* QA v0.7.6: navegación por teclado y etapas visibles en móvil */
+#financial-panel:focus-visible{outline-offset:5px}
+.stepper{overscroll-behavior-inline:contain}
 </style>
 </head>
 <body>
@@ -316,11 +320,13 @@ a{color:var(--brand)}
             <button class="tab" id="tab-balance" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="balance" tabindex="-1">Balance</button>
             <button class="tab" id="tab-cash" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="cash" tabindex="-1">Flujos de efectivo</button>
           </div>
+          <div id="financial-panel" role="tabpanel" aria-labelledby="tab-results" tabindex="0">
           <div class="table-head"><span class="muted">Ejercicios anuales cerrados · hasta 2025</span><div class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong> cerrados</label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div></div>
           <div class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
           <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla de ejercicios anuales cerrados desplazable"><table class="fin-table" id="financial-table"></table></div>
           <div class="mobile-history"><label class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
           <div style="margin-top:11px" class="row-end"><span class="muted">En la calculadora real cada cifra tendrá su fuente y opción de corrección.</span><button type="button" class="text-link" disabled>Corregir un dato</button></div>
+          </div>
         </div>
       </section>
 
@@ -579,6 +585,9 @@ function go(next){
   var current=Number(btn.dataset.goto),active=current===stage;
   btn.classList.toggle('active',active);btn.classList.toggle('passed',current<stage);
   if(active)btn.setAttribute('aria-current','step');else btn.removeAttribute('aria-current');
+  if(active&&typeof btn.scrollIntoView==='function'){
+   btn.scrollIntoView({block:'nearest',inline:'center',behavior:'auto'});
+  }
  });
  el('progress').style.width=(stage*20)+'%';
  el('previous').disabled=stage===1;
@@ -591,11 +600,28 @@ function go(next){
 document.querySelectorAll('[data-goto]').forEach(function(b){b.addEventListener('click',function(){go(Number(b.dataset.goto))})});
 el('previous').addEventListener('click',function(){go(stage-1)});
 el('continue').addEventListener('click',function(){go(stage===5?1:stage+1)});
-document.querySelectorAll('[data-fin]').forEach(function(b){
- b.addEventListener('click',function(){
-  fin=b.dataset.fin;
-  document.querySelectorAll('[data-fin]').forEach(function(t){var active=t===b;t.setAttribute('aria-selected',active?'true':'false');t.tabIndex=active?0:-1});
-  renderTable();
+var financialTabs=Array.from(document.querySelectorAll('[data-fin]'));
+function activateFinancialTab(tab,moveFocus){
+ if(!tab)return;
+ fin=tab.dataset.fin;
+ financialTabs.forEach(function(t){
+  var selected=t===tab;
+  t.setAttribute('aria-selected',selected?'true':'false');
+  t.tabIndex=selected?0:-1;
+ });
+ el('financial-panel').setAttribute('aria-labelledby',tab.id);
+ renderTable();
+ if(moveFocus)tab.focus();
+}
+financialTabs.forEach(function(tab,index){
+ tab.addEventListener('click',function(){activateFinancialTab(tab,false)});
+ tab.addEventListener('keydown',function(e){
+  var next=null;
+  if(e.key==='ArrowRight')next=financialTabs[(index+1)%financialTabs.length];
+  else if(e.key==='ArrowLeft')next=financialTabs[(index-1+financialTabs.length)%financialTabs.length];
+  else if(e.key==='Home')next=financialTabs[0];
+  else if(e.key==='End')next=financialTabs[financialTabs.length-1];
+  if(next){e.preventDefault();activateFinancialTab(next,true)}
  });
 });
 el('history-years').addEventListener('input',function(e){count=Number(e.target.value);renderTable()});
