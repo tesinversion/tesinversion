@@ -231,6 +231,29 @@ a{color:var(--brand)}
 .current-year-values span{font-size:11px;color:#43658a}
 .current-year-values strong{color:#244971;font-variant-numeric:tabular-nums}
 @media(max-width:630px){.current-year-strip{padding:10px 11px}.current-year-values{display:grid;grid-template-columns:1fr 1fr;gap:8px}}
+
+/* v0.7.3 · escenarios y precios, jerarquía visual antes de fórmulas */
+.stage4-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:stretch}
+.scenario-summary{color:#74869e;font-size:11px;line-height:1.55;margin-top:7px;min-height:34px}
+.scenario-number{display:block;color:#304f7a;font-size:24px;font-weight:770;margin-top:10px}
+.scenario-number small{color:#8190a5;font-size:10px;font-weight:500;margin-left:4px}
+.results-table-scroll{overflow-x:auto;border:1px solid #e2e9f2;border-radius:12px}
+.results-table{border-collapse:collapse;width:100%;min-width:610px;font-variant-numeric:tabular-nums}
+.results-table th,.results-table td{padding:16px 13px;border-bottom:1px solid #edf0f5;text-align:center;color:#355479}
+.results-table th:first-child{text-align:left;width:35%;color:#31455f}
+.results-table thead th{background:#f5f8fb;font-size:11px;font-weight:770;color:#5a7191}
+.results-table tbody td{font-size:22px;font-weight:790;letter-spacing:-.02em}
+.results-table tbody th{font-size:13px;font-weight:740}
+.results-table tbody th small{display:block;font-size:10px;color:#8b98a8;font-weight:470;margin-top:4px}
+.results-table .result-base{background:#eef3fb;color:#142169}
+.results-table tr:last-child td,.results-table tr:last-child th{border-bottom:0}
+@media(max-width:650px){
+.stage4-key{grid-template-columns:1fr}
+.scenario-number{font-size:19px;margin-top:5px}
+.scenario-summary{min-height:0}
+.results-table th,.results-table td{padding:13px 9px}
+.results-table tbody td{font-size:18px}
+}
 </style>
 </head>
 <body>
@@ -328,47 +351,61 @@ a{color:var(--brand)}
       </section>
 
       <section id="step4" class="stage" aria-labelledby="s4-title" hidden>
-        <div class="stage-head"><span class="stage-index">Etapa 4 de 5</span><h2 id="s4-title" tabindex="-1">Definir la valoración</h2><p>Elige los supuestos centrales. Después podrás ver tres escenarios.</p></div>
-        <div class="side-by-side">
-          <div class="edit-group">
-            <span class="section-tag">✎ TUS ESTIMACIONES</span><h3>Supuestos principales</h3>
+        <div class="stage-head"><span class="stage-index">Etapa 4 de 5</span><h2 id="s4-title" tabindex="-1">Definir la valoración</h2><p>Revisa los supuestos principales para el periodo 2026–2030.</p></div>
+        <div class="stage4-key">
+          <div class="edit-group" style="margin:0">
+            <span class="section-tag">✎ TU ESTIMACIÓN · 2026–2030</span><h3>Valoración base</h3>
             <div class="form-grid">
-              <div class="input-stack"><label for="multiple-input">Múltiplo EV/FCF</label><input class="field" id="multiple-input" type="number" step="1" min="1" value="16"><small>Veces el FCF</small></div>
+              <div class="input-stack"><label for="multiple-input">Múltiplo EV/FCF</label><input class="field" id="multiple-input" type="number" step="1" min="1" value="16"><small>Veces el FCF futuro</small></div>
               <div class="input-stack"><label for="safety-input">Margen de seguridad</label><input class="field" id="safety-input" type="number" step="1" min="0" max="99" value="25"><small>Porcentaje (%)</small></div>
             </div>
           </div>
-          <div class="source-group">
-            <span class="section-tag">▣ DATOS PARA REVISAR</span><h3>Antes del valor por acción</h3>
-            <div class="row-end"><span class="muted">Deuda neta · ejemplo</span><strong style="color:#34557a">$150 M</strong></div>
+          <div class="source-group" style="margin:0">
+            <span class="section-tag">▣ DATOS DEL AÑO EN CURSO · EJEMPLO</span><h3>Datos para revisar</h3>
+            <div class="row-end"><span class="muted">Deuda neta · 2026 parcial</span><strong style="color:#34557a">$148 M</strong></div>
             <div class="ruleline"></div>
-            <div class="row-end"><span class="muted">Acciones · ejemplo</span><strong style="color:#34557a">100 M</strong></div>
-            <p class="caption" style="margin-top:13px">En la herramienta final podrás revisar la fuente y corregir estas cifras.</p>
+            <div class="row-end"><span class="muted">Acciones en circulación · 2026</span><strong style="color:#34557a">99 M</strong></div>
+            <p class="caption" style="margin-top:13px">En la herramienta real podrás revisar y corregir los datos originales.</p>
           </div>
         </div>
-        <div class="box"><div class="titlebar"><h3>Tres escenarios</h3><span class="section-meta">Misma empresa, distintas hipótesis</span></div>
+        <div class="box" style="margin-top:17px">
+          <div class="titlebar"><h3>Escenarios</h3><span class="section-meta">Tres maneras de mirar el mismo negocio</span></div>
           <div class="scenario-strip">
-            <div class="scenario"><strong>Conservador</strong><small>Menor crecimiento, margen y múltiplo.</small></div>
-            <div class="scenario base"><strong>Base</strong><small>Las estimaciones que elegiste.</small></div>
-            <div class="scenario"><strong>Optimista</strong><small>Mayor crecimiento, margen y múltiplo.</small></div>
+            <div class="scenario"><strong>Conservador</strong><div class="scenario-summary">Menor crecimiento y margen; múltiplo más bajo.</div><span class="scenario-number">13× <small>múltiplo de ejemplo</small></span></div>
+            <div class="scenario base"><strong>Base</strong><div class="scenario-summary">Tus estimaciones principales.</div><span class="scenario-number">16× <small>múltiplo de ejemplo</small></span></div>
+            <div class="scenario"><strong>Optimista</strong><div class="scenario-summary">Mayor crecimiento y margen; múltiplo más alto.</div><span class="scenario-number">19× <small>múltiplo de ejemplo</small></span></div>
           </div>
-          <details class="details"><summary>Personalizar los escenarios (opcional)</summary><p>Los controles financieros y las diferencias entre escenarios se definirán en la fase de fórmulas. Aquí aprobamos primero su lugar y jerarquía.</p></details>
+          <details class="details"><summary>Ver y ajustar los escenarios (opcional)</summary><p>Más adelante podrás modificar por separado crecimiento, margen y múltiplo de cada escenario. No es necesario mostrar todos esos controles durante el recorrido principal.</p></details>
         </div>
+        <p class="caption">Los múltiplos son ejemplos visuales. No proceden de comparables reales, y cambiar los campos de este boceto no actualiza los resultados.</p>
       </section>
 
       <section id="step5" class="stage" aria-labelledby="s5-title" hidden>
-        <div class="stage-head"><span class="stage-index">Etapa 5 de 5</span><h2 id="s5-title" tabindex="-1">Tu rango de valoración</h2><p>Valores de ejemplo para revisar la presentación; no proceden de cálculos.</p></div>
-        <div class="simulation">EJEMPLO VISUAL · PRECIOS FICTICIOS SIN CÁLCULO</div>
-        <div class="result-main" style="margin-top:13px"><span class="result-label">◈ VALOR RAZONABLE ESTIMADO HOY · EJEMPLO</span><div class="big">$82 – $142 por acción</div><p>Rango ilustrativo a partir de tres escenarios.</p></div>
-        <div class="scenario-strip" style="margin-bottom:16px">
-          <div class="scenario"><strong>Conservador</strong><span class="price">$82</span><span class="future">Precio teórico en 5 años: $130</span></div>
-          <div class="scenario base"><strong>Base</strong><span class="price">$108</span><span class="future">Precio teórico en 5 años: $180</span></div>
-          <div class="scenario"><strong>Optimista</strong><span class="price">$142</span><span class="future">Precio teórico en 5 años: $225</span></div>
+        <div class="stage-head"><span class="stage-index">Etapa 5 de 5</span><h2 id="s5-title" tabindex="-1">Tu rango de valoración</h2><p>Cómo se presentarían los resultados de los tres escenarios.</p></div>
+        <div class="simulation">PRECIOS FICTICIOS · EJEMPLO VISUAL · NO SE CALCULAN</div>
+        <div class="result-main" style="margin-top:13px">
+          <span class="result-label">◈ VALOR RAZONABLE ESTIMADO HOY · EJEMPLO AL 12 NOV 2026</span>
+          <div class="big">$82 – $142 por acción</div>
+          <p>Rango ilustrativo de los escenarios conservador, base y optimista.</p>
+        </div>
+        <div class="box">
+          <div class="titlebar"><h3>Valor por acción en cada escenario</h3><span class="section-meta">USD · cifras ficticias</span></div>
+          <div class="results-table-scroll" role="region" tabindex="0" aria-label="Comparación de resultados ficticios de los tres escenarios">
+            <table class="results-table">
+              <thead><tr><th scope="col">Valor estimado</th><th scope="col">Conservador</th><th scope="col" class="result-base">Base</th><th scope="col">Optimista</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Valor razonable hoy <small>12 nov 2026</small></th><td>$82</td><td class="result-base">$108</td><td>$142</td></tr>
+                <tr><th scope="row">Precio teórico en 5 años <small>2030 · final del horizonte</small></th><td>$130</td><td class="result-base">$180</td><td>$225</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="caption" style="margin-top:12px">El valor de hoy y el precio teórico futuro son cifras diferentes. Este ejemplo no representa una proyección válida de ninguna acción.</p>
         </div>
         <div class="split">
-          <div class="result-mini"><span class="result-label">◈ PRECIO DE COMPRA CON SEGURIDAD · EJEMPLO</span><strong>$81</strong><small>Ilustración del escenario base con descuento del 25 %.</small></div>
-          <div class="result-mini"><span class="result-label">PRECIO DE MERCADO</span><strong>—</strong><small>Solo aparecerá con precio verificado y fecha, o con un dato manual identificado.</small></div>
+          <div class="result-mini"><span class="result-label">◈ PRECIO DE COMPRA CON MARGEN DE SEGURIDAD · EJEMPLO</span><strong>$81</strong><small>Ilustración con valor base de $108 y margen de seguridad del 25 %.</small></div>
+          <div class="result-mini"><span class="result-label">PRECIO ACTUAL DE MERCADO · EJEMPLO</span><strong>—</strong><small>Se mostrará únicamente con una cotización identificada y su fecha.</small></div>
         </div>
-        <details class="details"><summary>Ver cómo se obtuvo el resultado (en la versión final)</summary><p>Se explicarán los flujos proyectados, el múltiplo, los ajustes por deuda y el valor por acción. En este boceto todos los precios son cifras ficticias y no se actualizan al cambiar las estimaciones.</p></details>
+        <details class="details"><summary>Ver detalles del cálculo (en la versión final)</summary><p>Aquí estarán el FCF proyectado, el múltiplo utilizado y los ajustes por deuda y acciones. Las fórmulas todavía requieren revisión.</p></details>
         <div style="margin-top:16px"><button type="button" class="text-button" id="edit-estimates">Cambiar mis estimaciones</button></div>
       </section>
     </div>
