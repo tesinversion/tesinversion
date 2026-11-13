@@ -23,7 +23,7 @@ assert.match(html,/history-years'\)\.addEventListener\('input'/,'Actualización 
 assert.match(html,/var count=5|count=5/,'Mantener 5 años por defecto');
 assert.match(html,/fin='results'/,'Vista inicial de resultados');
 assert.match(html,/\.data-table-scroll\{display:none\}\.mobile-history\{display:block\}/,'Históricos móviles no comprimidos');
-assert.match(html,/DATO DEL INFORME/,'Distinguir cifras fuente');
+assert.match(html,/AÑO EN CURSO · EJEMPLO/,'Distinguir cifras parciales del año en curso');
 for(const row of [
  'Gastos operativos','Margen neto','Acciones en circulación','Variación de acciones en circulación','EPS','Crecimiento EPS',
  'Total activos corrientes','Total activos no corrientes','Cuentas por cobrar','Cuentas por pagar','Inventario','Capital de trabajo neto',
