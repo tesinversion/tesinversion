@@ -259,11 +259,14 @@ a{color:var(--brand)}
 .fin-table tbody tr:not(.group-row) th[scope=row],
 .fin-table tbody tr:not(.group-row) td{background:#fff;color:#26384f}
 .fin-table tbody tr:not(.group-row) th[scope=row]{font-weight:550;font-style:normal}
+.fin-table tbody tr.percentage-row th[scope=row],
+.fin-table tbody tr.percentage-row td{background:#f1f6fc;color:#243e63}
 .fin-table tbody td.plain-value{font-weight:400;font-style:normal;color:#26384f}
 .fin-table tbody td.percent-value{font-weight:750;font-style:italic;color:#243e63}
 .fin-table tbody tr.group-row th{background:#f5f8fc;color:#647b9a}
 .mobile-data .line{background:#fff!important;margin:0!important;padding:10px 0!important}
 .mobile-data .line span{font-weight:500;font-style:normal}
+.mobile-data .line.percentage-line{background:#f1f6fc!important;border-radius:7px;margin:2px 0!important;padding:10px 8px!important}
 .mobile-data .line strong.plain-value{font-weight:400;font-style:normal;color:#26384f}
 .mobile-data .line strong.percent-value{font-weight:750;font-style:italic;color:#243e63}
 .current-year-values strong.plain-value{font-style:normal;font-weight:430}
@@ -565,7 +568,7 @@ function renderMobile(){
   if(row.section)return '<div class="mobile-group">'+escapeText(row.section)+'</div>';
   var value=formatValue(row[1][year-2016],row[2]);
   var percent=row[2]==='percent';
-  return '<div class="line"><span>'+escapeText(row[0])+'</span><strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(value)+'</strong></div>';
+  return '<div class="line'+(percent?' percentage-line':'')+'"><span>'+escapeText(row[0])+'</span><strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(value)+'</strong></div>';
  }).join('');
 }
 function go(next){
