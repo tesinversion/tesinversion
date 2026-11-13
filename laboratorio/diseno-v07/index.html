@@ -254,6 +254,22 @@ a{color:var(--brand)}
 .results-table th,.results-table td{padding:13px 9px}
 .results-table tbody td{font-size:18px}
 }
+
+/* v0.7.4 · jerarquía tipográfica financiera simplificada */
+.fin-table tbody tr:not(.group-row) th[scope=row],
+.fin-table tbody tr:not(.group-row) td{background:#fff;color:#26384f}
+.fin-table tbody tr:not(.group-row) th[scope=row]{font-weight:550;font-style:normal}
+.fin-table tbody td.plain-value{font-weight:400;font-style:normal;color:#26384f}
+.fin-table tbody td.percent-value{font-weight:750;font-style:italic;color:#243e63}
+.fin-table tbody tr.group-row th{background:#f5f8fc;color:#647b9a}
+.mobile-data .line{background:#fff!important;margin:0!important;padding:10px 0!important}
+.mobile-data .line span{font-weight:500;font-style:normal}
+.mobile-data .line strong.plain-value{font-weight:400;font-style:normal;color:#26384f}
+.mobile-data .line strong.percent-value{font-weight:750;font-style:italic;color:#243e63}
+.current-year-values strong.plain-value{font-style:normal;font-weight:430}
+.current-year-values strong.percent-value{font-style:italic;font-weight:750}
+.projection-table tbody td:not(.projection-edit){font-style:italic;font-weight:750}
+.projection-table .edit-cell input{font-style:italic;font-weight:750}
 </style>
 </head>
 <body>
@@ -521,12 +537,18 @@ function formatValue(value,type){
 }
 function renderTable(){
  var list=years.slice(-count),data=rows[fin];
- el('current-year-values').innerHTML=current2026[fin].map(function(row){return '<span>'+escapeText(row[0])+': <strong>'+escapeText(row[1])+'</strong></span>'}).join('');
+ el('current-year-values').innerHTML=current2026[fin].map(function(row){
+  var percent=row[1].includes('%');
+  return '<span>'+escapeText(row[0])+': <strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(row[1])+'</strong></span>';
+ }).join('');
  var table='<thead><tr><th scope="col">Indicador</th>'+list.map(function(y){return '<th scope="col">'+y+'</th>'}).join('')+'</tr></thead><tbody>';
  data.forEach(function(row){
   if(row.section){table+='<tr class="group-row"><th scope="rowgroup" colspan="'+(list.length+1)+'">'+escapeText(row.section)+'</th></tr>';return}
-  var emphasis=['FCF','Margen EBIT','Margen neto','EPS','Crecimiento EPS','Variación de acciones en circulación','Capital de trabajo neto','Total activos','Total pasivos','Deuda neta','Flujo neto de financiación'].includes(row[0]);
-  table+='<tr class="'+(emphasis?'strong':'')+'"><th scope="row">'+escapeText(row[0])+'</th>'+list.map(function(y){return '<td>'+escapeText(formatValue(row[1][y-2016],row[2]))+'</td>'}).join('')+'</tr>';
+  var percent=row[2]==='percent';
+  table+='<tr class="'+(percent?'percentage-row':'plain-row')+'"><th scope="row">'+escapeText(row[0])+'</th>'+list.map(function(y){
+   var value=escapeText(formatValue(row[1][y-2016],row[2]));
+   return '<td class="'+(percent?'percent-value':'plain-value')+'">'+value+'</td>';
+  }).join('')+'</tr>';
  });
  el('financial-table').style.minWidth=(265+list.length*93)+'px';
  el('financial-table').innerHTML=table+'</tbody>';
@@ -542,8 +564,8 @@ function renderMobile(){
  el('mobile-financial').innerHTML=data.map(function(row){
   if(row.section)return '<div class="mobile-group">'+escapeText(row.section)+'</div>';
   var value=formatValue(row[1][year-2016],row[2]);
-  var emphasis=['FCF','Deuda neta','EPS','Capital de trabajo neto','Flujo neto de financiación'].includes(row[0]);
-  return '<div class="line'+(emphasis?' highlight':'')+'"><span>'+escapeText(row[0])+'</span><strong>'+escapeText(value)+'</strong></div>';
+  var percent=row[2]==='percent';
+  return '<div class="line"><span>'+escapeText(row[0])+'</span><strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(value)+'</strong></div>';
  }).join('');
 }
 function go(next){
