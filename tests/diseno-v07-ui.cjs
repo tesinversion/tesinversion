@@ -33,7 +33,10 @@ for(const row of [
 for(const year of [2021,2022,2023,2024,2025]){
  assert.match(html,new RegExp('<th scope="col">'+year+'</th>'),'Año histórico en proyecciones: '+year);
 }
-assert.match(html,/2026 <small>Tu estimación<\/small>/,'Año en curso editable separado de 5 históricos');
+assert.match(html,/2026–2030 <small>Tu estimación<\/small>/,'Estimación amarilla cubre los cinco años 2026–2030');
+assert.match(html,/Año en curso: 2026/,'Año en curso se identifica aparte');
+assert.match(html,/12 de noviembre de 2026/,'Fecha de corte visible del boceto');
+assert.match(html,/último informe publicado de cada empresa/,'Diseño futuro utiliza datos publicados, no histórico ficticio o año calendario supuesto');
 assert.match(html,/Estimación anual para 2025 \(año base\)/,'Periodo explícito CapEx mantenimiento');
 assert.match(html,/depreciación y amortización \(D&A\) como aproximación inicial/,'Advertencia D&A como referencia');
 assert.match(html,/2026–2030/,'Horizonte futuro visible');
