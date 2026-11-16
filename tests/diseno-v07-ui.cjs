@@ -63,6 +63,14 @@ assert.match(html,/data-fin="multiples"/,'Cuarta pestaña Múltiplos');
 for(const name of ['PER','EV/FCF','EV/EBIT','FCF yield']) assert.ok(html.includes("'"+name+"'"),'Múltiplo: '+name);
 assert.match(html,/data-multiple-mode="trailing"/,'Múltiplos trailing');
 assert.match(html,/data-multiple-mode="forward"/,'Múltiplos forward');
+assert.match(html,/Forward <small>Próximos 5 años<\/small>/,'Forward visible como cinco años');
+assert.match(html,/forecastYears=\[2026,2027,2028,2029,2030\]/,'Cinco años forward fijos');
+assert.match(html,/el\('historical-year-control'\)\.hidden=isForward/,'El slider histórico se oculta en forward');
+assert.match(html,/el\('forward-five-years'\)\.hidden=!isForward/,'Horizonte de cinco años visible en forward');
+assert.match(html,/var list=isForward\?forecastYears:years\.slice\(-count\)/,'Trailing y forward no comparten horizonte');
+assert.match(html,/forecastYear=Number\(e.target.value\)/,'Selector móvil forward independiente');
+assert.match(html,/Proyección 2026–2030/,'Encabezado de cinco años');
+
 assert.match(html,/fin==='multiples'\?multiples\[multiplesMode\]:rows\[fin\]/,'Los múltiplos comparten el selector histórico');
 assert.match(html,/múltiplos.*sin cifras verificadas de 2026|sin cifras verificadas de 2026/i,'Sin inventar cotizaciones y múltiplos de 2026');
 assert.match(html,/typeof n === 'number'|Múltiplos ficticios|múltiplos ficticios|múltiplos ficticios|En esta vista se muestran múltiplos ficticios/,'Diferenciar demo de datos reales');
@@ -83,4 +91,4 @@ assert.match(html,/\.fin-table tbody td\.plain-value\{font-weight:400;font-style
 assert.match(html,/\.mobile-data \.line strong\.percent-value\{font-weight:750;font-style:italic/,'Misma jerarquía en móvil');
 assert.match(html,/\.mobile-data \.line strong\.plain-value\{font-weight:400;font-style:normal/,'Importes móviles normales');
 assert.doesNotMatch(html,/emphasis=\[/,'Sin listas de filas destacadas arbitrariamente');
-console.log('OK: boceto v0.7.7 con Múltiplos trailing/forward, 1–10 años y navegación accesible.');
+console.log('OK: boceto v0.7.8, trailing 1–10 años y forward cinco años 2026–2030, con navegación accesible.');
