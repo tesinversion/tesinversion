@@ -59,6 +59,14 @@ assert.match(html,/overflow-x:auto/,'Tablas anchas desplazables horizontalmente'
 assert.match(html,/aria-live="polite"/);
 assert.match(html,/prefers-reduced-motion/);
 assert.match(html,/id="financial-panel" role="tabpanel" aria-labelledby="tab-results"/,'Panel financiero accesible');
+assert.match(html,/data-fin="multiples"/,'Cuarta pestaña Múltiplos');
+for(const name of ['PER','EV/FCF','EV/EBIT','FCF yield']) assert.ok(html.includes("'"+name+"'"),'Múltiplo: '+name);
+assert.match(html,/data-multiple-mode="trailing"/,'Múltiplos trailing');
+assert.match(html,/data-multiple-mode="forward"/,'Múltiplos forward');
+assert.match(html,/fin==='multiples'\?multiples\[multiplesMode\]:rows\[fin\]/,'Los múltiplos comparten el selector histórico');
+assert.match(html,/múltiplos.*sin cifras verificadas de 2026|sin cifras verificadas de 2026/i,'Sin inventar cotizaciones y múltiplos de 2026');
+assert.match(html,/typeof n === 'number'|Múltiplos ficticios|múltiplos ficticios|múltiplos ficticios|En esta vista se muestran múltiplos ficticios/,'Diferenciar demo de datos reales');
+
 assert.match(html,/function activateFinancialTab\(/,'Pestañas actualizan selección y panel');
 assert.match(html,/aria-labelledby',tab.id/,'Relación accesible con pestaña activa');
 for(const key of ['ArrowRight','ArrowLeft','Home','End'])
@@ -75,4 +83,4 @@ assert.match(html,/\.fin-table tbody td\.plain-value\{font-weight:400;font-style
 assert.match(html,/\.mobile-data \.line strong\.percent-value\{font-weight:750;font-style:italic/,'Misma jerarquía en móvil');
 assert.match(html,/\.mobile-data \.line strong\.plain-value\{font-weight:400;font-style:normal/,'Importes móviles normales');
 assert.doesNotMatch(html,/emphasis=\[/,'Sin listas de filas destacadas arbitrariamente');
-console.log('OK: boceto v0.7.6, cinco etapas, navegación con teclado, pestañas accesibles y lectura móvil.');
+console.log('OK: boceto v0.7.7 con Múltiplos trailing/forward, 1–10 años y navegación accesible.');
