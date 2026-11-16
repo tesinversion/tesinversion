@@ -73,7 +73,7 @@ assert.match(html,/Proyección 2026–2030/,'Encabezado de cinco años');
 
 assert.match(html,/fin==='multiples'\?multiples\[multiplesMode\]:rows\[fin\]/,'Los múltiplos comparten el selector histórico');
 assert.match(html,/múltiplos.*sin cifras verificadas de 2026|sin cifras verificadas de 2026/i,'Sin inventar cotizaciones y múltiplos de 2026');
-assert.match(html,/typeof n === 'number'|Múltiplos ficticios|múltiplos ficticios|múltiplos ficticios|En esta vista se muestran múltiplos ficticios/,'Diferenciar demo de datos reales');
+assert.match(html,/Los valores son ficticios/,'Diferenciar valores demostrativos de datos reales');
 
 assert.match(html,/function activateFinancialTab\(/,'Pestañas actualizan selección y panel');
 assert.match(html,/aria-labelledby',tab.id/,'Relación accesible con pestaña activa');
