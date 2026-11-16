@@ -277,6 +277,22 @@ a{color:var(--brand)}
 /* QA v0.7.6: navegación por teclado y etapas visibles en móvil */
 #financial-panel:focus-visible{outline-offset:5px}
 .stepper{overscroll-behavior-inline:contain}
+
+/* v0.7.7 · cuarta pestaña Múltiplos, modo trailing/forward */
+.tabs{overflow-x:auto;overscroll-behavior-inline:contain;white-space:nowrap;scrollbar-width:thin}
+.tab{flex:none}
+.multiples-controls{padding:15px 0 6px}
+.multiple-selector{display:inline-flex;background:#f5f7fa;padding:4px;border:1px solid #e0e7f0;border-radius:12px;gap:4px}
+.multiple-option{border:1px solid transparent;background:transparent;color:#6d8099;font-size:12px;font-weight:750;border-radius:9px;padding:8px 17px;min-width:138px;text-align:center}
+.multiple-option small{display:block;font-size:10px;color:#8a99ad;font-weight:470;margin-top:1px}
+.multiple-option.active{background:#fff;border-color:#cedbed;color:#142169;box-shadow:0 1px 4px rgba(30,45,80,.05)}
+.multiple-option.active small{color:#617895}
+.multiples-controls .caption{margin:9px 0 5px}
+@media(max-width:630px){
+ .tabs{gap:17px}
+ .multiple-selector{display:flex;width:100%}
+ .multiple-option{min-width:0;flex:1;padding:9px}
+}
 </style>
 </head>
 <body>
@@ -319,10 +335,18 @@ a{color:var(--brand)}
             <button class="tab" id="tab-results" role="tab" aria-controls="financial-panel" aria-selected="true" type="button" data-fin="results">Resultados</button>
             <button class="tab" id="tab-balance" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="balance" tabindex="-1">Balance</button>
             <button class="tab" id="tab-cash" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="cash" tabindex="-1">Flujos de efectivo</button>
+            <button class="tab" id="tab-multiples" role="tab" aria-controls="financial-panel" aria-selected="false" type="button" data-fin="multiples" tabindex="-1">Múltiplos</button>
           </div>
           <div id="financial-panel" role="tabpanel" aria-labelledby="tab-results" tabindex="0">
+          <div id="multiples-controls" class="multiples-controls" hidden>
+            <div class="multiple-selector" role="group" aria-label="Selecciona el tipo de múltiplo">
+              <button type="button" data-multiple-mode="trailing" aria-pressed="true" class="multiple-option active">Trailing <small>Últimos 12 meses</small></button>
+              <button type="button" data-multiple-mode="forward" aria-pressed="false" class="multiple-option">Forward <small>Próximos 12 meses</small></button>
+            </div>
+            <p class="caption" id="multiples-help">En esta vista se muestran múltiplos ficticios. Los forward históricos requieren estimaciones fechadas de cada año; si no están disponibles, se mostrarán como pendientes.</p>
+          </div>
           <div class="table-head"><span class="muted">Ejercicios anuales cerrados · hasta 2025</span><div class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong> cerrados</label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div></div>
-          <div class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
+          <div class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span id="current-year-meta" class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
           <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla de ejercicios anuales cerrados desplazable"><table class="fin-table" id="financial-table"></table></div>
           <div class="mobile-history"><label class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
           <div style="margin-top:11px" class="row-end"><span class="muted">En la calculadora real cada cifra tendrá su fuente y opción de corrección.</span><button type="button" class="text-link" disabled>Corregir un dato</button></div>
@@ -448,6 +472,21 @@ var current2026={
  balance:[['Efectivo','$325 M'],['Deuda financiera','$473 M'],['Deuda neta','$148 M'],['Acciones en circulación','99 M']],
  cash:[['Flujo de caja operativo','$320 M'],['CapEx registrado','$100 M'],['FCF acumulado','$220 M'],['Depreciación y amortización','$49 M']]
 };
+var multiplesMode='trailing';
+var multiples={
+ trailing:[
+  ['PER',[18.4,19.2,20.6,21.5,22.3,21.8,23.2,24.1,25.0,26.4],'multiple'],
+  ['EV/FCF',[15.8,16.4,17.7,18.2,19.3,18.9,20.5,21.1,22.6,23.4],'multiple'],
+  ['EV/EBIT',[13.5,14.1,14.8,15.2,15.6,15.1,16.8,17.5,18.2,19.0],'multiple'],
+  ['FCF yield',[6.3,6.1,5.6,5.5,5.2,5.3,4.9,4.7,4.4,4.3],'percent']
+ ],
+ forward:[
+  ['PER',[17.5,18.2,19.1,20.0,20.8,19.9,21.6,22.3,23.1,24.5],'multiple'],
+  ['EV/FCF',[14.9,15.3,16.2,17.0,18.0,17.5,18.8,19.5,20.6,21.8],'multiple'],
+  ['EV/EBIT',[12.6,13.2,13.9,14.1,14.5,13.9,15.6,16.0,16.9,17.5],'multiple'],
+  ['FCF yield',[6.7,6.5,6.2,5.9,5.6,5.7,5.3,5.1,4.9,4.6],'percent']
+ ]
+};
 var years=Array.from({length:10},function(_,i){return 2016+i});
 var sales=[800,835,860,910,960,1030,1110,1190,1303,1460];
 var salesGrowth=[6,4,3,6,5,7,8,7,9,12];
@@ -540,16 +579,23 @@ function el(id){return document.getElementById(id)}
 function escapeText(x){return String(x).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]})}
 function formatValue(value,type){
  if(value===null||value===undefined||!Number.isFinite(value))return '—';
- var precision=type==='eps'?2:type==='percent'?1:0;
+ var precision=type==='eps'?2:(type==='percent'||type==='multiple'?1:0);
  var result=Number(value.toFixed(precision)).toLocaleString('es-ES',{minimumFractionDigits:type==='eps'?2:0,maximumFractionDigits:precision});
- return result+(type==='percent'?' %':type==='shares'?' M':type==='eps'?' USD':'');
+ return result+(type==='percent'?' %':type==='multiple'?' ×':type==='shares'?' M':type==='eps'?' USD':'');
 }
 function renderTable(){
- var list=years.slice(-count),data=rows[fin];
- el('current-year-values').innerHTML=current2026[fin].map(function(row){
-  var percent=row[1].includes('%');
-  return '<span>'+escapeText(row[0])+': <strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(row[1])+'</strong></span>';
- }).join('');
+ var list=years.slice(-count),data=fin==='multiples'?multiples[multiplesMode]:rows[fin];
+ el('multiples-controls').hidden=fin!=='multiples';
+ if(fin==='multiples'){
+  el('current-year-meta').textContent='Múltiplos '+(multiplesMode==='trailing'?'trailing':'forward')+' de 2026 · cotización y datos fechados pendientes';
+  el('current-year-values').innerHTML='<span>PER · EV/FCF · EV/EBIT · FCF yield: <strong>—</strong> (sin cifras verificadas de 2026)</span>';
+ }else{
+  el('current-year-meta').textContent='Enero–septiembre · cifras ficticias, no anuales';
+  el('current-year-values').innerHTML=current2026[fin].map(function(row){
+   var percent=row[1].includes('%');
+   return '<span>'+escapeText(row[0])+': <strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(row[1])+'</strong></span>';
+  }).join('');
+ }
  var table='<thead><tr><th scope="col">Indicador</th>'+list.map(function(y){return '<th scope="col">'+y+'</th>'}).join('')+'</tr></thead><tbody>';
  data.forEach(function(row){
   if(row.section){table+='<tr class="group-row"><th scope="rowgroup" colspan="'+(list.length+1)+'">'+escapeText(row.section)+'</th></tr>';return}
@@ -569,7 +615,7 @@ function renderTable(){
  renderMobile();
 }
 function renderMobile(){
- var data=rows[fin];
+ var data=fin==='multiples'?multiples[multiplesMode]:rows[fin];
  el('mobile-financial').innerHTML=data.map(function(row){
   if(row.section)return '<div class="mobile-group">'+escapeText(row.section)+'</div>';
   var value=formatValue(row[1][year-2016],row[2]);
@@ -613,6 +659,17 @@ function activateFinancialTab(tab,moveFocus){
  renderTable();
  if(moveFocus)tab.focus();
 }
+document.querySelectorAll('[data-multiple-mode]').forEach(function(button){
+ button.addEventListener('click',function(){
+  multiplesMode=button.dataset.multipleMode;
+  document.querySelectorAll('[data-multiple-mode]').forEach(function(item){
+   var selected=item.dataset.multipleMode===multiplesMode;
+   item.setAttribute('aria-pressed',selected?'true':'false');
+   item.classList.toggle('active',selected);
+  });
+  if(fin==='multiples')renderTable();
+ });
+});
 financialTabs.forEach(function(tab,index){
  tab.addEventListener('click',function(){activateFinancialTab(tab,false)});
  tab.addEventListener('keydown',function(e){
