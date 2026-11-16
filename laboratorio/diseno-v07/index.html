@@ -293,6 +293,10 @@ a{color:var(--brand)}
  .multiple-selector{display:flex;width:100%}
  .multiple-option{min-width:0;flex:1;padding:9px}
 }
+
+/* v0.7.8 · Forward fijo a los cinco próximos años */
+.forward-five-years{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#415c82;font-size:12px}
+.forward-five-years strong{display:inline-block;color:#805b1d;background:#fff5df;border:1px solid #e2c98d;padding:7px 11px;border-radius:9px;font-size:11px}
 </style>
 </head>
 <body>
@@ -341,14 +345,14 @@ a{color:var(--brand)}
           <div id="multiples-controls" class="multiples-controls" hidden>
             <div class="multiple-selector" role="group" aria-label="Selecciona el tipo de múltiplo">
               <button type="button" data-multiple-mode="trailing" aria-pressed="true" class="multiple-option active">Trailing <small>Últimos 12 meses</small></button>
-              <button type="button" data-multiple-mode="forward" aria-pressed="false" class="multiple-option">Forward <small>Próximos 12 meses</small></button>
+              <button type="button" data-multiple-mode="forward" aria-pressed="false" class="multiple-option">Forward <small>Próximos 5 años</small></button>
             </div>
-            <p class="caption" id="multiples-help">En esta vista se muestran múltiplos ficticios. Los forward históricos requieren estimaciones fechadas de cada año; si no están disponibles, se mostrarán como pendientes.</p>
+            <p class="caption" id="multiples-help">Los valores son ficticios. En Forward comparamos los próximos cinco años (2026–2030) utilizando estimaciones, no cifras históricas. En la versión real deberán tener una fuente y fecha verificables.</p>
           </div>
-          <div class="table-head"><span class="muted">Ejercicios anuales cerrados · hasta 2025</span><div class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong> cerrados</label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div></div>
-          <div class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span id="current-year-meta" class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
+          <div class="table-head"><span id="financial-period-label" class="muted">Ejercicios anuales cerrados · hasta 2025</span><div id="historical-year-control" class="year-range-control"><label for="history-years">Mostrar <strong id="history-years-value" aria-live="polite">5 años</strong> cerrados</label><div class="year-range-line"><span>1</span><input id="history-years" type="range" min="1" max="10" step="1" value="5" aria-label="Mostrar de uno a diez ejercicios históricos" aria-valuetext="5 años"><span>10</span></div></div><div id="forward-five-years" class="forward-five-years" hidden><span>Proyección 2026–2030</span><strong>5 años</strong></div></div>
+          <div id="current-year-strip" class="current-year-strip" aria-label="Datos parciales ficticios del año en curso 2026"><span class="current-year-dot">AÑO EN CURSO · 2026</span><span id="current-year-meta" class="current-year-meta">Enero–septiembre · cifras ficticias, no anuales</span><div class="current-year-values" id="current-year-values"></div></div>
           <div class="data-table-scroll" role="region" tabindex="0" aria-label="Tabla de ejercicios anuales cerrados desplazable"><table class="fin-table" id="financial-table"></table></div>
-          <div class="mobile-history"><label class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
+          <div class="mobile-history"><label id="mobile-year-label" class="muted" for="mobile-year">Ejercicio fiscal</label><select id="mobile-year" class="mobile-year"></select><div class="mobile-data" id="mobile-financial"></div></div>
           <div style="margin-top:11px" class="row-end"><span class="muted">En la calculadora real cada cifra tendrá su fuente y opción de corrección.</span><button type="button" class="text-link" disabled>Corregir un dato</button></div>
           </div>
         </div>
@@ -481,13 +485,15 @@ var multiples={
   ['FCF yield',[6.3,6.1,5.6,5.5,5.2,5.3,4.9,4.7,4.4,4.3],'percent']
  ],
  forward:[
-  ['PER',[17.5,18.2,19.1,20.0,20.8,19.9,21.6,22.3,23.1,24.5],'multiple'],
-  ['EV/FCF',[14.9,15.3,16.2,17.0,18.0,17.5,18.8,19.5,20.6,21.8],'multiple'],
-  ['EV/EBIT',[12.6,13.2,13.9,14.1,14.5,13.9,15.6,16.0,16.9,17.5],'multiple'],
-  ['FCF yield',[6.7,6.5,6.2,5.9,5.6,5.7,5.3,5.1,4.9,4.6],'percent']
+  ['PER',[24.5,22.8,21.5,20.1,18.7],'multiple'],
+  ['EV/FCF',[21.8,20.4,19.1,17.8,16.7],'multiple'],
+  ['EV/EBIT',[17.5,16.6,15.8,14.7,13.8],'multiple'],
+  ['FCF yield',[4.6,4.9,5.2,5.6,6.0],'percent']
  ]
 };
 var years=Array.from({length:10},function(_,i){return 2016+i});
+var forecastYears=[2026,2027,2028,2029,2030];
+var forecastYear=2026;
 var sales=[800,835,860,910,960,1030,1110,1190,1303,1460];
 var salesGrowth=[6,4,3,6,5,7,8,7,9,12];
 var ebitMargin=[19,19,20,21,21,23,24,25,27,28];
@@ -584,10 +590,19 @@ function formatValue(value,type){
  return result+(type==='percent'?' %':type==='multiple'?' ×':type==='shares'?' M':type==='eps'?' USD':'');
 }
 function renderTable(){
- var list=years.slice(-count),data=fin==='multiples'?multiples[multiplesMode]:rows[fin];
+ var isForward=fin==='multiples'&&multiplesMode==='forward';
+ var list=isForward?forecastYears:years.slice(-count);
+ var data=fin==='multiples'?multiples[multiplesMode]:rows[fin];
  el('multiples-controls').hidden=fin!=='multiples';
+ el('historical-year-control').hidden=isForward;
+ el('forward-five-years').hidden=!isForward;
+ el('current-year-strip').hidden=isForward;
+ el('financial-period-label').textContent=isForward
+  ?'Próximos cinco ejercicios · estimaciones ficticias'
+  :fin==='multiples'?'Múltiplos trailing por ejercicio · hasta 2025':'Ejercicios anuales cerrados · hasta 2025';
+ el('mobile-year-label').textContent=isForward?'Año de la proyección':'Ejercicio fiscal';
  if(fin==='multiples'){
-  el('current-year-meta').textContent='Múltiplos '+(multiplesMode==='trailing'?'trailing':'forward')+' de 2026 · cotización y datos fechados pendientes';
+  el('current-year-meta').textContent='Múltiplos trailing de 2026 · cotización y datos fechados pendientes';
   el('current-year-values').innerHTML='<span>PER · EV/FCF · EV/EBIT · FCF yield: <strong>—</strong> (sin cifras verificadas de 2026)</span>';
  }else{
   el('current-year-meta').textContent='Enero–septiembre · cifras ficticias, no anuales';
@@ -601,24 +616,32 @@ function renderTable(){
   if(row.section){table+='<tr class="group-row"><th scope="rowgroup" colspan="'+(list.length+1)+'">'+escapeText(row.section)+'</th></tr>';return}
   var percent=row[2]==='percent';
   table+='<tr class="'+(percent?'percentage-row':'plain-row')+'"><th scope="row">'+escapeText(row[0])+'</th>'+list.map(function(y){
-   var value=escapeText(formatValue(row[1][y-2016],row[2]));
+   var idx=isForward?forecastYears.indexOf(y):y-2016;
+   var value=escapeText(formatValue(row[1][idx],row[2]));
    return '<td class="'+(percent?'percent-value':'plain-value')+'">'+value+'</td>';
   }).join('')+'</tr>';
  });
  el('financial-table').style.minWidth=(265+list.length*93)+'px';
  el('financial-table').innerHTML=table+'</tbody>';
  el('mobile-year').innerHTML=list.slice().reverse().map(function(y){return '<option value="'+y+'">'+y+'</option>'}).join('');
- if(!list.includes(year))year=list[list.length-1];
- el('mobile-year').value=String(year);
+ var selected=isForward?forecastYear:year;
+ if(!list.includes(selected)){
+  selected=list[list.length-1];
+  if(isForward)forecastYear=selected;
+  else year=selected;
+ }
+ el('mobile-year').value=String(selected);
  el('history-years-value').textContent=count===1?'1 año':count+' años';
  el('history-years').setAttribute('aria-valuetext',count===1?'1 año':count+' años');
  renderMobile();
 }
 function renderMobile(){
+ var isForward=fin==='multiples'&&multiplesMode==='forward';
  var data=fin==='multiples'?multiples[multiplesMode]:rows[fin];
+ var position=isForward?forecastYears.indexOf(forecastYear):year-2016;
  el('mobile-financial').innerHTML=data.map(function(row){
   if(row.section)return '<div class="mobile-group">'+escapeText(row.section)+'</div>';
-  var value=formatValue(row[1][year-2016],row[2]);
+  var value=formatValue(row[1][position],row[2]);
   var percent=row[2]==='percent';
   return '<div class="line'+(percent?' percentage-line':'')+'"><span>'+escapeText(row[0])+'</span><strong class="'+(percent?'percent-value':'plain-value')+'">'+escapeText(value)+'</strong></div>';
  }).join('');
@@ -683,7 +706,11 @@ financialTabs.forEach(function(tab,index){
 });
 el('history-years').addEventListener('input',function(e){count=Number(e.target.value);renderTable()});
 el('history-years').addEventListener('change',function(e){count=Number(e.target.value);renderTable()});
-el('mobile-year').addEventListener('change',function(e){year=Number(e.target.value);renderMobile()});
+el('mobile-year').addEventListener('change',function(e){
+ if(fin==='multiples'&&multiplesMode==='forward')forecastYear=Number(e.target.value);
+ else year=Number(e.target.value);
+ renderMobile();
+});
 el('use-da').addEventListener('click',function(){el('maintenance-input').value='58';el('maintenance-input').focus()});
 el('edit-estimates').addEventListener('click',function(){go(3)});
 el('year-grid').innerHTML=[2027,2028,2029,2030].map(function(y){
