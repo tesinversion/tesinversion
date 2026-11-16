@@ -137,3 +137,17 @@ Se realizó una revisión de la interacción del wireframe ya aprobado visualmen
 **Validaciones efectuadas:** test estático de estructura y sintaxis JavaScript, y prueba interactiva aislada del código para selector de 1 a 10 años, cambio de pestañas, navegación con teclas, anterior/continuar, volver a editar y copia ficticia de D&A. No se ejecutó una auditoría visual en Chromium/Firefox/Safari reales con múltiples tamaños y lectores de pantalla. Esa validación real continúa pendiente antes de declarar cerrada la fase de diseño.
 
 **Estado:** solo PR de prueba, sin `main`, sin publicar ni conectar la valoración. `tests/diseno-v07-ui.cjs` actualizado.
+
+
+## Boceto UX v0.7.7 · pestaña «Múltiplos» (16/11/2026)
+
+La autora aprobó el diseño histórico y solicitó una cuarta pestaña **Múltiplos**, con la misma barra de 1 a 10 ejercicios anuales que Resultados, Balance y Flujos. También solicitó vistas **Trailing** y **Forward**. Los indicadores pedidos son PER, EV/FCF, EV/EBIT (mencionado dos veces en el mensaje) y FCF yield. Por ahora se presentan esos **cuatro indicadores distintos**; no se añade EV/EBITDA ni otros indicadores sin confirmación.
+
+- Se conservan las pestañas existentes, la leyenda de colores, la navegación con flechas y la misma selección histórica de 1 a 10 años.
+- Dos botones compactos permiten alternar **Trailing (últimos 12 meses)** y **Forward (próximos 12 meses)**. La tabla mantiene años como columnas y las cuatro métricas como filas; FCF yield, por ser porcentaje, recibe la banda azul celeste, negrita y cursiva. Los múltiplos «×» siguen el estilo normal.
+- La interfaz móvil utiliza la ficha del año seleccionado y el selector de trailing/forward.
+- Las series anuales históricas 2016–2025 son **números ficticios**, creados para revisar el diseño y el comportamiento de la interfaz. No proceden de cotizaciones ni de consenso profesional. Los indicadores de 2026 se muestran como **pendientes**, sin cifras de mercado inventadas.
+- En una implementación real, el indicador trailing deberá acompañarse de **fecha de cotización y periodo financiero** y forward exigirá estimaciones disponibles **a la fecha de referencia histórica**, no pronósticos creados posteriormente (sin sesgo retrospectivo). La fecha y la disponibilidad de fuentes deberán quedar explícitas. Definiciones, fórmulas y fuentes siguen **pendientes de revisión**.
+- No se modificaron los motores financieros, el parser SEC, ni el sitio público. No se desplegó en producción.
+
+Estado: wireframe de la rama de prueba, esperando revisión de la autora.
