@@ -151,3 +151,16 @@ La autora aprobó el diseño histórico y solicitó una cuarta pestaña **Múlti
 - No se modificaron los motores financieros, el parser SEC, ni el sitio público. No se desplegó en producción.
 
 Estado: wireframe de la rama de prueba, esperando revisión de la autora.
+
+
+## Ajuste v0.7.8 · Forward de cinco años (16/11/2026)
+
+La autora confirmó que **Trailing** estaba bien con selector histórico de 1 a 10 ejercicios, pero **Forward** debe centrarse en **los próximos cinco años**, no en 10 años históricos.
+
+- **Trailing:** sin cambios; una barra deslizante común de 1–10 años muestra los múltiplos históricos 2016–2025 del ejemplo.
+- **Forward:** tabla propia de cinco ejercicios **2026, 2027, 2028, 2029 y 2030**, sin barra de 1–10 años. Mismas cuatro filas: PER, EV/FCF, EV/EBIT y FCF yield; este último conserva banda celeste con negrita cursiva.
+- En móvil, Forward tiene selector de **2026–2030**. Al retornar a Trailing se conserva la cantidad de años elegida previamente, sin alterar la selección de proyecciones.
+- Los valores proyectados en la pantalla son **ficticios**; se usarán estimaciones con trazabilidad y periodos correctos al conectar la calculadora financiera. El forward no equivale a los siguientes 12 meses en esta vista.
+- El cambio se realizó únicamente en `laboratorio/diseno-v07/index.html`; motor de valoración y web productiva no fueron modificados.
+
+**Validación:** script JS con sintaxis válida, simulación de interacción con cinco columnas y cuatro filas en forward, selector móvil 2026–2030, alternancia con trailing 1–10 años y test estructural del boceto aprobados. Falta revisión visual en navegador real.
