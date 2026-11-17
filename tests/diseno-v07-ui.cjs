@@ -43,6 +43,19 @@ assert.match(html,/2026–2030/,'Horizonte futuro visible');
 assert.match(html,/TU ESTIMACIÓN/,'Distinguir edición');
 assert.match(html,/RESULTADO CALCULADO/,'Distinguir resultados');
 assert.match(html,/PRECIOS FICTICIOS · EJEMPLO VISUAL · NO SE CALCULAN/,'No mostrar ficticios como reales');
+
+assert.match(html,/Rango de precio por año/,'Tabla anual de rangos');
+assert.match(html,/mobile-value-cards/,'Vista móvil anual');
+assert.match(html,/Valor estimado hoy/,'Diferenciar valor actual');
+assert.match(html,/La proyección actual del boceto termina en 2030/,'Advertencia explícita de año adicional 2031');
+for(const y of [2026,2027,2028,2029,2030,2031]){
+ assert.match(html,new RegExp('class="year-(?:today|future)"[^>]*><th scope="row">'+y+'<small>'),'Fila escritorio del año '+y);
+ assert.match(html,new RegExp('aria-label="'+y+': rango'),'Tarjeta móvil del año '+y);
+}
+assert.match(html,/Conservador<\/th>/,'Escenario conservador anual');
+assert.match(html,/Optimista<\/th>/,'Escenario optimista anual');
+assert.match(html,/Rango estimado<\/th>/,'Rango anual en tabla');
+
 assert.match(html,/AÑO EN CURSO · 2026/,'Franja separada de datos parciales');
 assert.match(html,/Enero–septiembre · cifras ficticias, no anuales/,'Cifras 2026 parciales');
 assert.match(html,/último ejercicio anual cerrado: 2025/,'Último ejercicio 2025 sigue como referencia, no como actualidad');
@@ -91,4 +104,4 @@ assert.match(html,/\.fin-table tbody td\.plain-value\{font-weight:400;font-style
 assert.match(html,/\.mobile-data \.line strong\.percent-value\{font-weight:750;font-style:italic/,'Misma jerarquía en móvil');
 assert.match(html,/\.mobile-data \.line strong\.plain-value\{font-weight:400;font-style:normal/,'Importes móviles normales');
 assert.doesNotMatch(html,/emphasis=\[/,'Sin listas de filas destacadas arbitrariamente');
-console.log('OK: boceto v0.7.8, trailing 1–10 años y forward cinco años 2026–2030, con navegación accesible.');
+console.log('OK: boceto v0.7.9, trailing/forward y rangos anuales 2026–2031 por escenario, con diseño móvil.');
