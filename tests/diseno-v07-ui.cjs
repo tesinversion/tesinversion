@@ -62,7 +62,7 @@ assert.match(html,/último ejercicio anual cerrado: 2025/,'Último ejercicio 202
 assert.match(html,/2026–2030 · tu estimación/,'Horizonte futuro de cinco años');
 assert.match(html,/PRECIO ACTUAL DE MERCADO/,'Mercado sin precio inventado');
 assert.match(html,/Precio teórico · cierre/,'Valor futuro separado');
-assert.match(html,/2030 · final del horizonte/,'Destino futuro explícito');
+assert.match(html,/2031/,'Quinto año futuro visible');
 assert.match(html,/13×/,'Escenario conservador de ejemplo');
 assert.match(html,/16×/,'Escenario base de ejemplo');
 assert.match(html,/19×/,'Escenario optimista de ejemplo');
