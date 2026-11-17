@@ -164,3 +164,19 @@ La autora confirmó que **Trailing** estaba bien con selector histórico de 1 a 
 - El cambio se realizó únicamente en `laboratorio/diseno-v07/index.html`; motor de valoración y web productiva no fueron modificados.
 
 **Validación:** script JS con sintaxis válida, simulación de interacción con cinco columnas y cuatro filas en forward, selector móvil 2026–2030, alternancia con trailing 1–10 años y test estructural del boceto aprobados. Falta revisión visual en navegador real.
+
+
+## Diseño v0.7.9 · Rangos anuales de precio por acción (16/11/2026)
+
+La autora aprobó la visualización de rangos y de escenarios conservador/base/optimista, pero pidió extender la tabla del precio objetivo para mostrar **el valor estimado hoy y cada uno de los próximos cinco años**, manteniendo el mismo esquema por año.
+
+Se actualizó **únicamente el wireframe de la etapa 5**:
+- Cabecera de resultado conserva el **rango de valor razonable estimado hoy** (ejemplo 2026: $82–$142 por acción).
+- Nueva tabla para escritorio: **Año | Rango estimado | Conservador | Base | Optimista**, con seis filas **2026 valor hoy** y **2027, 2028, 2029, 2030 y 2031 precios teóricos al cierre**. La columna Base utiliza el azul claro sobrio y el rango destaca en azul de marca.
+- En móvil, cada año es una tarjeta con el rango de precio y los tres escenarios, evitando una tabla ilegible.
+- El bloque de precio con margen de seguridad y el campo de cotización actual permanecen separados.
+- Los valores por acción son **100 % ficticios**, sin cálculos, sin precio de mercado inventado ni datos SEC.
+- **Advertencia metodológica importante:** el horizonte de proyecciones en etapas 3 y Múltiplos Forward sigue siendo **2026–2030**. Para estimar precios de cierre **2031**, al revisar las fórmulas se deberá ampliar o justificar expresamente ese año adicional. Un precio teórico futuro no equivale al valor razonable descontado hoy ni es garantía de cotización.
+- Nada se modificó en la aplicación financiera, parser SEC, PR de producción ni fórmulas.
+
+Pruebas estáticas de estructura y JavaScript pasaron, incluyendo presencia de las seis filas en escritorio y seis tarjetas en móvil. **Pendiente** revisión visual de la autora y auditoría numérica antes de integrar.
